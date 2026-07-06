@@ -522,42 +522,140 @@
     ["ដុល្លារ","dollar","dolla dollar"],
   ];
 
-  /* ---- build index: key -> word indices ------------------------------- */
-  // skeleton: collapse every vowel run to one wildcard, so different vowel
-  // spellings of the same sound still meet: sousdey/suosdei -> "s8sd8"
-  function skel(s) { return s.replace(/[aeiouy]+/g, "8"); }
+  /* ---- curated index: key -> word indices ------------------------------ */
+  // vowel skeleton: collapse vowel runs so sousdey/suosdei meet at "s8sd8"
+  function vskel(s) { return s.replace(/[aeiouy]+/g, "8"); }
 
   const INDEX = [];               // {k, sk, wi}
   DICT.forEach((entry, wi) => {
     const keys = new Set(romVariants(entry[0]));
     if (entry[2]) entry[2].split(/\s+/).forEach(k => k && keys.add(k.toLowerCase()));
-    keys.forEach(k => INDEX.push({ k, sk: skel(k), wi }));
+    keys.forEach(k => INDEX.push({ k, sk: vskel(k), wi }));
   });
 
+  /* ---- big lexicon (words.txt): 62k words from the Google Khmer
+     pronunciation lexicon, ranked by Khmer-Wikipedia frequency. Each line is
+     "khmer\tSKEL" where SKEL is a coarse sound-class skeleton. ------------- */
+  let BIG_KH = [], BIG_SK = [];
+  fetch("words.txt")
+    .then(r => (r.ok ? r.text() : ""))
+    .then(t => {
+      for (const ln of t.split("\n")) {
+        const i = ln.indexOf("\t");
+        if (i > 0) { BIG_KH.push(ln.slice(0, i)); BIG_SK.push(ln.slice(i + 1)); }
+      }
+    })
+    .catch(() => {});               // offline/file:// -> curated dict only
+
+  // Query -> the same sound-class skeleton the build pipeline emits.
+  // Classes: K C T P S H M N J G L R W Y, V = any vowel run.
+  const DIGRAPH = { chh:"C", ch:"C", kh:"K", gh:"K", th:"T", dh:"T", dd:"T",
+                    ph:"P", bh:"P", ng:"G", nh:"J", ny:"J", gn:"J" };
+  const SINGLE  = { k:"K", g:"K", c:"C", j:"C", t:"T", d:"T", b:"P", p:"P",
+                    f:"P", s:"S", h:"H", m:"M", n:"N", l:"L", x:"S", z:"S" };
+  const isVow = ch => "aeiou".includes(ch);
+  function qskel(q) {
+    q = q.toLowerCase().replace(/[^a-z]/g, "");
+    const out = [];
+    const push = c => { if (c && out[out.length - 1] !== c) out.push(c); };
+    let i = 0;
+    while (i < q.length) {
+      const tri = q.slice(i, i + 3), di = q.slice(i, i + 2), ch = q[i];
+      if (DIGRAPH[tri]) { push(DIGRAPH[tri]); i += 3; continue; }
+      if (DIGRAPH[di])  { push(DIGRAPH[di]);  i += 2; continue; }
+      if (isVow(ch)) { push("V"); i++; continue; }
+      if (ch === "w" || ch === "v" || ch === "y") {
+        // onset -> consonant; coda -> part of the vowel (tov, chhkay)
+        if (isVow(q[i + 1])) push(ch === "y" ? "Y" : "W");
+        else push("V");
+        i++; continue;
+      }
+      if (ch === "r") {           // Khmer r is only pronounced before a vowel
+        if (isVow(q[i + 1])) push("R");
+        i++; continue;
+      }
+      if (ch === "s" && isVow(q[i - 1]) && !isVow(q[i + 1])) {
+        push("H"); i++; continue;   // coda s sounds like h: monus = monuh
+      }
+      if (ch === "q") { i++; continue; }                                  // glottal, often untyped
+      push(SINGLE[ch] || ""); i++;
+    }
+    return out.join("");
+  }
+
+  /* ---- learning from real use (persisted locally) ---------------------- */
+  let USAGE = {}, PERSONAL = {};
+  try {
+    USAGE    = JSON.parse(localStorage.getItem("khkb_usage")    || "{}");
+    PERSONAL = JSON.parse(localStorage.getItem("khkb_personal") || "{}");
+  } catch (e) {}
+  function learn(kh, token, wasRaw) {
+    USAGE[kh] = (USAGE[kh] || 0) + 1;
+    if (wasRaw && token && token.replace(/[^a-z]/gi, "").length >= 3) {
+      PERSONAL[token.toLowerCase()] = kh;     // user's own word + own spelling
+    }
+    try {
+      localStorage.setItem("khkb_usage",    JSON.stringify(USAGE));
+      localStorage.setItem("khkb_personal", JSON.stringify(PERSONAL));
+    } catch (e) {}
+  }
+
+  /* ---- merged, tiered suggest ------------------------------------------
+     tiers: -1 your own saved words · 0-3 curated (exact/prefix/vowel-skel)
+            4-5 big lexicon (sound-skeleton exact/prefix)
+     words you actually use float upward (usage boost). ------------------- */
   function suggest(q) {
     q = (q || "").toLowerCase().trim();
     if (!q) return [];
-    const qs = skel(q);
-    const fuzzyOK = q.length >= 3;          // skeletons are too coarse for 1-2 chars
-    const best = new Map();                 // wi -> {tier, extra}
+    const cand = new Map();       // kh -> {tier, sub, gloss}
+    const add = (kh, tier, sub, gloss) => {
+      const c = cand.get(kh);
+      if (!c) { cand.set(kh, { tier, sub, gloss: gloss || "" }); return; }
+      if (tier < c.tier || (tier === c.tier && sub < c.sub)) { c.tier = tier; c.sub = sub; }
+      if (!c.gloss && gloss) c.gloss = gloss;
+    };
+
+    for (const t in PERSONAL) {
+      if (t === q) add(PERSONAL[t], -1, 0, "yours");
+      else if (t.startsWith(q)) add(PERSONAL[t], -1, t.length - q.length, "yours");
+    }
+
+    const qs = vskel(q);
+    const fuzzyOK = q.length >= 3;
     for (const { k, sk, wi } of INDEX) {
-      let tier, extra = 0;
+      let tier, sub = 0;
       if (k === q) tier = 0;
-      else if (k.startsWith(q)) { tier = 1; extra = k.length - q.length; }
+      else if (k.startsWith(q)) { tier = 1; sub = k.length - q.length; }
       else if (fuzzyOK && sk === qs) tier = 2;
-      else if (fuzzyOK && sk.startsWith(qs)) { tier = 3; extra = sk.length - qs.length; }
+      else if (fuzzyOK && sk.startsWith(qs)) { tier = 3; sub = sk.length - qs.length; }
       else continue;
-      const cur = best.get(wi);
-      if (!cur || tier < cur.tier || (tier === cur.tier && extra < cur.extra)) {
-        best.set(wi, { tier, extra });
+      add(DICT[wi][0], tier, sub, DICT[wi][1]);
+    }
+
+    if (fuzzyOK && BIG_KH.length) {
+      const qk = qskel(q);
+      if (qk.length >= 2) {
+        let hits = 0;
+        for (let i = 0; i < BIG_SK.length && hits < 300; i++) {
+          if (BIG_SK[i] === qk) { add(BIG_KH[i], 4, i); hits++; }
+          else if (BIG_SK[i].startsWith(qk)) {
+            add(BIG_KH[i], 5, (BIG_SK[i].length - qk.length) * 1e5 + i); hits++;
+          }
+        }
       }
     }
-    return [...best.entries()]
-      .sort((a, b) =>
-        (a[1].tier - b[1].tier) || (a[1].extra - b[1].extra) || (a[0] - b[0]))
+
+    return [...cand.entries()]
+      .map(([kh, m]) => {
+        const u = USAGE[kh] || 0;
+        const boost = u >= 4 ? 2 : u >= 1 ? 1 : 0;
+        return { kh, gloss: m.gloss, _k: (m.tier - boost) * 1e12 + m.sub - u };
+      })
+      .sort((a, b) => a._k - b._k)
       .slice(0, 8)
-      .map(([wi]) => ({ kh: DICT[wi][0], gloss: DICT[wi][1] }));
+      .map(({ kh, gloss }) => ({ kh, gloss }));
   }
 
-  window.KHDICT = { suggest, DICT, romVariants };
+  window.KHDICT = { suggest, learn, DICT, romVariants, qskel,
+                    bigCount: () => BIG_KH.length };
 })();
