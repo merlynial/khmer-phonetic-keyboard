@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1f6feb">
+<meta name="description" content="Type Khmer by its sound — a free phonetic Khmer keyboard with Pinyin-style word suggestions. Works offline, no install.">
+<meta property="og:title" content="Khmer Phonetic Keyboard — type Khmer by sound">
+<meta property="og:description" content="Type the sound in English letters, pick the Khmer word from suggestions — like a Chinese Pinyin keyboard, for Khmer.">
+<meta property="og:type" content="website">
+<title>Khmer Phonetic Keyboard · ក្តារចុចផ្លាស់សំឡេង</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2430; --line:#2b3240;
+    --txt:#e6edf3; --muted:#8b949e; --accent:#1f6feb; --accent2:#2ea043;
+    --khmer:#ffd27f; --key:#232c39; --keyhi:#30404f;
+    --font-khmer:"Noto Sans Khmer","Khmer OS","Khmer OS System","Battambang",serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-text-size-adjust:100%; line-height:1.45;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:16px 14px 60px;}
+  header{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px;}
+  header h1{font-size:19px; margin:0; font-weight:650;}
+  header .sub{color:var(--muted); font-size:12.5px; margin-top:2px;}
+  .logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#8957e5);
+    display:grid;place-items:center;font-family:var(--font-khmer);font-size:22px;color:#fff;flex:0 0 auto;}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:14px;}
+  label.fld{display:block; font-size:12px; color:var(--muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em;}
+  textarea{
+    width:100%; min-height:92px; resize:vertical; background:var(--panel2); color:var(--txt);
+    border:1px solid var(--line); border-radius:10px; padding:12px 13px; font-size:17px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace; outline:none;
+  }
+  textarea:focus{border-color:var(--accent);}
+  .out{
+    width:100%; min-height:70px; background:#0b1a10; border:1px solid #1f5132; border-radius:10px;
+    padding:14px 15px; font-family:var(--font-khmer); font-size:30px; color:var(--khmer);
+    line-height:1.7; word-break:break-word; white-space:pre-wrap; overflow-wrap:anywhere;
+  }
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px;}
+  button.btn{
+    background:var(--accent); color:#fff; border:0; border-radius:9px; padding:10px 15px;
+    font-size:14px; font-weight:600; cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  button.btn.alt{background:var(--panel2); border:1px solid var(--line); color:var(--txt);}
+  button.btn.green{background:var(--accent2);}
+  button.btn:active{transform:translateY(1px);}
+  /* suggestion bar (pinyin-style candidates) */
+  .sugbar{display:none; gap:8px; overflow-x:auto; padding:10px 2px 2px; -webkit-overflow-scrolling:touch;}
+  .sugbar.show{display:flex;}
+  .chip{
+    flex:0 0 auto; background:var(--panel2); border:1px solid var(--line); border-radius:10px;
+    padding:6px 12px 7px; cursor:pointer; text-align:center; user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .chip:hover{background:var(--keyhi);}
+  .chip:active{background:var(--accent);}
+  .chip.first{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset;}
+  .chip .kh{font-family:var(--font-khmer); font-size:23px; color:var(--khmer); line-height:1.5;}
+  .chip .lbl{font-size:10px; color:var(--muted); margin-top:1px; white-space:nowrap;}
+  .chip .lbl b{color:var(--txt); font-weight:600;}
+  .chip.raw .kh{color:var(--txt);}
+  .toggles{display:flex; gap:16px; flex-wrap:wrap; margin-top:12px;}
+  .tg{display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted); cursor:pointer;}
+  .tg input{width:16px;height:16px;accent-color:var(--accent);}
+  /* on-screen QWERTY keyboard (pinyin-style) */
+  .kb{display:flex; flex-direction:column; gap:7px; max-width:560px; margin:0 auto;}
+  .kbrow{display:flex; gap:5px; justify-content:center;}
+  .kq{
+    flex:1 1 0; min-width:0; padding:10px 0 7px; background:var(--key); border:1px solid var(--line);
+    border-radius:8px; text-align:center; cursor:pointer; user-select:none; color:var(--txt);
+    font-size:17px; font-weight:600; line-height:1.1; -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+  }
+  .kq .sub{display:block; font-family:var(--font-khmer); font-size:10.5px; color:var(--muted);
+    margin-top:3px; font-weight:400; line-height:1.2; min-height:13px;}
+  .kq:hover{background:var(--keyhi);}
+  .kq:active{background:var(--accent); color:#fff;}
+  .kq.fn{background:#1a2330; color:var(--muted); font-size:13px;}
+  .kq.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .kq.khlab{font-family:var(--font-khmer); font-weight:400; font-size:19px;}
+  /* cheat sheet */
+  details{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:4px 14px; margin-bottom:14px;}
+  summary{cursor:pointer; padding:11px 0; font-weight:600; font-size:15px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:8px; padding:6px 0 14px;}
+  .cell{background:var(--panel2); border:1px solid var(--line); border-radius:9px; padding:8px 6px; text-align:center;}
+  .cell .kh{font-family:var(--font-khmer); font-size:24px; color:var(--khmer);}
+  .cell .rn{font-family:ui-monospace,monospace; font-size:13px; color:var(--txt); margin-top:3px;}
+  .cell .note{font-size:10.5px; color:var(--muted);}
+  .hint{color:var(--muted); font-size:12.5px; margin:2px 0 0;}
+  code{background:var(--panel2); border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-size:12.5px;}
+  .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
+    background:var(--accent2); color:#fff; padding:10px 18px; border-radius:24px; font-size:13.5px;
+    opacity:0; pointer-events:none; transition:.25s; z-index:50;}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  h3.sec{font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin:16px 0 8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">ក</div>
+    <div>
+      <h1>Khmer Phonetic Keyboard</h1>
+      <div class="sub">ក្តារចុចផ្លាស់សំឡេង · Type the sound in English letters → get Khmer</div>
+    </div>
+  </header>
+
+  <div class="card">
+    <label class="fld" for="in">Type a word's sound — pick a suggestion like Pinyin (<code>1-9</code>, <code>Space</code>, or tap; <code>Esc</code> hides)</label>
+    <textarea id="in" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="none"
+      placeholder="khnhom → ខ្ញុំ ...  suggestions appear as you type, like Pinyin"></textarea>
+
+    <div class="sugbar" id="sug"></div>
+
+    <div class="toggles">
+      <label class="tg"><input type="checkbox" id="autostack" checked> Auto-stack clusters (coeng)</label>
+      <label class="tg"><input type="checkbox" id="khnum"> Khmer digits ០-៩</label>
+      <label class="tg"><input type="checkbox" id="live" checked> Live convert</label>
+      <label class="tg"><input type="checkbox" id="spacesel" checked> Space picks 1st suggestion</label>
+      <label class="tg"><input type="checkbox" id="devkb"> Use device keyboard</label>
+    </div>
+
+    <div class="row">
+      <button class="btn green" id="conv">Convert ⟶</button>
+      <button class="btn" id="copy">Copy Khmer</button>
+      <button class="btn alt" id="clear">Clear</button>
+    </div>
+
+    <label class="fld" style="margin-top:16px">Khmer output</label>
+    <div class="out" id="out" dir="auto"></div>
+  </div>
+
+  <div class="card">
+    <div class="kb" id="kb"></div>
+    <p class="hint" style="margin-top:10px">Tap the sound — word suggestions appear above, like Pinyin.
+      <b>⇧</b> gives the scheme's capitals (<code>D</code>=ឌ <code>N</code>=ណ <code>L</code>=ឡ <code>M</code>=ំ <code>H</code>=ះ) ·
+      <b>?123</b> has digits, Khmer punctuation &amp; sign keys.</p>
+  </div>
+
+  <details>
+    <summary>📖 Romanization cheat-sheet (how to type each sound)</summary>
+    <h3 class="sec">Consonants</h3>
+    <div class="grid" id="cs-cons"></div>
+    <h3 class="sec">Vowels (type after a consonant)</h3>
+    <div class="grid" id="cs-vow"></div>
+    <h3 class="sec">Signs &amp; punctuation</h3>
+    <div class="grid" id="cs-sign"></div>
+    <p class="hint" style="padding-bottom:12px">
+      <b>Clusters / subscript (coeng ្):</b> just type consonants together with no vowel between —
+      <code>skl</code>→ស្ក្ល, <code>knhom</code>→ក្ញុំ. To force a break instead of stacking, put a space or a <code>.</code> between them.<br>
+      <b>Inherent vowel:</b> a consonant alone carries the built-in “â/o” sound. <code>k</code>→ក, <code>ka</code>→ក (the <code>a</code> adds nothing).<br>
+      <b>Series shifters:</b> <code>*</code>=៉ (musikatoan: <code>m*aong</code>→ម៉ោង), <code>`</code>=៊ (treisap: <code>s`</code>→ស៊).<br>
+      Capitals matter: <code>d</code>=ដ but <code>D</code>=ឌ, <code>n</code>=ន but <code>N</code>=ណ, <code>l</code>=ល but <code>L</code>=ឡ.
+    </p>
+  </details>
+
+  <p class="hint" style="text-align:center">
+    Works offline · add to Home Screen to use like an app ·
+    <a href="https://github.com/merlynial/khmer-phonetic-keyboard" style="color:var(--accent)">open source on GitHub</a>
+  </p>
+</div>
+
+<div class="toast" id="toast">Copied ✓</div>
+
+<script src="dict.js"></script>
+<script>
+/* =========================================================================
+   KHMER PHONETIC ENGINE
+   Longest-match, case-sensitive tokenizer. Each token maps to a Khmer glyph.
+   Consonants can auto-stack (insert coeng ្ / U+17D2) when adjacent.
+   ========================================================================= */
+
+const COENG = "្";
+
+// --- Consonants (33) --------------------------------------------------------
+const CONS = {
+  "k":"ក",  "kh":"ខ", "g":"គ",  "gh":"ឃ", "ng":"ង",
+  "ch":"ច", "chh":"ឆ","j":"ជ",  "jh":"ឈ", "ny":"ញ", "nh":"ញ",
+  "d":"ដ",  "TH":"ឋ", "D":"ឌ",  "DH":"ឍ", "N":"ណ",
+  "t":"ត",  "th":"ថ", "dd":"ទ", "dh":"ធ", "n":"ន",
+  "b":"ប",  "ph":"ផ", "p":"ព",  "bh":"ភ", "m":"ម",
+  "y":"យ",  "r":"រ",  "l":"ល",  "v":"វ",  "w":"វ",
+  "s":"ស",  "h":"ហ",  "L":"ឡ",  "q":"អ",
+};
+
+// --- Independent vowels (typed with a leading ') -----------------------------
+const INDEP = {
+  "'e":"ឯ", "'ai":"ឰ", "'o":"ឱ", "'au":"ឳ",
+  "'ri":"ឫ", "'rii":"ឬ", "'li":"ឭ", "'lii":"ឮ",
+  "'q":"ឥ", "'qi":"ឦ", "'qu":"ឧ", "'quu":"ឩ",
+};
+
+// --- Dependent vowels (attach to a consonant) --------------------------------
+const VOW = {
+  "aa":"ា", "a":"",           // inherent vowel: 'a' emits nothing
+  "i":"ិ",  "ii":"ី", "ei":"ី",
+  "eu":"ឹ", "euu":"ឺ",
+  "u":"ុ",  "uu":"ូ", "ou":"ូ",
+  "ua":"ួ",
+  "oe":"ើ", "aeu":"ើ",
+  "oea":"ឿ",
+  "ie":"ៀ",
+  "e":"េ",
+  "ae":"ែ", "eae":"ែ",
+  "ai":"ៃ", "ey":"ៃ",
+  "ao":"ោ", "o":"ោ", "oa":"ោ",
+  "au":"ៅ", "ov":"ៅ",
+  // very common vowel+sign combos:
+  "am":"ាំ", "aM":"ាំ",
+  "um":"ុំ", "om":"ុំ",
+  "ah":"ះ", "eah":"េះ", "oh":"ោះ", "uh":"ុះ", "ih":"ិះ",
+};
+
+// --- Signs & punctuation -----------------------------------------------------
+const SIGN = {
+  "M":"ំ",            // nikahit (am/om nasal)
+  "H":"ះ",            // reahmuk
+  "'":"់",            // bantoc (shortener)
+  "^":"័",            // samyok sannya
+  "~":"៍",            // toandakhiat (silent)
+  "*":"៉",            // musikatoan (o→a series, e.g. m* = ម៉)
+  "`":"៊",            // treisap (a→o series, e.g. s` = ស៊)
+  ".":"",             // syllable break (emits nothing, stops auto-stacking)
+  "//":"។",           // khan (Khmer full stop)
+  "///":"៕",          // bariyoosan (end of text/verse)
+  "**":"ៗ",           // leikto (repetition)
+  "<<":"«", ">>":"»",
+  "::":"៖",           // camnuc pii kuuh (colon)
+  " ":"​ ",       // keep visible space but with ZWSP hint (rendered as space)
+};
+
+// Khmer digits
+const DIGITS = {"0":"០","1":"១","2":"២","3":"៣","4":"៤","5":"៥","6":"៦","7":"៧","8":"៨","9":"៩"};
+
+// Build a master map + a set marking which keys are consonants
+const MAP = {};
+const IS_CONS = new Set();
+for (const k in CONS){ MAP[k]=CONS[k]; IS_CONS.add(k); }
+for (const k in INDEP) MAP[k]=INDEP[k];
+for (const k in VOW)   MAP[k]=VOW[k];
+for (const k in SIGN)  MAP[k]=SIGN[k];
+
+// keys sorted longest-first for greedy matching
+const KEYS = Object.keys(MAP).sort((a,b)=>b.length-a.length);
+
+function convert(text, opts){
+  opts = opts||{};
+  let out = "";
+  let prevCons = false;          // was the previous emitted unit a consonant?
+  let i = 0;
+  const n = text.length;
+  while (i < n){
+    // Khmer digits toggle
+    if (opts.khnum && DIGITS[text[i]] !== undefined){
+      out += DIGITS[text[i]]; prevCons = false; i++; continue;
+    }
+    // longest matching phonetic key
+    let matched = null;
+    for (const key of KEYS){
+      if (key === " ") continue;               // handle space below
+      if (text.startsWith(key, i)){ matched = key; break; }
+    }
+    if (matched){
+      const glyph = MAP[matched];
+      if (IS_CONS.has(matched)){
+        if (prevCons && opts.autostack && glyph){ out += COENG + glyph; }
+        else { out += glyph; }
+        prevCons = true;
+      } else {
+        out += glyph;
+        // a vowel/sign closes the current consonant; '.' break also clears it
+        prevCons = false;
+      }
+      i += matched.length;
+    } else {
+      // passthrough (spaces, latin we don't map, newlines, other punct)
+      out += text[i];
+      prevCons = false;
+      i++;
+    }
+  }
+  return out;
+}
+
+/* =========================== UI WIRING =================================== */
+const $ = s => document.querySelector(s);
+const inEl = $("#in"), outEl = $("#out");
+const autostack = $("#autostack"), khnum = $("#khnum"), live = $("#live");
+const spacesel = $("#spacesel"), sugEl = $("#sug");
+
+function run(){
+  const opts = { autostack: autostack.checked, khnum: khnum.checked };
+  outEl.textContent = convert(inEl.value, opts);
+}
+inEl.addEventListener("input", ()=>{ if (live.checked) run(); updateSug(); });
+[autostack, khnum].forEach(el=>el.addEventListener("change", run));
+
+/* -------- pinyin-style word suggestions --------------------------------
+   The token = the run of letters just before the caret. KHDICT.suggest()
+   returns Khmer word candidates; picking one replaces the token inline
+   (Khmer chars pass through convert() untouched, so output stays correct). */
+const TOKEN_CH = /[a-zA-Z'*`^~]/;
+let sugState = { token:"", start:0, end:0, items:[] };
+let dismissed = "";
+
+function currentToken(){
+  const p = inEl.selectionStart;
+  if (p == null || p !== inEl.selectionEnd) return { token:"", start:p||0, end:p||0 };
+  const v = inEl.value;
+  let s = p;
+  while (s > 0 && TOKEN_CH.test(v[s-1])) s--;
+  return { token: v.slice(s, p), start: s, end: p };
+}
+
+function updateSug(){
+  const { token, start, end } = currentToken();
+  if (token !== dismissed) dismissed = "";   // Esc only mutes the current token
+  sugState = { token, start, end, items: [] };
+  sugEl.innerHTML = "";
+  if (!token || token === dismissed){ sugEl.classList.remove("show"); return; }
+
+  const dict = KHDICT.suggest(token).map(it => ({ ...it, raw:false }));
+  const rawKh = convert(token, { autostack: autostack.checked });
+  if (rawKh && rawKh !== token && !(dict[0] && dict[0].kh === rawKh)){
+    dict.push({ kh: rawKh, gloss: "as typed", raw:true });
+  }
+  if (!dict.length){ sugEl.classList.remove("show"); return; }
+
+  sugState.items = dict;
+  dict.forEach((it, i) => {
+    const c = document.createElement("div");
+    c.className = "chip" + (i === 0 ? " first" : "") + (it.raw ? " raw" : "");
+    c.innerHTML = `<div class="kh">${it.kh}</div><div class="lbl"><b>${i+1}</b> ${it.gloss}</div>`;
+    c.addEventListener("mousedown", e => { e.preventDefault(); commitSug(i); });
+    sugEl.appendChild(c);
+  });
+  sugEl.classList.add("show");
+}
+
+function commitSug(i){
+  const it = sugState.items[i];
+  if (!it) return;
+  inEl.setRangeText(it.kh, sugState.start, sugState.end, "end");
+  inEl.focus();
+  run(); updateSug();
+}
+
+inEl.addEventListener("keydown", e => {
+  if (!sugState.items.length) return;
+  if (e.key >= "1" && e.key <= "9"){
+    const i = +e.key - 1;
+    if (i < sugState.items.length){ e.preventDefault(); commitSug(i); }
+  } else if (e.key === " "){
+    if (trySpaceCommit()) e.preventDefault();
+  } else if (e.key === "Escape"){
+    dismissed = sugState.token;
+    sugEl.classList.remove("show"); sugState.items = [];
+  }
+});
+document.addEventListener("selectionchange", ()=>{
+  if (document.activeElement === inEl) updateSug();
+});
+$("#conv").addEventListener("click", run);
+$("#clear").addEventListener("click", ()=>{ inEl.value=""; outEl.textContent=""; inEl.focus(); });
+
+function toast(msg){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1300);
+}
+$("#copy").addEventListener("click", async ()=>{
+  const txt = outEl.textContent;
+  if(!txt){ toast("Nothing to copy"); return; }
+  try{ await navigator.clipboard.writeText(txt); toast("Copied ✓"); }
+  catch(e){
+    const r=document.createRange(); r.selectNodeContents(outEl);
+    const s=getSelection(); s.removeAllRanges(); s.addRange(r);
+    try{ document.execCommand("copy"); toast("Copied ✓"); }catch(_){ toast("Select & copy manually"); }
+  }
+});
+
+/* -------- On-screen QWERTY keyboard (pinyin-style IME) -------------------
+   Letters type the SOUND into the text box at the caret; the suggestion bar
+   does the Khmer. Shift is one-shot (like a phone). ?123 = digits, Khmer
+   punctuation (inserted directly) and sign keys (inserted as scheme chars). */
+const devkb = $("#devkb");
+devkb.addEventListener("change", ()=> inEl.setAttribute("inputmode", devkb.checked ? "text" : "none"));
+
+const SUB = {  // tiny Khmer hint under each letter key
+  q:"អ", w:"វ", e:"េ", r:"រ", t:"ត", y:"យ", u:"ុ", i:"ិ", o:"ោ", p:"ព",
+  s:"ស", d:"ដ", g:"គ", h:"ហ", j:"ជ", k:"ក", l:"ល",
+  v:"វ", b:"ប", n:"ន", m:"ម",
+  D:"ឌ", N:"ណ", L:"ឡ", M:"ំ", H:"ះ", E:"ែ",
+};
+const ROW_NUM = "1234567890".split("");
+const ROWS_ABC = [
+  "qwertyuiop".split(""),
+  "asdfghjkl".split(""),
+  [{a:"SHIFT",l:"⇧",w:1.5}, ..."zxcvbnm".split(""), {a:"BKSP",l:"⌫",w:1.5}],
+  [{a:"SYM",l:"?123",w:1.8}, {t:"'",l:"់",kh:1}, {a:"SPACE",l:"space",w:4},
+   {t:".",l:"."}, {a:"ENTER",l:"⏎",w:1.3}],
+];
+const ROWS_SYM = [
+  ROW_NUM,
+  [{t:"'",l:"់",kh:1},{t:"*",l:"៉",kh:1},{t:"`",l:"៊",kh:1},{t:"^",l:"័",kh:1},
+   {t:"~",l:"៍",kh:1},{t:"។",l:"។",kh:1},{t:"៕",l:"៕",kh:1},{t:"ៗ",l:"ៗ",kh:1}],
+  [{t:"៖",l:"៖",kh:1},{t:"«",l:"«"},{t:"»",l:"»"},{t:"!",l:"!"},{t:"?",l:"?"},
+   {t:",",l:","},{t:"-",l:"-"},{a:"BKSP",l:"⌫",w:1.5}],
+  [{a:"SYM",l:"ABC",w:1.8}, {a:"SPACE",l:"space",w:5}, {t:"។",l:"។",kh:1}, {a:"ENTER",l:"⏎",w:1.3}],
+];
+let kbLayer = "abc", kbShift = false;
+
+function ensureCaret(){
+  if (document.activeElement !== inEl){
+    inEl.focus();
+    const L = inEl.value.length;
+    inEl.setSelectionRange(L, L);
+  }
+}
+function insertText(t){
+  ensureCaret();
+  inEl.setRangeText(t, inEl.selectionStart, inEl.selectionEnd, "end");
+  inEl.dispatchEvent(new Event("input"));
+}
+function backspace(){
+  ensureCaret();
+  const s = inEl.selectionStart, e = inEl.selectionEnd;
+  if (s !== e) inEl.setRangeText("", s, e, "end");
+  else if (s > 0) inEl.setRangeText("", s-1, s, "end");
+  inEl.dispatchEvent(new Event("input"));
+}
+function trySpaceCommit(){
+  if (sugState.items.length && spacesel.checked
+      && sugState.token.length >= 2 && !sugState.items[0].raw){
+    commitSug(0);                 // commit, no space — Khmer joins words
+    return true;
+  }
+  return false;
+}
+function keyPress(it){
+  if (typeof it === "string"){
+    insertText(kbShift ? it.toUpperCase() : it);
+    if (kbShift){ kbShift = false; drawKB(); }
+    return;
+  }
+  if (it.t !== undefined){ insertText(it.t); return; }
+  switch (it.a){
+    case "SHIFT": kbShift = !kbShift; drawKB(); break;
+    case "SYM":   kbLayer = kbLayer === "sym" ? "abc" : "sym"; kbShift = false; drawKB(); break;
+    case "BKSP":  backspace(); break;
+    case "ENTER": insertText("\n"); break;
+    case "SPACE": if (!trySpaceCommit()) insertText(" "); break;
+  }
+}
+function drawKB(){
+  const kb = $("#kb"); kb.innerHTML = "";
+  const rows = kbLayer === "sym" ? ROWS_SYM : ROWS_ABC;
+  rows.forEach(row => {
+    const r = document.createElement("div"); r.className = "kbrow";
+    row.forEach(it => {
+      const b = document.createElement("div");
+      const isStr = typeof it === "string";
+      const ch = isStr ? (kbShift ? it.toUpperCase() : it) : null;
+      b.className = "kq" + (!isStr && it.a ? " fn" : "") + (!isStr && it.kh ? " khlab" : "")
+        + (!isStr && it.a === "SHIFT" && kbShift ? " on" : "");
+      const label = isStr ? ch : it.l;
+      // letters: tiny Khmer hint; sign keys: show what you'd type (e.g. ់ ← ')
+      const sub = isStr ? (SUB[ch] || "") : (it.kh && it.t !== it.l ? it.t : "");
+      b.innerHTML = `<span>${label}</span><span class="sub">${sub || "&nbsp;"}</span>`;
+      if (!isStr && it.w) b.style.flexGrow = it.w;
+      b.addEventListener("pointerdown", e => { e.preventDefault(); keyPress(it); });
+      r.appendChild(b);
+    });
+    kb.appendChild(r);
+  });
+}
+drawKB();
+
+/* -------- Cheat-sheet generation -------- */
+function fillSheet(id, entries, notes){
+  const box=$(id);
+  entries.forEach(([r,g])=>{
+    if(!g && r!=="a") return;
+    const c=document.createElement("div"); c.className="cell";
+    c.innerHTML = `<div class="kh">${g||"–"}</div><div class="rn">${r||"·"}</div>`
+      + (notes&&notes[r]?`<div class="note">${notes[r]}</div>`:"");
+    box.appendChild(c);
+  });
+}
+fillSheet("#cs-cons", Object.entries(CONS), {
+  d:"a-series", D:"retroflex", N:"retroflex", L:"la", q:"a / glottal", nh:"= ny", w:"= v"
+});
+fillSheet("#cs-vow", Object.entries(VOW), { a:"inherent (nothing)" });
+fillSheet("#cs-sign", Object.entries(SIGN).filter(([r,g])=>g && r!==" "), {
+  "'":"bantoc", M:"nikahit", H:"reahmuk", "//":"khan .", "**":"repeat", "::":"colon"
+});
+
+/* initial demo */
+inEl.value = "suastei";
+run();
+
+/* offline: register a tiny service worker if available */
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+</script>
+</body>
+</html>
