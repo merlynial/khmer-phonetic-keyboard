@@ -523,29 +523,38 @@
   ];
 
   /* ---- build index: key -> word indices ------------------------------- */
-  const INDEX = [];               // {k, wi}
+  // skeleton: collapse every vowel run to one wildcard, so different vowel
+  // spellings of the same sound still meet: sousdey/suosdei -> "s8sd8"
+  function skel(s) { return s.replace(/[aeiouy]+/g, "8"); }
+
+  const INDEX = [];               // {k, sk, wi}
   DICT.forEach((entry, wi) => {
     const keys = new Set(romVariants(entry[0]));
     if (entry[2]) entry[2].split(/\s+/).forEach(k => k && keys.add(k.toLowerCase()));
-    keys.forEach(k => INDEX.push({ k, wi }));
+    keys.forEach(k => INDEX.push({ k, sk: skel(k), wi }));
   });
 
   function suggest(q) {
     q = (q || "").toLowerCase().trim();
     if (!q) return [];
-    const best = new Map();       // wi -> {exact, extra}
-    for (const { k, wi } of INDEX) {
-      if (!k.startsWith(q)) continue;
-      const exact = k.length === q.length;
-      const extra = k.length - q.length;
+    const qs = skel(q);
+    const fuzzyOK = q.length >= 3;          // skeletons are too coarse for 1-2 chars
+    const best = new Map();                 // wi -> {tier, extra}
+    for (const { k, sk, wi } of INDEX) {
+      let tier, extra = 0;
+      if (k === q) tier = 0;
+      else if (k.startsWith(q)) { tier = 1; extra = k.length - q.length; }
+      else if (fuzzyOK && sk === qs) tier = 2;
+      else if (fuzzyOK && sk.startsWith(qs)) { tier = 3; extra = sk.length - qs.length; }
+      else continue;
       const cur = best.get(wi);
-      if (!cur || (exact && !cur.exact) || (exact === cur.exact && extra < cur.extra)) {
-        best.set(wi, { exact, extra });
+      if (!cur || tier < cur.tier || (tier === cur.tier && extra < cur.extra)) {
+        best.set(wi, { tier, extra });
       }
     }
     return [...best.entries()]
       .sort((a, b) =>
-        (b[1].exact - a[1].exact) || (a[1].extra - b[1].extra) || (a[0] - b[0]))
+        (a[1].tier - b[1].tier) || (a[1].extra - b[1].extra) || (a[0] - b[0]))
       .slice(0, 8)
       .map(([wi]) => ({ kh: DICT[wi][0], gloss: DICT[wi][1] }));
   }

@@ -51,21 +51,27 @@
   button.btn.alt{background:var(--panel2); border:1px solid var(--line); color:var(--txt);}
   button.btn.green{background:var(--accent2);}
   button.btn:active{transform:translateY(1px);}
-  /* suggestion bar (pinyin-style candidates) */
-  .sugbar{display:none; gap:8px; overflow-x:auto; padding:10px 2px 2px; -webkit-overflow-scrolling:touch;}
-  .sugbar.show{display:flex;}
-  .chip{
-    flex:0 0 auto; background:var(--panel2); border:1px solid var(--line); border-radius:10px;
-    padding:6px 12px 7px; cursor:pointer; text-align:center; user-select:none;
-    -webkit-tap-highlight-color:transparent;
+  /* floating candidate bar at the caret — modeled on the macOS Pinyin IME */
+  .sugwrap{position:relative;}
+  .sugbar{
+    position:absolute; z-index:30; display:none; align-items:center; gap:2px;
+    max-width:calc(100% - 8px); overflow-x:auto; white-space:nowrap;
+    background:#10151d; border:1px solid var(--line); border-radius:12px;
+    padding:4px 6px; box-shadow:0 10px 28px rgba(0,0,0,.55);
+    -webkit-overflow-scrolling:touch;
   }
-  .chip:hover{background:var(--keyhi);}
-  .chip:active{background:var(--accent);}
-  .chip.first{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset;}
-  .chip .kh{font-family:var(--font-khmer); font-size:23px; color:var(--khmer); line-height:1.5;}
-  .chip .lbl{font-size:10px; color:var(--muted); margin-top:1px; white-space:nowrap;}
-  .chip .lbl b{color:var(--txt); font-weight:600;}
-  .chip.raw .kh{color:var(--txt);}
+  .sugbar.show{display:flex;}
+  .cand{
+    flex:0 0 auto; display:flex; align-items:baseline; gap:6px; padding:3px 11px 5px;
+    border-radius:9px; cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent;
+  }
+  .cand .num{font-size:10.5px; color:var(--muted);}
+  .cand .kh{font-family:var(--font-khmer); font-size:21px; color:var(--khmer); line-height:1.45;}
+  .cand .gl{font-size:10px; color:var(--muted); max-width:88px; overflow:hidden; text-overflow:ellipsis;}
+  .cand:hover{background:var(--keyhi);}
+  .cand.sel{background:var(--accent);}
+  .cand.sel .kh,.cand.sel .num,.cand.sel .gl{color:#fff;}
+  .cand.raw .kh{color:var(--txt);}
   .toggles{display:flex; gap:16px; flex-wrap:wrap; margin-top:12px;}
   .tg{display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted); cursor:pointer;}
   .tg input{width:16px;height:16px;accent-color:var(--accent);}
@@ -113,11 +119,12 @@
   </header>
 
   <div class="card">
-    <label class="fld" for="in">Type a word's sound — pick a suggestion like Pinyin (<code>1-9</code>, <code>Space</code>, or tap; <code>Esc</code> hides)</label>
-    <textarea id="in" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="none"
-      placeholder="khnhom → ខ្ញុំ ...  suggestions appear as you type, like Pinyin"></textarea>
-
-    <div class="sugbar" id="sug"></div>
+    <label class="fld" for="in">Type a word's sound — candidates pop up at the cursor (<code>Space</code>/<code>Enter</code> picks, <code>←→</code> moves, <code>1-9</code> or tap; <code>Esc</code> hides)</label>
+    <div class="sugwrap">
+      <textarea id="in" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="none"
+        placeholder="khnhom → ខ្ញុំ ...  suggestions pop up at your cursor, like Pinyin"></textarea>
+      <div class="sugbar" id="sug"></div>
+    </div>
 
     <div class="toggles">
       <label class="tg"><input type="checkbox" id="autostack" checked> Auto-stack clusters (coeng)</label>
@@ -303,11 +310,14 @@ inEl.addEventListener("input", ()=>{ if (live.checked) run(); updateSug(); });
 [autostack, khnum].forEach(el=>el.addEventListener("change", run));
 
 /* -------- pinyin-style word suggestions --------------------------------
-   The token = the run of letters just before the caret. KHDICT.suggest()
-   returns Khmer word candidates; picking one replaces the token inline
-   (Khmer chars pass through convert() untouched, so output stays correct). */
+   Modeled on the macOS Pinyin IME: the token = the run of letters just
+   before the caret; a candidate bar FLOATS right under it, the selected
+   candidate sits in a blue pill, arrows move it, Space/Enter/1-9/tap
+   commit. The chosen Khmer replaces the Latin token inline (Khmer chars
+   pass through convert() untouched, so output stays correct). */
 const TOKEN_CH = /[a-zA-Z'*`^~]/;
 let sugState = { token:"", start:0, end:0, items:[] };
+let sugSel = 0, sugNav = false;
 let dismissed = "";
 
 function currentToken(){
@@ -319,10 +329,41 @@ function currentToken(){
   return { token: v.slice(s, p), start: s, end: p };
 }
 
+/* caret pixel position via a hidden mirror of the textarea */
+let mirror = null;
+function caretXY(pos){
+  if (!mirror){
+    mirror = document.createElement("div");
+    mirror.style.cssText = "position:absolute;visibility:hidden;top:0;left:-9999px;";
+    document.body.appendChild(mirror);
+  }
+  const cs = getComputedStyle(inEl);
+  for (const p of ["fontFamily","fontSize","fontWeight","lineHeight","letterSpacing",
+    "paddingTop","paddingRight","paddingBottom","paddingLeft","borderTopWidth",
+    "borderRightWidth","borderBottomWidth","borderLeftWidth","boxSizing"])
+    mirror.style[p] = cs[p];
+  mirror.style.whiteSpace = "pre-wrap";
+  mirror.style.wordBreak = "break-word";
+  mirror.style.width = inEl.clientWidth + "px";
+  mirror.textContent = inEl.value.slice(0, pos);
+  const m = document.createElement("span");
+  m.textContent = "​";
+  mirror.appendChild(m);
+  return { x: m.offsetLeft, y: m.offsetTop,
+           h: m.offsetHeight || parseFloat(cs.lineHeight) || 24 };
+}
+
+function renderSel(){
+  [...sugEl.children].forEach((c, i) => c.classList.toggle("sel", i === sugSel));
+  const el = sugEl.children[sugSel];
+  if (el) el.scrollIntoView({ inline:"nearest", block:"nearest" });
+}
+
 function updateSug(){
   const { token, start, end } = currentToken();
   if (token !== dismissed) dismissed = "";   // Esc only mutes the current token
   sugState = { token, start, end, items: [] };
+  sugSel = 0; sugNav = false;
   sugEl.innerHTML = "";
   if (!token || token === dismissed){ sugEl.classList.remove("show"); return; }
 
@@ -336,12 +377,25 @@ function updateSug(){
   sugState.items = dict;
   dict.forEach((it, i) => {
     const c = document.createElement("div");
-    c.className = "chip" + (i === 0 ? " first" : "") + (it.raw ? " raw" : "");
-    c.innerHTML = `<div class="kh">${it.kh}</div><div class="lbl"><b>${i+1}</b> ${it.gloss}</div>`;
-    c.addEventListener("mousedown", e => { e.preventDefault(); commitSug(i); });
+    c.className = "cand" + (it.raw ? " raw" : "");
+    c.innerHTML = `<span class="num">${i+1}</span><span class="kh">${it.kh}</span>`
+      + (it.gloss ? `<span class="gl">${it.gloss}</span>` : "");
+    c.addEventListener("pointerdown", e => { e.preventDefault(); commitSug(i); });
     sugEl.appendChild(c);
   });
+
+  // place the bar just under the start of the composed word (Apple-style)
+  const c = caretXY(start);
+  sugEl.style.visibility = "hidden";
   sugEl.classList.add("show");
+  const wrapW = sugEl.parentElement.clientWidth;
+  let left = inEl.offsetLeft + c.x - inEl.scrollLeft;
+  left = Math.max(2, Math.min(left, wrapW - sugEl.offsetWidth - 2));
+  const top = inEl.offsetTop + c.y + c.h - inEl.scrollTop + 4;
+  sugEl.style.left = left + "px";
+  sugEl.style.top  = top + "px";
+  sugEl.style.visibility = "";
+  renderSel();
 }
 
 function commitSug(i){
@@ -354,9 +408,16 @@ function commitSug(i){
 
 inEl.addEventListener("keydown", e => {
   if (!sugState.items.length) return;
+  const n = sugState.items.length;
   if (e.key >= "1" && e.key <= "9"){
     const i = +e.key - 1;
-    if (i < sugState.items.length){ e.preventDefault(); commitSug(i); }
+    if (i < n){ e.preventDefault(); commitSug(i); }
+  } else if (e.key === "ArrowRight" || e.key === "ArrowDown"){
+    e.preventDefault(); sugSel = (sugSel + 1) % n; sugNav = true; renderSel();
+  } else if (e.key === "ArrowLeft" || e.key === "ArrowUp"){
+    e.preventDefault(); sugSel = (sugSel - 1 + n) % n; sugNav = true; renderSel();
+  } else if (e.key === "Enter"){
+    e.preventDefault(); commitSug(sugSel);
   } else if (e.key === " "){
     if (trySpaceCommit()) e.preventDefault();
   } else if (e.key === "Escape"){
@@ -436,12 +497,11 @@ function backspace(){
   inEl.dispatchEvent(new Event("input"));
 }
 function trySpaceCommit(){
-  if (sugState.items.length && spacesel.checked
-      && sugState.token.length >= 2 && !sugState.items[0].raw){
-    commitSug(0);                 // commit, no space — Khmer joins words
-    return true;
-  }
-  return false;
+  if (!sugState.items.length || !spacesel.checked) return false;
+  if (sugState.items[sugSel].raw) return false;
+  if (!sugNav && sugState.token.length < 2) return false;
+  commitSug(sugSel);              // commit, no space — Khmer joins words
+  return true;
 }
 function keyPress(it){
   if (typeof it === "string"){
@@ -454,7 +514,10 @@ function keyPress(it){
     case "SHIFT": kbShift = !kbShift; drawKB(); break;
     case "SYM":   kbLayer = kbLayer === "sym" ? "abc" : "sym"; kbShift = false; drawKB(); break;
     case "BKSP":  backspace(); break;
-    case "ENTER": insertText("\n"); break;
+    case "ENTER":
+      if (sugState.items.length) commitSug(sugSel);
+      else insertText("\n");
+      break;
     case "SPACE": if (!trySpaceCommit()) insertText(" "); break;
   }
 }

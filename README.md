@@ -12,9 +12,11 @@ khnhom  ⎵   srolanh  ⎵   kampuchea  ⎵     →     ខ្ញុំស្រ
 
 ## Features
 
-- **Pinyin-style suggestions** — type a word's sound (`orkun`, `suosdei`,
-  `khnhom`…) and pick the word with a tap, the number keys `1-9`, or `Space`.
-  Spelling is forgiving: `orkun`, `arkun`, and `awkun` all find អរគុណ.
+- **Pinyin-style suggestions** — type a word's sound and candidates pop up
+  in a floating bar right at your cursor (modeled on the macOS Pinyin IME):
+  `Space`/`Enter` picks the highlighted word, `←`/`→` moves the highlight,
+  `1-9` or a tap picks directly. Spelling is very forgiving — `sousdey`,
+  `suosdei`, and `susadey` all find សួស្តី; `orkun`/`arkun`/`awkun` find អរគុណ.
 - **On-screen QWERTY keyboard** — phone-style layout with one-shot Shift,
   a `?123` layer for Khmer punctuation (។ ៕ ៗ ៖ « ») and sign keys
   (់ ៉ ៊ ័ ៍), and tiny Khmer hints under each letter.
