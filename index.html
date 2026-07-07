@@ -162,6 +162,17 @@
   .cell .kh{font-family:var(--font-khmer); font-size:24px; color:var(--khmer);}
   .cell .rn{font-family:ui-monospace,monospace; font-size:13px; color:var(--txt); margin-top:3px;}
   .cell .note{font-size:10.5px; color:var(--muted);}
+  /* "My words" learned-dictionary panel */
+  .mw{display:flex; flex-wrap:wrap; gap:8px; padding:4px 0 12px;}
+  .mw .w{
+    background:var(--panel2); border:1px solid var(--line); border-radius:999px;
+    padding:5px 14px 7px; font-family:var(--font-khmer); font-size:18px; color:var(--khmer);
+    line-height:1.6;
+  }
+  .mw .w b{font-family:-apple-system,system-ui,sans-serif; font-size:10.5px; color:var(--muted);
+    font-weight:600; margin-left:7px;}
+  .mw .w.mine{border-color:rgba(59,130,246,.5);}
+  .mw .w.mine b{color:var(--accent);}
   .hint{color:var(--muted); font-size:12.5px; margin:2px 0 0;}
   code{background:var(--panel2); border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-size:12.5px;}
   .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
@@ -177,7 +188,7 @@
   <header>
     <div class="logo">ក</div>
     <div>
-      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.8</span></h1>
+      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.9</span></h1>
       <div class="sub">វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer</div>
     </div>
   </header>
@@ -215,6 +226,16 @@
       <b>⇧</b> gives the scheme's capitals (<code>D</code>=ឌ <code>N</code>=ណ <code>L</code>=ឡ <code>M</code>=ំ <code>H</code>=ះ) ·
       <b>?123</b> has digits, Khmer punctuation &amp; sign keys.</p>
   </div>
+
+  <details id="mywords">
+    <summary>🧠 My words — what the keyboard has learned from you</summary>
+    <div class="mw" id="mwlist"></div>
+    <p class="hint" style="padding-bottom:6px">
+      Words you pick are remembered and float to the top; spellings you invent become yours.
+      Everything stays on this device only.
+    </p>
+    <p style="padding:0 0 14px"><button class="btn alt" id="mwreset">Reset learned words</button></p>
+  </details>
 
   <details>
     <summary>📖 Romanization cheat-sheet (how to type each sound)</summary>
@@ -466,13 +487,30 @@ function showPredictions(){
 }
 
 function commitPred(kh){
+  ensureCaret();
   const pos = inEl.selectionStart;
-  KHDICT.learnNext(lastCommit.kh, kh);
+  if (lastCommit && lastCommit.end === pos) KHDICT.learnNext(lastCommit.kh, kh);
   KHDICT.learn(kh, "", false);
-  inEl.setRangeText(kh, pos, pos, "end");
+  inEl.setRangeText(kh, pos, inEl.selectionEnd, "end");
   lastCommit = { kh, end: inEl.selectionStart };
   inEl.focus();
   run(); updateSug();
+}
+
+/* idle: offer YOUR most frequent words, ready to tap (Apple QuickType style) */
+function showIdleWords(){
+  const words = KHDICT.topUsed(8);
+  if (!words.length){ hideSug(); return; }
+  stripEl.innerHTML = "";
+  words.forEach((kh, i) => {
+    const c = document.createElement("div");
+    c.className = "cand pin";
+    c.style.setProperty("--i", i);
+    c.innerHTML = `<span class="kh">${kh}</span>`;
+    c.addEventListener("pointerdown", e => { e.preventDefault(); commitPred(kh); });
+    stripEl.appendChild(c);
+  });
+  sugEl.classList.remove("show"); sugEl.innerHTML = "";
 }
 
 function updateSug(){
@@ -482,6 +520,7 @@ function updateSug(){
   sugSel = 0; sugNav = false;
   if (!token || token === dismissed){
     if (!token && lastCommit && end === lastCommit.end){ showPredictions(); return; }
+    if (!token){ showIdleWords(); return; }
     hideSug(); return;
   }
 
@@ -702,6 +741,37 @@ function drawKB(animate){
   if (animate){ kb.classList.remove("anim"); void kb.offsetWidth; kb.classList.add("anim"); }
 }
 drawKB();
+
+/* -------- "My words" learned-dictionary panel -------- */
+const mywordsEl = $("#mywords");
+function renderMyWords(){
+  const box = $("#mwlist");
+  const st = KHDICT.stats();
+  box.innerHTML = "";
+  if (!st.top.length && !st.personal.length){
+    box.innerHTML = '<span class="hint">Nothing yet — words you pick while typing are remembered here.</span>';
+    return;
+  }
+  st.top.forEach(([w, c]) => {
+    const d = document.createElement("div");
+    d.className = "w";
+    d.innerHTML = `${w}<b>×${c}</b>`;
+    box.appendChild(d);
+  });
+  st.personal.forEach(([spelling, w]) => {
+    const d = document.createElement("div");
+    d.className = "w mine";
+    d.innerHTML = `${w}<b>${spelling}</b>`;
+    box.appendChild(d);
+  });
+}
+mywordsEl.addEventListener("toggle", ()=>{ if (mywordsEl.open) renderMyWords(); });
+$("#mwreset").addEventListener("click", ()=>{
+  if (confirm("Forget all learned words, spellings and phrases?")){
+    KHDICT.resetLearning();
+    renderMyWords(); updateSug(); toast("Learning reset");
+  }
+});
 
 /* -------- Cheat-sheet generation -------- */
 function fillSheet(id, entries, notes){

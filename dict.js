@@ -630,12 +630,39 @@
       if (!seen.has(w)) { out.push(w); seen.add(w); }
       if (out.length >= 6) break;
     }
-    // no data for this word: fall back to the most common words (Gboard-style)
+    // fall back to YOUR most-used words first, then globally common ones
+    for (const w of topUsed(6)) {
+      if (out.length >= 6) break;
+      if (w !== prev && !seen.has(w)) { out.push(w); seen.add(w); }
+    }
     for (let i = 0; out.length < 6 && i < Math.min(BIG_KH.length, 12); i++) {
       const w = BIG_KH[i];
       if (w !== prev && !seen.has(w)) { out.push(w); seen.add(w); }
     }
     return out.slice(0, 6);
+  }
+
+  /* ---- your frequent words (Apple keyboard-dictionary style) ----------- */
+  function topUsed(n) {
+    return Object.entries(USAGE)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, n)
+      .map(([w]) => w);
+  }
+  function stats() {
+    return {
+      top: Object.entries(USAGE).sort((a, b) => b[1] - a[1]).slice(0, 30),
+      personal: Object.entries(PERSONAL),
+      phrases: Object.keys(NEXTP).length,
+    };
+  }
+  function resetLearning() {
+    USAGE = {}; PERSONAL = {}; NEXTP = {};
+    try {
+      localStorage.removeItem("khkb_usage");
+      localStorage.removeItem("khkb_personal");
+      localStorage.removeItem("khkb_next");
+    } catch (e) {}
   }
 
   /* ---- learning from real use (persisted locally) ---------------------- */
@@ -711,6 +738,7 @@
       .map(({ kh, gloss }) => ({ kh, gloss }));
   }
 
-  window.KHDICT = { suggest, learn, predictNext, learnNext, DICT, romVariants, qskel,
+  window.KHDICT = { suggest, learn, predictNext, learnNext, topUsed, stats, resetLearning,
+                    DICT, romVariants, qskel,
                     bigCount: () => BIG_KH.length, nextCount: () => NEXT.size };
 })();
