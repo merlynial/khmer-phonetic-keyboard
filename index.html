@@ -11,56 +11,80 @@
 <title>Khmer Phonetic Keyboard · វាយខ្មែរតាមសំឡេង</title>
 <link rel="manifest" href="manifest.webmanifest">
 <style>
+  @font-face{
+    font-family:"Siemreap Web";
+    src:url("fonts/Siemreap-Regular.ttf") format("truetype");
+    font-display:swap;
+  }
   :root{
-    --bg:#0d1117; --panel:#161b22; --panel2:#1c2430; --line:#2b3240;
-    --txt:#e6edf3; --muted:#8b949e; --accent:#1f6feb; --accent2:#2ea043;
-    --khmer:#ffd27f; --key:#232c39; --keyhi:#30404f;
-    --font-khmer:"Noto Sans Khmer","Khmer OS","Khmer OS System","Battambang",serif;
+    --bg:#0a0e15; --panel:rgba(255,255,255,.035); --panel2:rgba(255,255,255,.055);
+    --line:rgba(255,255,255,.09); --txt:#e8edf4; --muted:#93a0b0;
+    --accent:#3b82f6; --accent2:#22c55e;
+    --grad:linear-gradient(135deg,#3b82f6 0%,#8b5cf6 100%);
+    --khmer:#ffd27f; --key:rgba(255,255,255,.07); --keyhi:rgba(255,255,255,.15);
+    --font-khmer:"Khmer OS Siemreap","Khmer OS Siemreab","Siemreap Web","Siemreap",
+                 "Noto Sans Khmer","Khmer OS",serif;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
-    background:var(--bg); color:var(--txt);
+    background:
+      radial-gradient(1000px 520px at 50% -12%, rgba(59,130,246,.16), transparent 62%),
+      radial-gradient(760px 420px at 92% 4%, rgba(139,92,246,.10), transparent 56%),
+      var(--bg);
+    color:var(--txt);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     -webkit-text-size-adjust:100%; line-height:1.45;
     -webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:860px; margin:0 auto; padding:16px 14px 60px;}
-  header{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px;}
-  header h1{font-size:19px; margin:0; font-weight:650;}
-  header .sub{color:var(--muted); font-size:12.5px; margin-top:2px;}
-  .logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#8957e5);
-    display:grid;place-items:center;font-family:var(--font-khmer);font-size:22px;color:#fff;flex:0 0 auto;}
-  .card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:14px;}
-  label.fld{display:block; font-size:12px; color:var(--muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em;}
+  .wrap{max-width:860px; margin:0 auto; padding:20px 14px 60px;}
+  header{display:flex; align-items:center; gap:13px; flex-wrap:wrap; margin-bottom:18px;}
+  header h1{font-size:20px; margin:0; font-weight:700; letter-spacing:-.015em;}
+  header .sub{color:var(--muted); font-size:13px; margin-top:2px;}
+  .logo{width:42px;height:42px;border-radius:13px;background:var(--grad);
+    display:grid;place-items:center;font-family:var(--font-khmer);font-size:23px;color:#fff;flex:0 0 auto;
+    box-shadow:0 6px 18px rgba(59,130,246,.35);}
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:20px;
+    padding:18px; margin-bottom:16px;
+    box-shadow:0 14px 40px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  label.fld{display:block; font-size:11.5px; color:var(--muted); margin-bottom:8px;
+    text-transform:uppercase; letter-spacing:.07em; font-weight:600;}
   textarea{
-    width:100%; min-height:92px; resize:vertical; background:var(--panel2); color:var(--txt);
-    border:1px solid var(--line); border-radius:10px; padding:12px 13px; font-size:17px;
+    width:100%; min-height:92px; resize:vertical; background:rgba(0,0,0,.28); color:var(--txt);
+    border:1px solid var(--line); border-radius:14px; padding:13px 15px; font-size:17px;
     font-family:ui-monospace,SFMono-Regular,Menlo,monospace; outline:none;
+    transition:border-color .18s ease, box-shadow .18s ease;
   }
-  textarea:focus{border-color:var(--accent);}
+  textarea:focus{border-color:rgba(59,130,246,.65); box-shadow:0 0 0 3.5px rgba(59,130,246,.18);}
   .out{
-    width:100%; min-height:70px; background:#0b1a10; border:1px solid #1f5132; border-radius:10px;
-    padding:14px 15px; font-family:var(--font-khmer); font-size:30px; color:var(--khmer);
-    line-height:1.7; word-break:break-word; white-space:pre-wrap; overflow-wrap:anywhere;
+    width:100%; min-height:70px; background:rgba(34,197,94,.05); border:1px solid rgba(34,197,94,.22);
+    border-radius:14px; padding:15px 17px; font-family:var(--font-khmer); font-size:30px;
+    color:var(--khmer); line-height:1.85; word-break:break-word; white-space:pre-wrap; overflow-wrap:anywhere;
   }
-  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px;}
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px;}
   button.btn{
-    background:var(--accent); color:#fff; border:0; border-radius:9px; padding:10px 15px;
+    background:var(--grad); color:#fff; border:0; border-radius:999px; padding:11px 19px;
     font-size:14px; font-weight:600; cursor:pointer; -webkit-tap-highlight-color:transparent;
+    box-shadow:0 6px 16px rgba(59,130,246,.28);
+    transition:transform .12s ease, filter .15s ease, box-shadow .15s ease;
   }
-  button.btn.alt{background:var(--panel2); border:1px solid var(--line); color:var(--txt);}
-  button.btn.green{background:var(--accent2);}
-  button.btn:active{transform:translateY(1px);}
+  button.btn:hover{filter:brightness(1.12); transform:translateY(-1px);}
+  button.btn.alt{background:var(--panel2); border:1px solid var(--line); color:var(--txt); box-shadow:none;}
+  button.btn.green{background:#199e4b; box-shadow:0 6px 16px rgba(34,197,94,.25);}
+  button.btn:active{transform:translateY(1px); filter:brightness(.96);}
   /* floating candidate bar at the caret — modeled on the macOS Pinyin IME */
   .sugwrap{position:relative;}
   .sugbar{
     position:absolute; z-index:30; display:none; align-items:center; gap:2px;
     max-width:calc(100% - 8px); overflow-x:auto; white-space:nowrap;
-    background:#10151d; border:1px solid var(--line); border-radius:12px;
-    padding:4px 6px; box-shadow:0 10px 28px rgba(0,0,0,.55);
-    -webkit-overflow-scrolling:touch;
+    background:rgba(15,20,28,.82); border:1px solid rgba(255,255,255,.12); border-radius:15px;
+    padding:4px 6px; box-shadow:0 14px 36px rgba(0,0,0,.55);
+    backdrop-filter:blur(14px) saturate(1.4); -webkit-backdrop-filter:blur(14px) saturate(1.4);
+    -webkit-overflow-scrolling:touch; scrollbar-width:none;
   }
+  .sugbar::-webkit-scrollbar{display:none;}
   .sugbar.show{display:flex;}
   .cand{
     flex:0 0 auto; display:flex; align-items:baseline; gap:6px; padding:3px 11px 5px;
@@ -69,7 +93,7 @@
     transition:background-color .14s ease, transform .1s ease;
   }
   .cand .num{font-size:10.5px; color:var(--muted); transition:color .14s ease;}
-  .cand .kh{font-family:var(--font-khmer); font-size:21px; color:var(--khmer); line-height:1.45; transition:color .14s ease;}
+  .cand .kh{font-family:var(--font-khmer); font-size:20px; color:var(--khmer); line-height:1.7; transition:color .14s ease;}
   .cand .gl{font-size:10px; color:var(--muted); max-width:88px; overflow:hidden; text-overflow:ellipsis; transition:color .14s ease;}
   .cand:hover{background:var(--keyhi);}
   .cand:active{transform:scale(.95);}
@@ -85,9 +109,10 @@
   /* suggestion strip docked above the keys (Gboard-style) */
   .sugstrip{
     display:flex; align-items:center; gap:4px; overflow-x:auto; white-space:nowrap;
-    min-height:48px; margin:0 auto 8px; max-width:560px; padding:2px 2px 6px;
-    border-bottom:1px solid var(--line); -webkit-overflow-scrolling:touch;
+    min-height:50px; margin:0 auto 10px; max-width:560px; padding:2px 2px 7px;
+    border-bottom:1px solid var(--line); -webkit-overflow-scrolling:touch; scrollbar-width:none;
   }
+  .sugstrip::-webkit-scrollbar{display:none;}
   .sugstrip .cand{padding:5px 13px 7px;}
   .sugstrip:empty::after{content:"…"; color:var(--line); margin:0 auto; font-size:14px;}
   .toggles{display:flex; gap:16px; flex-wrap:wrap; margin-top:12px;}
@@ -111,13 +136,13 @@
     background:var(--keyhi); transform:scale(.93) translateY(1px); box-shadow:0 0 0 rgba(0,0,0,.45);
     transition:background-color .03s, transform .05s, box-shadow .05s;
   }
-  .kq.fn{background:#1a2330; color:var(--muted); font-size:13px;}
+  .kq.fn{background:rgba(255,255,255,.04); color:var(--muted); font-size:13px;}
   .kq.on{background:var(--accent); color:#fff;}
   .kq.khlab{font-family:var(--font-khmer); font-weight:400; font-size:19px;}
   /* iOS-style key preview bubble */
   .keypop{
     position:absolute; z-index:40; min-width:46px; padding:10px 8px 13px;
-    background:var(--keyhi); border-radius:13px; box-shadow:0 8px 22px rgba(0,0,0,.55);
+    background:#2a3441; border-radius:14px; box-shadow:0 10px 26px rgba(0,0,0,.6);
     text-align:center; font-size:27px; font-weight:600; color:var(--txt);
     pointer-events:none; opacity:0; transform:translateY(6px) scale(.9);
     transition:opacity .1s ease, transform .12s cubic-bezier(.2,1,.3,1.2);
@@ -128,17 +153,20 @@
     @keyframes kbswap{from{opacity:.35; transform:scale(.985);} to{opacity:1; transform:none;}}
   }
   /* cheat sheet */
-  details{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:4px 14px; margin-bottom:14px;}
-  summary{cursor:pointer; padding:11px 0; font-weight:600; font-size:15px;}
+  details{background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:4px 18px; margin-bottom:16px;
+    box-shadow:0 14px 40px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.04);}
+  summary{cursor:pointer; padding:13px 0; font-weight:600; font-size:15px;}
+  summary:hover{color:#fff;}
   .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:8px; padding:6px 0 14px;}
-  .cell{background:var(--panel2); border:1px solid var(--line); border-radius:9px; padding:8px 6px; text-align:center;}
+  .cell{background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:8px 6px; text-align:center;}
   .cell .kh{font-family:var(--font-khmer); font-size:24px; color:var(--khmer);}
   .cell .rn{font-family:ui-monospace,monospace; font-size:13px; color:var(--txt); margin-top:3px;}
   .cell .note{font-size:10.5px; color:var(--muted);}
   .hint{color:var(--muted); font-size:12.5px; margin:2px 0 0;}
   code{background:var(--panel2); border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-size:12.5px;}
   .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
-    background:var(--accent2); color:#fff; padding:10px 18px; border-radius:24px; font-size:13.5px;
+    background:rgba(25,158,75,.92); color:#fff; padding:11px 20px; border-radius:999px; font-size:13.5px;
+    box-shadow:0 10px 26px rgba(0,0,0,.4); backdrop-filter:blur(8px);
     opacity:0; pointer-events:none; transition:.25s; z-index:50;}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
   h3.sec{font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin:16px 0 8px;}
@@ -149,7 +177,7 @@
   <header>
     <div class="logo">ក</div>
     <div>
-      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.7.1</span></h1>
+      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.8</span></h1>
       <div class="sub">វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer</div>
     </div>
   </header>
