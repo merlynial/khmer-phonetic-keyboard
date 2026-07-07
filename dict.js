@@ -642,6 +642,66 @@
     return out.slice(0, 6);
   }
 
+  /* ---- whole-phrase typing (pinyin sentence mode) -----------------------
+     "khnhomsrolanhkampuchea" -> segment by sound skeletons with a DP over
+     split points, scored by word frequency + bigram/your-phrase bonuses. */
+  let SK2WORD = null;
+  function buildSK2() {
+    SK2WORD = new Map();
+    for (let i = 0; i < BIG_SK.length; i++) {
+      if (!SK2WORD.has(BIG_SK[i])) SK2WORD.set(BIG_SK[i], { w: BIG_KH[i], r: i });
+    }
+  }
+  function segmentPhrase(q) {
+    if (!BIG_SK.length) return null;
+    if (!SK2WORD) buildSK2();
+    const n = q.length;
+    const dp = Array(n + 1).fill(null);
+    dp[0] = { score: 0, prev: -1, word: null };
+    for (let i = 0; i < n; i++) {
+      if (!dp[i]) continue;
+      for (let j = i + 2; j <= Math.min(n, i + 14); j++) {
+        const sk = qskel(q.slice(i, j));
+        if (sk.length < 2) continue;
+        const hit = SK2WORD.get(sk);
+        if (!hit) continue;
+        let s = dp[i].score + Math.log(hit.r + 2) + 3;   // frequency + per-word cost
+        if (dp[i].word) {
+          const nx = NEXT.get(dp[i].word);
+          if (nx && nx.includes(hit.w)) s -= 2;          // corpus phrase bonus
+          const mine = NEXTP[dp[i].word];
+          if (mine && mine[hit.w]) s -= 3;               // your own phrase bonus
+        }
+        if (!dp[j] || s < dp[j].score) dp[j] = { score: s, prev: i, word: hit.w };
+      }
+    }
+    if (!dp[n]) return null;
+    const segs = [];
+    for (let k = n; k > 0; k = dp[k].prev) segs.unshift(dp[k].word);
+    if (segs.length < 2) return null;
+    return { kh: segs.join(""), segs };
+  }
+
+  /* ---- backup / restore of everything learned --------------------------- */
+  function exportData() {
+    return { usage: USAGE, personal: PERSONAL, next: NEXTP, v: 1 };
+  }
+  function importData(obj) {
+    if (!obj || typeof obj !== "object") return false;
+    for (const w in obj.usage || {}) USAGE[w] = (USAGE[w] || 0) + obj.usage[w];
+    Object.assign(PERSONAL, obj.personal || {});
+    for (const p in obj.next || {}) {
+      const m = NEXTP[p] = NEXTP[p] || {};
+      for (const nx in obj.next[p]) m[nx] = (m[nx] || 0) + obj.next[p][nx];
+    }
+    try {
+      localStorage.setItem("khkb_usage",    JSON.stringify(USAGE));
+      localStorage.setItem("khkb_personal", JSON.stringify(PERSONAL));
+      localStorage.setItem("khkb_next",     JSON.stringify(NEXTP));
+    } catch (e) {}
+    return true;
+  }
+
   /* ---- your frequent words (Apple keyboard-dictionary style) ----------- */
   function topUsed(n) {
     return Object.entries(USAGE)
@@ -727,7 +787,9 @@
       }
     }
 
-    return [...cand.entries()]
+    let minTier = 99;
+    for (const m of cand.values()) if (m.tier < minTier) minTier = m.tier;
+    const list = [...cand.entries()]
       .map(([kh, m]) => {
         const u = USAGE[kh] || 0;
         const boost = u >= 4 ? 2 : u >= 1 ? 1 : 0;
@@ -736,9 +798,20 @@
       .sort((a, b) => a._k - b._k)
       .slice(0, 8)
       .map(({ kh, gloss }) => ({ kh, gloss }));
+
+    // pinyin sentence mode: offer the segmented phrase for long inputs
+    if (q.length >= 7) {
+      const ph = segmentPhrase(q);
+      if (ph && !list.some(x => x.kh === ph.kh)) {
+        const at = minTier <= 1 ? 1 : 0;   // strong single-word match keeps #1
+        list.splice(at, 0, { kh: ph.kh, gloss: "ឃ្លា · phrase", segs: ph.segs });
+        if (list.length > 8) list.pop();
+      }
+    }
+    return list;
   }
 
   window.KHDICT = { suggest, learn, predictNext, learnNext, topUsed, stats, resetLearning,
-                    DICT, romVariants, qskel,
+                    exportData, importData, segmentPhrase, DICT, romVariants, qskel,
                     bigCount: () => BIG_KH.length, nextCount: () => NEXT.size };
 })();

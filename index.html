@@ -10,6 +10,10 @@
 <meta property="og:type" content="website">
 <title>Khmer Phonetic Keyboard · វាយខ្មែរតាមសំឡេង</title>
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
   @font-face{
     font-family:"Siemreap Web";
@@ -187,14 +191,15 @@
 <div class="wrap">
   <header>
     <div class="logo">ក</div>
-    <div>
-      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.9</span></h1>
-      <div class="sub">វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer</div>
+    <div style="flex:1">
+      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.10</span></h1>
+      <div class="sub" id="t-sub">វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer</div>
     </div>
+    <button class="btn alt" id="langbtn" style="padding:8px 14px;font-size:13px">EN</button>
   </header>
 
   <div class="card">
-    <label class="fld" for="in">Type a word's sound — candidates pop up at the cursor (<code>Space</code>/<code>Enter</code> picks, <code>←→</code> moves, <code>1-9</code> or tap; <code>Esc</code> hides)</label>
+    <label class="fld" for="in" id="t-instr">Type a word's sound — candidates pop up at the cursor (<code>Space</code>/<code>Enter</code> picks, <code>←→</code> moves, <code>1-9</code> or tap; <code>Esc</code> hides)</label>
     <div class="sugwrap">
       <textarea id="in" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="none"
         placeholder="khnhom → ខ្ញុំ ...  suggestions pop up at your cursor, like Pinyin"></textarea>
@@ -202,11 +207,11 @@
     </div>
 
     <div class="toggles">
-      <label class="tg"><input type="checkbox" id="autostack" checked> Auto-stack clusters (coeng)</label>
-      <label class="tg"><input type="checkbox" id="khnum"> Khmer digits ០-៩</label>
-      <label class="tg"><input type="checkbox" id="live" checked> Live convert</label>
-      <label class="tg"><input type="checkbox" id="spacesel" checked> Space picks 1st suggestion</label>
-      <label class="tg"><input type="checkbox" id="devkb"> Use device keyboard</label>
+      <label class="tg"><input type="checkbox" id="autostack" checked> <span id="t-autostack">Auto-stack clusters (coeng)</span></label>
+      <label class="tg"><input type="checkbox" id="khnum"> <span id="t-khnum">Khmer digits ០-៩</span></label>
+      <label class="tg"><input type="checkbox" id="live" checked> <span id="t-live">Live convert</span></label>
+      <label class="tg"><input type="checkbox" id="spacesel" checked> <span id="t-spacesel">Space picks 1st suggestion</span></label>
+      <label class="tg"><input type="checkbox" id="devkb"> <span id="t-devkb">Use device keyboard</span></label>
     </div>
 
     <div class="row">
@@ -215,26 +220,31 @@
       <button class="btn alt" id="clear">Clear</button>
     </div>
 
-    <label class="fld" style="margin-top:16px">Khmer output</label>
+    <label class="fld" style="margin-top:16px" id="t-outlabel">Khmer output</label>
     <div class="out" id="out" dir="auto"></div>
   </div>
 
   <div class="card">
     <div class="sugstrip" id="sugstrip"></div>
     <div class="kb" id="kb"></div>
-    <p class="hint" style="margin-top:10px">Tap the sound — word suggestions appear above, like Pinyin.
+    <p class="hint" style="margin-top:10px" id="t-kbhint">Tap the sound — word suggestions appear above, like Pinyin.
       <b>⇧</b> gives the scheme's capitals (<code>D</code>=ឌ <code>N</code>=ណ <code>L</code>=ឡ <code>M</code>=ំ <code>H</code>=ះ) ·
       <b>?123</b> has digits, Khmer punctuation &amp; sign keys.</p>
   </div>
 
   <details id="mywords">
-    <summary>🧠 My words — what the keyboard has learned from you</summary>
+    <summary id="t-mysummary">🧠 My words — what the keyboard has learned from you</summary>
     <div class="mw" id="mwlist"></div>
-    <p class="hint" style="padding-bottom:6px">
+    <p class="hint" style="padding-bottom:6px" id="t-myhint">
       Words you pick are remembered and float to the top; spellings you invent become yours.
       Everything stays on this device only.
     </p>
-    <p style="padding:0 0 14px"><button class="btn alt" id="mwreset">Reset learned words</button></p>
+    <p style="padding:0 0 14px; display:flex; gap:8px; flex-wrap:wrap">
+      <button class="btn alt" id="mwexport">Backup ⤓</button>
+      <button class="btn alt" id="mwimport">Restore ⤒</button>
+      <button class="btn alt" id="mwreset" style="color:#f87171">Reset</button>
+      <input type="file" id="mwfile" accept=".json" style="display:none">
+    </p>
   </details>
 
   <details>
@@ -254,9 +264,13 @@
     </p>
   </details>
 
-  <p class="hint" style="text-align:center">
+  <p class="hint" style="text-align:center" id="t-footer">
     Works offline · add to Home Screen to use like an app ·
-    <a href="https://github.com/merlynial/khmer-phonetic-keyboard" style="color:var(--accent)">open source on GitHub</a>
+    <a href="https://github.com/merlynial/khmer-phonetic-keyboard" style="color:var(--accent)">open source on GitHub</a> ·
+    <a href="https://github.com/merlynial/khmer-phonetic-keyboard/issues" style="color:var(--accent)">report a problem</a>
+  </p>
+  <p class="hint" style="text-align:center; font-size:11px; opacity:.7">
+    Dictionary derived from the <a href="https://github.com/google/language-resources" style="color:var(--muted)">Google Khmer pronunciation lexicon</a> (CC-BY-4.0) · Frequencies from Khmer Wikipedia &amp; CC-100
   </p>
 </div>
 
@@ -556,12 +570,19 @@ function updateSug(){
 function commitSug(i){
   const it = sugState.items[i];
   if (!it) return;
-  KHDICT.learn(it.kh, sugState.token, !!it.raw);   // remember what you really use
+  if (it.segs){                                    // phrase: learn each word + pairs
+    it.segs.forEach((w, k) => {
+      KHDICT.learn(w, "", false);
+      if (k > 0) KHDICT.learnNext(it.segs[k-1], w);
+    });
+  } else {
+    KHDICT.learn(it.kh, sugState.token, !!it.raw); // remember what you really use
+  }
   if (lastCommit && lastCommit.end === sugState.start){
-    KHDICT.learnNext(lastCommit.kh, it.kh);        // remember your word pairs
+    KHDICT.learnNext(lastCommit.kh, it.segs ? it.segs[0] : it.kh);
   }
   inEl.setRangeText(it.kh, sugState.start, sugState.end, "end");
-  lastCommit = { kh: it.kh, end: inEl.selectionStart };
+  lastCommit = { kh: it.segs ? it.segs[it.segs.length-1] : it.kh, end: inEl.selectionStart };
   inEl.focus();
   run(); updateSug();
 }
@@ -749,7 +770,7 @@ function renderMyWords(){
   const st = KHDICT.stats();
   box.innerHTML = "";
   if (!st.top.length && !st.personal.length){
-    box.innerHTML = '<span class="hint">Nothing yet — words you pick while typing are remembered here.</span>';
+    box.innerHTML = `<span class="hint">${STRINGS[LANG].myempty}</span>`;
     return;
   }
   st.top.forEach(([w, c]) => {
@@ -767,10 +788,115 @@ function renderMyWords(){
 }
 mywordsEl.addEventListener("toggle", ()=>{ if (mywordsEl.open) renderMyWords(); });
 $("#mwreset").addEventListener("click", ()=>{
-  if (confirm("Forget all learned words, spellings and phrases?")){
+  if (confirm(STRINGS[LANG].resetq)){
     KHDICT.resetLearning();
-    renderMyWords(); updateSug(); toast("Learning reset");
+    renderMyWords(); updateSug(); toast(STRINGS[LANG].resetdone);
   }
+});
+
+/* -------- Khmer/English interface -------- */
+const STRINGS = {
+  en: {
+    sub: "វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer",
+    instr: 'Type a word\'s sound — candidates pop up at the cursor (<code>Space</code>/<code>Enter</code> picks, <code>←→</code> moves, <code>1-9</code> or tap; <code>Esc</code> hides)',
+    autostack: "Auto-stack clusters (coeng)", khnum: "Khmer digits ០-៩",
+    live: "Live convert", spacesel: "Space picks 1st suggestion", devkb: "Use device keyboard",
+    conv: "Convert ⟶", copy: "Copy Khmer", clear: "Clear", outlabel: "Khmer output",
+    kbhint: 'Tap the sound — word suggestions appear above, like Pinyin. <b>⇧</b> gives the scheme\'s capitals (<code>D</code>=ឌ <code>N</code>=ណ <code>L</code>=ឡ <code>M</code>=ំ <code>H</code>=ះ) · <b>?123</b> has digits, Khmer punctuation &amp; sign keys.',
+    mysummary: "🧠 My words — what the keyboard has learned from you",
+    myhint: "Words you pick are remembered and float to the top; spellings you invent become yours. Everything stays on this device only.",
+    myempty: "Nothing yet — words you pick while typing are remembered here.",
+    mwexport: "Backup ⤓", mwimport: "Restore ⤒", mwreset: "Reset",
+    resetq: "Forget all learned words, spellings and phrases?", resetdone: "Learning reset",
+    imported: "Words restored ✓", importbad: "Could not read that file",
+    placeholder: "khnhom → ខ្ញុំ ...  suggestions pop up at your cursor, like Pinyin",
+    tut1: "Type the <b>sound</b> of a Khmer word with English letters — try <code>khnhom</code>",
+    tut2: "Pick the Khmer word from the bar: tap it, or press <b>Space</b> for the first one",
+    tut3: "After each word, the strip on the keyboard <b>predicts your next word</b> — and it learns the words you use",
+    gotit: "Got it — let me type!",
+    langbtn: "ខ្មែរ",
+  },
+  km: {
+    sub: "វាយខ្មែរតាមសំឡេង · Type Khmer by its sound",
+    instr: 'វាយសំឡេងពាក្យ — ពាក្យខ្មែរលេចឡើងត្រង់ទីតាំងសរសេរ (<code>Space</code>/<code>Enter</code> ជ្រើស, <code>←→</code> ផ្លាស់ទី, <code>1-9</code> ឬចុច; <code>Esc</code> បិទ)',
+    autostack: "ជើងអក្សរស្វ័យប្រវត្តិ (coeng)", khnum: "លេខខ្មែរ ០-៩",
+    live: "បម្លែងភ្លាមៗ", spacesel: "Space ជ្រើសពាក្យទី១", devkb: "ប្រើក្ដារចុចឧបករណ៍",
+    conv: "បម្លែង ⟶", copy: "ចម្លងអក្សរខ្មែរ", clear: "លុប", outlabel: "លទ្ធផលខ្មែរ",
+    kbhint: 'ចុចតាមសំឡេង — ពាក្យលេចឡើងខាងលើដូច Pinyin។ <b>⇧</b> សម្រាប់អក្សរធំ (<code>D</code>=ឌ <code>N</code>=ណ <code>L</code>=ឡ <code>M</code>=ំ <code>H</code>=ះ) · <b>?123</b> មានលេខ និងសញ្ញាខ្មែរ',
+    mysummary: "🧠 ពាក្យរបស់ខ្ញុំ — អ្វីដែលក្ដារចុចបានរៀនពីអ្នក",
+    myhint: "ពាក្យដែលអ្នកជ្រើសត្រូវបានចងចាំ ហើយឡើងមកមុនគេ។ ទិន្នន័យទាំងអស់នៅក្នុងឧបករណ៍នេះប៉ុណ្ណោះ។",
+    myempty: "មិនទាន់មានទេ — ពាក្យដែលអ្នកជ្រើសពេលវាយ នឹងបង្ហាញនៅទីនេះ។",
+    mwexport: "រក្សាទុក ⤓", mwimport: "នាំចូល ⤒", mwreset: "លុបចោល",
+    resetq: "លុបពាក្យ អក្ខរាវិរុទ្ធ និងឃ្លាដែលបានរៀនទាំងអស់?", resetdone: "បានលុបហើយ",
+    imported: "បាននាំចូលពាក្យ ✓", importbad: "អានឯកសារមិនបាន",
+    placeholder: "khnhom → ខ្ញុំ ... វាយសំឡេង ពាក្យលេចឡើងដូច Pinyin",
+    tut1: "វាយ<b>សំឡេង</b>ពាក្យខ្មែរដោយអក្សរឡាតាំង — សាកល្បង <code>khnhom</code>",
+    tut2: "ជ្រើសពាក្យខ្មែរពីរបារ៖ ចុចលើវា ឬចុច <b>Space</b> សម្រាប់ពាក្យទី១",
+    tut3: "បន្ទាប់ពីពាក្យនីមួយៗ របារលើក្ដារចុច<b>ទាយពាក្យបន្ទាប់</b> — ហើយវារៀនពាក្យដែលអ្នកប្រើ",
+    gotit: "យល់ហើយ!",
+    langbtn: "EN",
+  },
+};
+let LANG = localStorage.getItem("khkb_lang") || "km";
+function setLang(l){
+  LANG = l; localStorage.setItem("khkb_lang", l);
+  const s = STRINGS[l];
+  $("#t-sub").textContent = s.sub;
+  $("#t-instr").innerHTML = s.instr;
+  for (const k of ["autostack","khnum","live","spacesel","devkb"])
+    $("#t-"+k).textContent = s[k];
+  $("#conv").textContent = s.conv; $("#copy").textContent = s.copy; $("#clear").textContent = s.clear;
+  $("#t-outlabel").textContent = s.outlabel;
+  $("#t-kbhint").innerHTML = s.kbhint;
+  $("#t-mysummary").textContent = s.mysummary;
+  $("#t-myhint").textContent = s.myhint;
+  $("#mwexport").textContent = s.mwexport;
+  $("#mwimport").textContent = s.mwimport;
+  $("#mwreset").textContent = s.mwreset;
+  $("#langbtn").textContent = s.langbtn;
+  inEl.placeholder = s.placeholder;
+}
+$("#langbtn").addEventListener("click", ()=> setLang(LANG === "km" ? "en" : "km"));
+setLang(LANG);
+
+/* -------- first-visit tutorial -------- */
+if (!localStorage.getItem("khkb_seen")){
+  const s = STRINGS[LANG];
+  const ov = document.createElement("div");
+  ov.style.cssText = "position:fixed;inset:0;z-index:100;background:rgba(5,8,13,.8);backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px";
+  ov.innerHTML = `<div class="card" style="max-width:430px;margin:0">
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">
+      <div class="logo">ក</div><h1 style="font-size:18px;margin:0">Khmer Phonetic Keyboard</h1></div>
+    <p style="margin:10px 0">1️⃣ ${s.tut1}</p>
+    <p style="margin:10px 0">2️⃣ ${s.tut2}</p>
+    <p style="margin:10px 0 18px">3️⃣ ${s.tut3}</p>
+    <button class="btn" id="tutok" style="width:100%">${s.gotit}</button></div>`;
+  document.body.appendChild(ov);
+  ov.querySelector("#tutok").addEventListener("click", ()=>{
+    localStorage.setItem("khkb_seen","1"); ov.remove(); inEl.focus();
+  });
+}
+
+/* -------- backup / restore -------- */
+$("#mwexport").addEventListener("click", ()=>{
+  const blob = new Blob([JSON.stringify(KHDICT.exportData(), null, 1)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "khmer-keyboard-words.json";
+  a.click(); URL.revokeObjectURL(a.href);
+});
+$("#mwimport").addEventListener("click", ()=> $("#mwfile").click());
+$("#mwfile").addEventListener("change", e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{
+    try {
+      if (KHDICT.importData(JSON.parse(r.result))){ renderMyWords(); toast(STRINGS[LANG].imported); }
+      else toast(STRINGS[LANG].importbad);
+    } catch(_) { toast(STRINGS[LANG].importbad); }
+    e.target.value = "";
+  };
+  r.readAsText(f);
 });
 
 /* -------- Cheat-sheet generation -------- */

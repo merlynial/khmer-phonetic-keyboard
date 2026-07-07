@@ -1,0 +1,32 @@
+name: rebuild dictionary
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 3 * *"   # monthly: 3rd day, 03:17 UTC
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch corpora
+        run: |
+          curl -sL -o g_lex.tsv "https://raw.githubusercontent.com/google/language-resources/master/km/data/lexicon.tsv"
+          curl -sL -o kmwiki.xml.bz2 "https://dumps.wikimedia.org/kmwiki/latest/kmwiki-latest-pages-articles.xml.bz2"
+          curl -sL -o km_cc100.txt.xz "https://data.statmt.org/cc-100/km.txt.xz" || true
+      - name: Build words.txt + bigrams.txt
+        run: |
+          cp tools/build_words.py .
+          python3 build_words.py
+          mv -f words.txt bigrams.txt "$GITHUB_WORKSPACE/" || true
+      - name: Verify with golden tests
+        uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node tests/golden.mjs
+      - name: Commit if changed
+        run: |
+          git config user.name "dict-rebuild-bot"
+          git config user.email "actions@github.com"
+          git add words.txt bigrams.txt
+          git diff --cached --quiet || git commit -m "Monthly dictionary rebuild from fresh corpora"
+          git push

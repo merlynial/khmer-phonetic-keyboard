@@ -1,8 +1,9 @@
 // Offline cache for the keyboard. Network-first so edits show immediately
 // when online, but the app still loads with no connection.
-const CACHE = "khmer-kbd-0.9";
+const CACHE = "khmer-kbd-0.10";
 const ASSETS = ["./", "./index.html", "./dict.js", "./words.txt", "./bigrams.txt",
-                "./fonts/Siemreap-Regular.ttf", "./manifest.webmanifest"];
+                "./fonts/Siemreap-Regular.ttf", "./icons/icon-192.png",
+                "./manifest.webmanifest"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

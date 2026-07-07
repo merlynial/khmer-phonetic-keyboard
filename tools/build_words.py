@@ -99,11 +99,47 @@ def wiki_pass(path, vocab, core=None):
                             i += 1; prev = None
     return counts, pairs
 
+def cc100_pass(path, vocab, core=None, max_bytes=250_000_000):
+    """Same segmentation over the CC-100 web corpus (conversational Khmer).
+    Streams the .xz and stops after max_bytes of decompressed text."""
+    import lzma
+    maxlen = max(len(w) for w in vocab)
+    counts, pairs = Counter(), Counter()
+    khmer_run = re.compile(r'[ក-៝]+')
+    read = 0
+    with lzma.open(path, 'rt', encoding='utf-8', errors='ignore') as f:
+        for line in f:
+            read += len(line)
+            if read > max_bytes: break
+            for m in khmer_run.finditer(line):
+                run = m.group()
+                i, L = 0, len(run)
+                prev = None
+                while i < L:
+                    for j in range(min(L, i+maxlen), i, -1):
+                        w = run[i:j]
+                        if w in vocab:
+                            counts[w] += 1
+                            if core is not None:
+                                if prev is not None and w in core and prev in core:
+                                    pairs[(prev, w)] += 1
+                                prev = w
+                            i = j; break
+                    else:
+                        i += 1; prev = None
+    return counts, pairs
+
 def main():
     lex = load_lexicon('g_lex.tsv')
     print(f'lexicon entries: {len(lex)}', file=sys.stderr)
     vocab = set(lex)
     freq, _ = wiki_pass('kmwiki.xml.bz2', vocab)
+    try:
+        cc, _ = cc100_pass('km_cc100.txt.xz', vocab)
+        print(f'cc100 words seen: {len(cc)}', file=sys.stderr)
+        for w, n in cc.items(): freq[w] += n     # conversational + encyclopedic
+    except FileNotFoundError:
+        print('cc100 corpus not found — wiki-only frequencies', file=sys.stderr)
     print(f'words seen in corpus: {len(freq)}', file=sys.stderr)
     seen   = sorted((w for w in lex if freq.get(w, 0) >= 2),
                     key=lambda w: -freq[w])
@@ -118,6 +154,11 @@ def main():
     # second pass: next-word bigrams among the 12k most frequent words
     core = set(seen[:12000])
     _, pairs = wiki_pass('kmwiki.xml.bz2', vocab, core=core)
+    try:
+        _, ccp = cc100_pass('km_cc100.txt.xz', vocab, core=core)
+        for k, n in ccp.items(): pairs[k] += n
+    except FileNotFoundError:
+        pass
     print(f'bigram pairs counted: {len(pairs)}', file=sys.stderr)
     succ = {}
     for (a, b), n in pairs.items():
