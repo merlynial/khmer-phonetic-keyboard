@@ -49,5 +49,28 @@ const preds = K.predictNext("អ្នក");
 if (preds.length >= 3) console.log(`  ok  predictNext(អ្នក) -> ${preds.slice(0,3)}`);
 else { console.error("FAIL predictNext empty"); fail++; }
 
+// --- security & robustness (regression guards) ---
+function check(name, cond) {
+  if (cond) console.log(`  ok  ${name}`);
+  else { console.error(`FAIL  ${name}`); fail++; }
+}
+// prototype pollution via crafted backup must not touch Object.prototype
+K.importData(JSON.parse('{"__proto__":{"pwned":1},"usage":{"__proto__":9,"x":3}}'));
+check("no prototype pollution", ({}).pwned === undefined);
+// non-numeric counts must be rejected (no NaN leaking into scoring)
+K.importData({ usage: { junk: "NaNstr", ok: 4 } });
+check("NaN counts rejected", K.stats().top.every(([, c]) => Number.isFinite(c)));
+// wrong-typed / bogus imports must not throw
+let threw = false;
+for (const bad of [null, [1, 2], "s", 42, { usage: [1] }, { personal: 5 }])
+  try { K.importData(bad); } catch { threw = true; }
+check("bogus imports handled", !threw);
+// large inputs must be fast (no DoS hang) — cap enforced
+let t = Date.now();
+K.suggest("k".repeat(200000));
+K.segmentPhrase("k".repeat(200000));
+check("large input bounded (<100ms)", Date.now() - t < 100);
+K.resetLearning();
+
 if (fail) { console.error(`\n${fail} failure(s)`); process.exit(1); }
 console.log("\nall green");

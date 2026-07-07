@@ -652,8 +652,10 @@
       if (!SK2WORD.has(BIG_SK[i])) SK2WORD.set(BIG_SK[i], { w: BIG_KH[i], r: i });
     }
   }
+  const MAX_PHRASE = 60;          // cap DP length; longer inputs aren't one phrase
   function segmentPhrase(q) {
     if (!BIG_SK.length) return null;
+    if (q.length > MAX_PHRASE) return null;
     if (!SK2WORD) buildSK2();
     const n = q.length;
     const dp = Array(n + 1).fill(null);
@@ -686,13 +688,38 @@
   function exportData() {
     return { usage: USAGE, personal: PERSONAL, next: NEXTP, v: 1 };
   }
+  const isPlain = o => o && typeof o === "object" && !Array.isArray(o);
+  const UNSAFE = k => k === "__proto__" || k === "constructor" || k === "prototype";
+  const cnt = v => { const n = Math.floor(Number(v)); return Number.isFinite(n) && n > 0 ? Math.min(n, 1e6) : 0; };
+  const IMP_MAX_KEYS = 20000, IMP_MAX_LEN = 60;   // guard against bloat / oversized backups
+
   function importData(obj) {
-    if (!obj || typeof obj !== "object") return false;
-    for (const w in obj.usage || {}) USAGE[w] = (USAGE[w] || 0) + obj.usage[w];
-    Object.assign(PERSONAL, obj.personal || {});
-    for (const p in obj.next || {}) {
-      const m = NEXTP[p] = NEXTP[p] || {};
-      for (const nx in obj.next[p]) m[nx] = (m[nx] || 0) + obj.next[p][nx];
+    if (!isPlain(obj)) return false;
+    if (isPlain(obj.usage)) {
+      let i = 0;
+      for (const w in obj.usage) {
+        if (UNSAFE(w) || w.length > IMP_MAX_LEN || ++i > IMP_MAX_KEYS) continue;
+        const c = cnt(obj.usage[w]); if (c) USAGE[w] = (USAGE[w] || 0) + c;
+      }
+    }
+    if (isPlain(obj.personal)) {
+      let i = 0;
+      for (const k in obj.personal) {
+        if (UNSAFE(k) || ++i > IMP_MAX_KEYS) continue;
+        const v = obj.personal[k];
+        if (typeof v === "string" && k.length <= IMP_MAX_LEN && v.length <= IMP_MAX_LEN) PERSONAL[k] = v;
+      }
+    }
+    if (isPlain(obj.next)) {
+      let i = 0;
+      for (const p in obj.next) {
+        if (UNSAFE(p) || p.length > IMP_MAX_LEN || ++i > IMP_MAX_KEYS || !isPlain(obj.next[p])) continue;
+        const m = NEXTP[p] = NEXTP[p] || {};
+        for (const nx in obj.next[p]) {
+          if (UNSAFE(nx) || nx.length > IMP_MAX_LEN) continue;
+          const c = cnt(obj.next[p][nx]); if (c) m[nx] = (m[nx] || 0) + c;
+        }
+      }
     }
     try {
       localStorage.setItem("khkb_usage",    JSON.stringify(USAGE));
@@ -746,9 +773,11 @@
      tiers: -1 your own saved words · 0-3 curated (exact/prefix/vowel-skel)
             4-5 big lexicon (sound-skeleton exact/prefix)
      words you actually use float upward (usage boost). ------------------- */
+  const MAX_TOKEN = 32;           // no real phonetic word-token is longer
   function suggest(q) {
     q = (q || "").toLowerCase().trim();
     if (!q) return [];
+    if (q.length > MAX_TOKEN) q = q.slice(-MAX_TOKEN);   // guard: bound the work
     const cand = new Map();       // kh -> {tier, sub, gloss}
     const add = (kh, tier, sub, gloss) => {
       const c = cand.get(kh);

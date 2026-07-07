@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1f6feb">
 <meta name="description" content="Type Khmer by its sound — a free phonetic Khmer keyboard with Pinyin-style word suggestions. Works offline, no install.">
@@ -192,7 +193,7 @@
   <header>
     <div class="logo">ក</div>
     <div style="flex:1">
-      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.10</span></h1>
+      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.11</span></h1>
       <div class="sub" id="t-sub">វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer</div>
     </div>
     <button class="btn alt" id="langbtn" style="padding:8px 14px;font-size:13px">EN</button>
@@ -398,6 +399,9 @@ function convert(text, opts){
 
 /* =========================== UI WIRING =================================== */
 const $ = s => document.querySelector(s);
+// escape any learned/imported value before it touches innerHTML (XSS guard)
+const esc = s => String(s).replace(/[&<>"']/g, c =>
+  ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 const inEl = $("#in"), outEl = $("#out");
 const autostack = $("#autostack"), khnum = $("#khnum"), live = $("#live");
 const spacesel = $("#spacesel"), sugEl = $("#sug");
@@ -420,12 +424,13 @@ let sugState = { token:"", start:0, end:0, items:[] };
 let sugSel = 0, sugNav = false;
 let dismissed = "";
 
+const MAX_TOKEN_UI = 64;   // bound token scan so huge inputs can't stall the UI
 function currentToken(){
   const p = inEl.selectionStart;
   if (p == null || p !== inEl.selectionEnd) return { token:"", start:p||0, end:p||0 };
   const v = inEl.value;
   let s = p;
-  while (s > 0 && TOKEN_CH.test(v[s-1])) s--;
+  while (s > 0 && s > p - MAX_TOKEN_UI && TOKEN_CH.test(v[s-1])) s--;
   return { token: v.slice(s, p), start: s, end: p };
 }
 
@@ -468,8 +473,8 @@ function buildCands(box){
   sugState.items.forEach((it, i) => {
     const c = document.createElement("div");
     c.className = "cand" + (it.raw ? " raw" : "");
-    c.innerHTML = `<span class="num">${i+1}</span><span class="kh">${it.kh}</span>`
-      + (it.gloss ? `<span class="gl">${it.gloss}</span>` : "");
+    c.innerHTML = `<span class="num">${i+1}</span><span class="kh">${esc(it.kh)}</span>`
+      + (it.gloss ? `<span class="gl">${esc(it.gloss)}</span>` : "");
     c.addEventListener("pointerdown", e => { e.preventDefault(); commitSug(i); });
     box.appendChild(c);
   });
@@ -493,7 +498,7 @@ function showPredictions(){
     const c = document.createElement("div");
     c.className = "cand pin";
     c.style.setProperty("--i", i);
-    c.innerHTML = `<span class="kh">${kh}</span>`;
+    c.innerHTML = `<span class="kh">${esc(kh)}</span>`;
     c.addEventListener("pointerdown", e => { e.preventDefault(); commitPred(kh); });
     stripEl.appendChild(c);
   });
@@ -520,7 +525,7 @@ function showIdleWords(){
     const c = document.createElement("div");
     c.className = "cand pin";
     c.style.setProperty("--i", i);
-    c.innerHTML = `<span class="kh">${kh}</span>`;
+    c.innerHTML = `<span class="kh">${esc(kh)}</span>`;
     c.addEventListener("pointerdown", e => { e.preventDefault(); commitPred(kh); });
     stripEl.appendChild(c);
   });
@@ -776,13 +781,13 @@ function renderMyWords(){
   st.top.forEach(([w, c]) => {
     const d = document.createElement("div");
     d.className = "w";
-    d.innerHTML = `${w}<b>×${c}</b>`;
+    d.innerHTML = `${esc(w)}<b>×${esc(c)}</b>`;
     box.appendChild(d);
   });
   st.personal.forEach(([spelling, w]) => {
     const d = document.createElement("div");
     d.className = "w mine";
-    d.innerHTML = `${w}<b>${spelling}</b>`;
+    d.innerHTML = `${esc(w)}<b>${esc(spelling)}</b>`;
     box.appendChild(d);
   });
 }
