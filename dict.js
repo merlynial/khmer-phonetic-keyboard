@@ -630,6 +630,11 @@
       if (!seen.has(w)) { out.push(w); seen.add(w); }
       if (out.length >= 6) break;
     }
+    // no data for this word: fall back to the most common words (Gboard-style)
+    for (let i = 0; out.length < 6 && i < Math.min(BIG_KH.length, 12); i++) {
+      const w = BIG_KH[i];
+      if (w !== prev && !seen.has(w)) { out.push(w); seen.add(w); }
+    }
     return out.slice(0, 6);
   }
 

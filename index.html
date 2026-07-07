@@ -23,6 +23,7 @@
     background:var(--bg); color:var(--txt);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     -webkit-text-size-adjust:100%; line-height:1.45;
+    -webkit-font-smoothing:antialiased;
   }
   .wrap{max-width:860px; margin:0 auto; padding:16px 14px 60px;}
   header{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px;}
@@ -64,14 +65,23 @@
   .cand{
     flex:0 0 auto; display:flex; align-items:baseline; gap:6px; padding:3px 11px 5px;
     border-radius:9px; cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+    transition:background-color .14s ease, transform .1s ease;
   }
-  .cand .num{font-size:10.5px; color:var(--muted);}
-  .cand .kh{font-family:var(--font-khmer); font-size:21px; color:var(--khmer); line-height:1.45;}
-  .cand .gl{font-size:10px; color:var(--muted); max-width:88px; overflow:hidden; text-overflow:ellipsis;}
+  .cand .num{font-size:10.5px; color:var(--muted); transition:color .14s ease;}
+  .cand .kh{font-family:var(--font-khmer); font-size:21px; color:var(--khmer); line-height:1.45; transition:color .14s ease;}
+  .cand .gl{font-size:10px; color:var(--muted); max-width:88px; overflow:hidden; text-overflow:ellipsis; transition:color .14s ease;}
   .cand:hover{background:var(--keyhi);}
+  .cand:active{transform:scale(.95);}
   .cand.sel{background:var(--accent);}
   .cand.sel .kh,.cand.sel .num,.cand.sel .gl{color:#fff;}
   .cand.raw .kh{color:var(--txt);}
+  @media (prefers-reduced-motion: no-preference){
+    .sugbar.in{animation:sugin .18s cubic-bezier(.16,1,.3,1.15);}
+    @keyframes sugin{from{opacity:0; transform:translateY(5px) scale(.96);} to{opacity:1; transform:none;}}
+    .sugstrip .cand.pin{animation:candin .22s cubic-bezier(.16,1,.3,1) both; animation-delay:calc(var(--i)*26ms);}
+    @keyframes candin{from{opacity:0; transform:translateX(8px);} to{opacity:1; transform:none;}}
+  }
   /* suggestion strip docked above the keys (Gboard-style) */
   .sugstrip{
     display:flex; align-items:center; gap:4px; overflow-x:auto; white-space:nowrap;
@@ -83,22 +93,40 @@
   .toggles{display:flex; gap:16px; flex-wrap:wrap; margin-top:12px;}
   .tg{display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted); cursor:pointer;}
   .tg input{width:16px;height:16px;accent-color:var(--accent);}
-  /* on-screen QWERTY keyboard (pinyin-style) */
-  .kb{display:flex; flex-direction:column; gap:7px; max-width:560px; margin:0 auto;}
-  .kbrow{display:flex; gap:5px; justify-content:center;}
+  /* on-screen QWERTY keyboard (Apple-keyboard feel) */
+  .kb{display:flex; flex-direction:column; gap:7px; max-width:560px; margin:0 auto; position:relative;}
+  .kbrow{display:flex; gap:6px; justify-content:center;}
   .kq{
-    flex:1 1 0; min-width:0; padding:10px 0 7px; background:var(--key); border:1px solid var(--line);
-    border-radius:8px; text-align:center; cursor:pointer; user-select:none; color:var(--txt);
+    flex:1 1 0; min-width:0; padding:11px 0 8px; background:var(--key); border:0;
+    border-radius:9px; box-shadow:0 1.5px 0 rgba(0,0,0,.45);
+    text-align:center; cursor:pointer; user-select:none; color:var(--txt);
     font-size:17px; font-weight:600; line-height:1.1; -webkit-tap-highlight-color:transparent;
     touch-action:manipulation;
+    transition:background-color .18s ease, transform .12s ease, box-shadow .12s ease;
   }
   .kq .sub{display:block; font-family:var(--font-khmer); font-size:10.5px; color:var(--muted);
     margin-top:3px; font-weight:400; line-height:1.2; min-height:13px;}
   .kq:hover{background:var(--keyhi);}
-  .kq:active{background:var(--accent); color:#fff;}
+  .kq.pressed{
+    background:var(--keyhi); transform:scale(.93) translateY(1px); box-shadow:0 0 0 rgba(0,0,0,.45);
+    transition:background-color .03s, transform .05s, box-shadow .05s;
+  }
   .kq.fn{background:#1a2330; color:var(--muted); font-size:13px;}
-  .kq.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .kq.on{background:var(--accent); color:#fff;}
   .kq.khlab{font-family:var(--font-khmer); font-weight:400; font-size:19px;}
+  /* iOS-style key preview bubble */
+  .keypop{
+    position:absolute; z-index:40; min-width:46px; padding:10px 8px 13px;
+    background:var(--keyhi); border-radius:13px; box-shadow:0 8px 22px rgba(0,0,0,.55);
+    text-align:center; font-size:27px; font-weight:600; color:var(--txt);
+    pointer-events:none; opacity:0; transform:translateY(6px) scale(.9);
+    transition:opacity .1s ease, transform .12s cubic-bezier(.2,1,.3,1.2);
+  }
+  .keypop.up{opacity:1; transform:translateY(0) scale(1);}
+  @media (prefers-reduced-motion: no-preference){
+    .kb.anim{animation:kbswap .14s ease;}
+    @keyframes kbswap{from{opacity:.35; transform:scale(.985);} to{opacity:1; transform:none;}}
+  }
   /* cheat sheet */
   details{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:4px 14px; margin-bottom:14px;}
   summary{cursor:pointer; padding:11px 0; font-weight:600; font-size:15px;}
@@ -121,7 +149,7 @@
   <header>
     <div class="logo">ក</div>
     <div>
-      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v5</span></h1>
+      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v6</span></h1>
       <div class="sub">ក្តារចុចផ្លាស់សំឡេង · Type the sound in English letters → get Khmer</div>
     </div>
   </header>
@@ -398,9 +426,10 @@ function showPredictions(){
   const preds = KHDICT.predictNext(lastCommit.kh);
   if (!preds.length){ hideSug(); return; }
   stripEl.innerHTML = "";
-  preds.forEach(kh => {
+  preds.forEach((kh, i) => {
     const c = document.createElement("div");
-    c.className = "cand";
+    c.className = "cand pin";
+    c.style.setProperty("--i", i);
     c.innerHTML = `<span class="kh">${kh}</span>`;
     c.addEventListener("pointerdown", e => { e.preventDefault(); commitPred(kh); });
     stripEl.appendChild(c);
@@ -440,6 +469,7 @@ function updateSug(){
   buildCands(stripEl);
 
   // place the bar just under the start of the composed word (Apple-style)
+  const wasShown = sugEl.classList.contains("show");
   const c = caretXY(start);
   sugEl.style.visibility = "hidden";
   sugEl.classList.add("show");
@@ -450,6 +480,9 @@ function updateSug(){
   sugEl.style.left = left + "px";
   sugEl.style.top  = top + "px";
   sugEl.style.visibility = "";
+  if (!wasShown){    // spring in on first appearance, stay still while typing
+    sugEl.classList.remove("in"); void sugEl.offsetWidth; sugEl.classList.add("in");
+  }
   renderSel();
 }
 
@@ -563,6 +596,24 @@ function trySpaceCommit(){
   commitSug(sugSel);              // commit, no space — Khmer joins words
   return true;
 }
+const COARSE = matchMedia("(pointer: coarse)").matches;
+function haptic(){ if (COARSE && navigator.vibrate) try{ navigator.vibrate(8); }catch(e){} }
+
+/* iOS-style preview bubble above the pressed key */
+let keypop = null;
+function popKey(el, label){
+  if (!COARSE) return;
+  const kb = $("#kb");
+  if (!keypop){ keypop = document.createElement("div"); keypop.className = "keypop"; kb.appendChild(keypop); }
+  keypop.textContent = label;
+  const w = Math.max(el.offsetWidth + 14, 46);
+  keypop.style.minWidth = w + "px";
+  keypop.style.left = (el.offsetLeft + el.offsetWidth/2 - w/2) + "px";
+  keypop.style.top  = (el.offsetTop - 52) + "px";
+  keypop.classList.add("up");
+}
+function unpopKey(){ if (keypop) keypop.classList.remove("up"); }
+
 function keyPress(it){
   if (typeof it === "string"){
     insertText(kbShift ? it.toUpperCase() : it);
@@ -571,8 +622,8 @@ function keyPress(it){
   }
   if (it.t !== undefined){ insertText(it.t); return; }
   switch (it.a){
-    case "SHIFT": kbShift = !kbShift; drawKB(); break;
-    case "SYM":   kbLayer = kbLayer === "sym" ? "abc" : "sym"; kbShift = false; drawKB(); break;
+    case "SHIFT": kbShift = !kbShift; drawKB(true); break;
+    case "SYM":   kbLayer = kbLayer === "sym" ? "abc" : "sym"; kbShift = false; drawKB(true); break;
     case "BKSP":  backspace(); break;
     case "ENTER":
       if (sugState.items.length) commitSug(sugSel);
@@ -581,8 +632,14 @@ function keyPress(it){
     case "SPACE": if (!trySpaceCommit()) insertText(" "); break;
   }
 }
-function drawKB(){
-  const kb = $("#kb"); kb.innerHTML = "";
+
+let bkspTimer = null;
+function stopBksp(){ clearTimeout(bkspTimer); bkspTimer = null; }
+document.addEventListener("pointerup", ()=>{ stopBksp(); unpopKey(); });
+document.addEventListener("pointercancel", ()=>{ stopBksp(); unpopKey(); });
+
+function drawKB(animate){
+  const kb = $("#kb"); kb.innerHTML = ""; keypop = null;
   const rows = kbLayer === "sym" ? ROWS_SYM : ROWS_ABC;
   rows.forEach(row => {
     const r = document.createElement("div"); r.className = "kbrow";
@@ -597,11 +654,24 @@ function drawKB(){
       const sub = isStr ? (SUB[ch] || "") : (it.kh && it.t !== it.l ? it.t : "");
       b.innerHTML = `<span>${label}</span><span class="sub">${sub || "&nbsp;"}</span>`;
       if (!isStr && it.w) b.style.flexGrow = it.w;
-      b.addEventListener("pointerdown", e => { e.preventDefault(); keyPress(it); });
+      b.addEventListener("pointerdown", e => {
+        e.preventDefault();
+        haptic();
+        b.classList.add("pressed");
+        if (isStr || (it.t !== undefined && !it.a)) popKey(b, label);
+        keyPress(it);
+        if (!isStr && it.a === "BKSP"){          // hold to repeat, like Apple
+          stopBksp();
+          bkspTimer = setTimeout(function rep(){ backspace(); bkspTimer = setTimeout(rep, 55); }, 420);
+        }
+      });
+      for (const ev of ["pointerup","pointerleave","pointercancel"])
+        b.addEventListener(ev, ()=> b.classList.remove("pressed"));
       r.appendChild(b);
     });
     kb.appendChild(r);
   });
+  if (animate){ kb.classList.remove("anim"); void kb.offsetWidth; kb.classList.add("anim"); }
 }
 drawKB();
 

@@ -1,6 +1,6 @@
 // Offline cache for the keyboard. Network-first so edits show immediately
 // when online, but the app still loads with no connection.
-const CACHE = "khmer-kbd-v8";
+const CACHE = "khmer-kbd-v9";
 const ASSETS = ["./", "./index.html", "./dict.js", "./words.txt", "./bigrams.txt", "./manifest.webmanifest"];
 
 self.addEventListener("install", e => {
@@ -14,7 +14,9 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
   e.respondWith(
-    fetch(e.request)
+    // no-cache: revalidate with the server instead of trusting the HTTP cache,
+    // so a new deploy is picked up on the next reload
+    fetch(e.request, { cache: "no-cache" })
       .then(res => {
         const copy = res.clone();
         caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
