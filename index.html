@@ -121,7 +121,7 @@
   <header>
     <div class="logo">ក</div>
     <div>
-      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v4</span></h1>
+      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v5</span></h1>
       <div class="sub">ក្តារចុចផ្លាស់សំឡេង · Type the sound in English letters → get Khmer</div>
     </div>
   </header>
@@ -390,12 +390,43 @@ function hideSug(){
   stripEl.innerHTML = "";
 }
 
+/* next-word prediction: right after a commit, the strip offers the words
+   that usually follow (corpus bigrams + phrases you have typed before) */
+let lastCommit = null;            // {kh, end} of the most recent committed word
+
+function showPredictions(){
+  const preds = KHDICT.predictNext(lastCommit.kh);
+  if (!preds.length){ hideSug(); return; }
+  stripEl.innerHTML = "";
+  preds.forEach(kh => {
+    const c = document.createElement("div");
+    c.className = "cand";
+    c.innerHTML = `<span class="kh">${kh}</span>`;
+    c.addEventListener("pointerdown", e => { e.preventDefault(); commitPred(kh); });
+    stripEl.appendChild(c);
+  });
+  sugEl.classList.remove("show"); sugEl.innerHTML = "";
+}
+
+function commitPred(kh){
+  const pos = inEl.selectionStart;
+  KHDICT.learnNext(lastCommit.kh, kh);
+  KHDICT.learn(kh, "", false);
+  inEl.setRangeText(kh, pos, pos, "end");
+  lastCommit = { kh, end: inEl.selectionStart };
+  inEl.focus();
+  run(); updateSug();
+}
+
 function updateSug(){
   const { token, start, end } = currentToken();
   if (token !== dismissed) dismissed = "";   // Esc only mutes the current token
   sugState = { token, start, end, items: [] };
   sugSel = 0; sugNav = false;
-  if (!token || token === dismissed){ hideSug(); return; }
+  if (!token || token === dismissed){
+    if (!token && lastCommit && end === lastCommit.end){ showPredictions(); return; }
+    hideSug(); return;
+  }
 
   const dict = KHDICT.suggest(token).map(it => ({ ...it, raw:false }));
   const rawKh = convert(token, { autostack: autostack.checked });
@@ -426,7 +457,11 @@ function commitSug(i){
   const it = sugState.items[i];
   if (!it) return;
   KHDICT.learn(it.kh, sugState.token, !!it.raw);   // remember what you really use
+  if (lastCommit && lastCommit.end === sugState.start){
+    KHDICT.learnNext(lastCommit.kh, it.kh);        // remember your word pairs
+  }
   inEl.setRangeText(it.kh, sugState.start, sugState.end, "end");
+  lastCommit = { kh: it.kh, end: inEl.selectionStart };
   inEl.focus();
   run(); updateSug();
 }

@@ -68,13 +68,13 @@ def load_lexicon(path):
             if sk not in lst and len(lst) < 2: lst.append(sk)
     return entries
 
-def wiki_freq(path, vocab):
-    """Greedy longest-match segmentation of Khmer runs in the wiki dump."""
+def wiki_pass(path, vocab, core=None):
+    """Greedy longest-match segmentation of Khmer runs in the wiki dump.
+    Returns unigram counts; when `core` is given, also bigram counts
+    restricted to consecutive core-word pairs within the same run."""
     maxlen = max(len(w) for w in vocab)
-    counts = Counter()
+    counts, pairs = Counter(), Counter()
     khmer_run = re.compile(r'[ក-៝]+')
-    text_tag = re.compile(r'<text[^>]*>(.*?)</text>', re.S)
-    buf = []
     with bz2.open(path, 'rt', encoding='utf-8', errors='ignore') as f:
         chunk = []
         for line in f:
@@ -84,19 +84,26 @@ def wiki_freq(path, vocab):
                 for m in khmer_run.finditer(block):
                     run = m.group()
                     i, L = 0, len(run)
+                    prev = None
                     while i < L:
                         for j in range(min(L, i+maxlen), i, -1):
                             w = run[i:j]
                             if w in vocab:
-                                counts[w] += 1; i = j; break
+                                counts[w] += 1
+                                if core is not None:
+                                    if prev is not None and w in core and prev in core:
+                                        pairs[(prev, w)] += 1
+                                    prev = w
+                                i = j; break
                         else:
-                            i += 1
-    return counts
+                            i += 1; prev = None
+    return counts, pairs
 
 def main():
     lex = load_lexicon('g_lex.tsv')
     print(f'lexicon entries: {len(lex)}', file=sys.stderr)
-    freq = wiki_freq('kmwiki.xml.bz2', set(lex))
+    vocab = set(lex)
+    freq, _ = wiki_pass('kmwiki.xml.bz2', vocab)
     print(f'words seen in corpus: {len(freq)}', file=sys.stderr)
     seen   = sorted((w for w in lex if freq.get(w, 0) >= 2),
                     key=lambda w: -freq[w])
@@ -107,6 +114,19 @@ def main():
             for sk in lex[w]:
                 out.write(f'{w}\t{sk}\n')
     print(f'wrote {len(seen)} ranked + {len(unseen)} unranked words', file=sys.stderr)
+
+    # second pass: next-word bigrams among the 12k most frequent words
+    core = set(seen[:12000])
+    _, pairs = wiki_pass('kmwiki.xml.bz2', vocab, core=core)
+    print(f'bigram pairs counted: {len(pairs)}', file=sys.stderr)
+    succ = {}
+    for (a, b), n in pairs.items():
+        if n >= 3: succ.setdefault(a, []).append((n, b))
+    with open('bigrams.txt', 'w', encoding='utf-8') as out:
+        for a, lst in succ.items():
+            lst.sort(reverse=True)
+            out.write(a + '\t' + ' '.join(b for _, b in lst[:6]) + '\n')
+    print(f'wrote next-word lists for {len(succ)} words', file=sys.stderr)
 
 if __name__ == '__main__':
     main()

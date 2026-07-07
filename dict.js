@@ -520,6 +520,20 @@
     ["លេខ","number","lek lekh"],
     ["រៀល","riel (money)","riel real"],
     ["ដុល្លារ","dollar","dolla dollar"],
+    // everyday / social-media colloquial
+    ["អូន","dear, younger loved one","oun own on"],
+    ["សុំ","ask for / gimme (colloq.)","som sum"],
+    ["ស្អី","what (colloq.)","s'ey sey saey"],
+    ["អីចឹង","like that, so (colloq.)","eycheung eychoeng icheung eijeung"],
+    ["អញ្ចឹង","so, in that case","anhcheung anchoeng anhjeung"],
+    ["ចឹង","so, then (colloq.)","cheung choeng jeung"],
+    ["ម៉ង","at once, really (colloq.)","mong mang"],
+    ["អត់អីទេ","no problem (colloq.)","oteyte otaite ot'eyte"],
+    ["ម៉េចដែរ","how is it? (colloq.)","mechder mechdae michder"],
+    ["អត់ដឹង","don't know (colloq.)","otdeng atdoeng otdoeng"],
+    ["ហ្នឹង","that, this (colloq.)","neng nung hneng"],
+    ["សុំទោស","sorry (colloq.)","somtos sumtoh somtoh"],
+    ["អរគុណច្រើន","thanks a lot","orkunchraeun akunchren orkunchren"],
   ];
 
   /* ---- curated index: key -> word indices ------------------------------ */
@@ -581,6 +595,42 @@
       push(SINGLE[ch] || ""); i++;
     }
     return out.join("");
+  }
+
+  /* ---- next-word prediction (corpus bigrams + your own phrases) -------- */
+  const NEXT = new Map();
+  fetch("bigrams.txt")
+    .then(r => (r.ok ? r.text() : ""))
+    .then(t => {
+      for (const ln of t.split("\n")) {
+        const i = ln.indexOf("\t");
+        if (i > 0) NEXT.set(ln.slice(0, i), ln.slice(i + 1).split(" "));
+      }
+    })
+    .catch(() => {});
+
+  let NEXTP = {};                                  // your phrases: prev -> {next: count}
+  try { NEXTP = JSON.parse(localStorage.getItem("khkb_next") || "{}"); } catch (e) {}
+  function learnNext(prev, next) {
+    if (!prev || !next) return;
+    const m = NEXTP[prev] = NEXTP[prev] || {};
+    m[next] = (m[next] || 0) + 1;
+    try { localStorage.setItem("khkb_next", JSON.stringify(NEXTP)); } catch (e) {}
+  }
+  function predictNext(prev) {
+    if (!prev) return [];
+    const out = [], seen = new Set();
+    const mine = NEXTP[prev];
+    if (mine) {
+      for (const [w] of Object.entries(mine).sort((a, b) => b[1] - a[1]).slice(0, 3)) {
+        out.push(w); seen.add(w);
+      }
+    }
+    for (const w of NEXT.get(prev) || []) {
+      if (!seen.has(w)) { out.push(w); seen.add(w); }
+      if (out.length >= 6) break;
+    }
+    return out.slice(0, 6);
   }
 
   /* ---- learning from real use (persisted locally) ---------------------- */
@@ -656,6 +706,6 @@
       .map(({ kh, gloss }) => ({ kh, gloss }));
   }
 
-  window.KHDICT = { suggest, learn, DICT, romVariants, qskel,
-                    bigCount: () => BIG_KH.length };
+  window.KHDICT = { suggest, learn, predictNext, learnNext, DICT, romVariants, qskel,
+                    bigCount: () => BIG_KH.length, nextCount: () => NEXT.size };
 })();
