@@ -769,6 +769,25 @@
     } catch (e) {}
   }
 
+  /* ---- add a word to your dictionary (manual) --------------------------
+     kh = the Khmer word; spellings = one or more romanizations (space-sep).
+     Stored in PERSONAL (top tier -1) with a usage boost so it ranks well.
+     Returns the list of spellings saved, or null if the input was invalid. */
+  function addWord(kh, spellings) {
+    kh = (kh || "").trim();
+    if (!kh || !/[ក-៿]/.test(kh) || kh.length > 40) return null;  // must be Khmer
+    const sps = (spellings || "").toLowerCase().trim().split(/[\s,]+/)
+      .filter(s => /^[a-z'*`^~]{1,32}$/.test(s));
+    if (!sps.length) return null;
+    for (const s of sps) PERSONAL[s] = kh;
+    USAGE[kh] = Math.max(USAGE[kh] || 0, 5);      // boost so it wins its spelling
+    try {
+      localStorage.setItem("khkb_usage",    JSON.stringify(USAGE));
+      localStorage.setItem("khkb_personal", JSON.stringify(PERSONAL));
+    } catch (e) {}
+    return sps;
+  }
+
   /* ---- merged, tiered suggest ------------------------------------------
      tiers: -1 your own saved words · 0-3 curated (exact/prefix/vowel-skel)
             4-5 big lexicon (sound-skeleton exact/prefix)
@@ -840,7 +859,7 @@
     return list;
   }
 
-  window.KHDICT = { suggest, learn, predictNext, learnNext, topUsed, stats, resetLearning,
+  window.KHDICT = { suggest, learn, addWord, predictNext, learnNext, topUsed, stats, resetLearning,
                     exportData, importData, segmentPhrase, DICT, romVariants, qskel,
                     bigCount: () => BIG_KH.length, nextCount: () => NEXT.size };
 })();

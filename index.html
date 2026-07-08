@@ -168,6 +168,14 @@
   .cell .rn{font-family:ui-monospace,monospace; font-size:13px; color:var(--txt); margin-top:3px;}
   .cell .note{font-size:10.5px; color:var(--muted);}
   /* "My words" learned-dictionary panel */
+  .addbox{background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:14px; padding:12px 13px; margin:4px 0 14px;}
+  .addrow{display:flex; gap:8px; align-items:stretch;}
+  .addinput{flex:1 1 0; min-width:0; background:rgba(0,0,0,.28); color:var(--txt); border:1px solid var(--line);
+    border-radius:10px; padding:9px 12px; font-size:15px; outline:none;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
+  .addinput.kh{font-family:var(--font-khmer); color:var(--khmer); font-size:19px;}
+  .addinput:focus{border-color:rgba(59,130,246,.65); box-shadow:0 0 0 3px rgba(59,130,246,.16);}
+  .addrow .btn{flex:0 0 auto; padding:9px 18px; font-size:18px; line-height:1;}
   .mw{display:flex; flex-wrap:wrap; gap:8px; padding:4px 0 12px;}
   .mw .w{
     background:var(--panel2); border:1px solid var(--line); border-radius:999px;
@@ -193,7 +201,7 @@
   <header>
     <div class="logo">ក</div>
     <div style="flex:1">
-      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.11.1</span></h1>
+      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.12</span></h1>
       <div class="sub" id="t-sub">វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer</div>
     </div>
     <button class="btn alt" id="langbtn" style="padding:8px 14px;font-size:13px">EN</button>
@@ -235,6 +243,17 @@
 
   <details id="mywords">
     <summary id="t-mysummary">🧠 My words — what the keyboard has learned from you</summary>
+
+    <div class="addbox">
+      <div class="fld" id="t-addtitle" style="margin-bottom:8px">➕ Add a word</div>
+      <div class="addrow">
+        <input id="addkh" class="addinput kh" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="ខ្មែរ">
+        <input id="addsp" class="addinput" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="khmer khmae">
+        <button class="btn" id="addbtn">+</button>
+      </div>
+      <p class="hint" id="t-addhint" style="margin-top:7px">Khmer word · then how you type its sound (one or more, space-separated).</p>
+    </div>
+
     <div class="mw" id="mwlist"></div>
     <p class="hint" style="padding-bottom:6px" id="t-myhint">
       Words you pick are remembered and float to the top; spellings you invent become yours.
@@ -799,6 +818,19 @@ $("#mwreset").addEventListener("click", ()=>{
   }
 });
 
+/* add a word to the dictionary */
+function doAddWord(){
+  const kh = $("#addkh").value, sp = $("#addsp").value;
+  const saved = KHDICT.addWord(kh, sp);
+  if (!saved){ toast(STRINGS[LANG].addbad); return; }
+  $("#addkh").value = ""; $("#addsp").value = "";
+  renderMyWords(); updateSug();
+  toast(STRINGS[LANG].added.replace("%", kh.trim()));
+  $("#addkh").focus();
+}
+$("#addbtn").addEventListener("click", doAddWord);
+$("#addsp").addEventListener("keydown", e => { if (e.key === "Enter") doAddWord(); });
+
 /* -------- Khmer/English interface -------- */
 const STRINGS = {
   en: {
@@ -814,6 +846,8 @@ const STRINGS = {
     mwexport: "Backup ⤓", mwimport: "Restore ⤒", mwreset: "Reset",
     resetq: "Forget all learned words, spellings and phrases?", resetdone: "Learning reset",
     imported: "Words restored ✓", importbad: "Could not read that file",
+    addtitle: "➕ Add a word", addhint: "Khmer word · then how you type its sound (one or more, space-separated).",
+    added: "Added “%” ✓", addbad: "Enter a Khmer word and its spelling",
     placeholder: "khnhom → ខ្ញុំ ...  suggestions pop up at your cursor, like Pinyin",
     tut1: "Type the <b>sound</b> of a Khmer word with English letters — try <code>khnhom</code>",
     tut2: "Pick the Khmer word from the bar: tap it, or press <b>Space</b> for the first one",
@@ -834,6 +868,8 @@ const STRINGS = {
     mwexport: "រក្សាទុក ⤓", mwimport: "នាំចូល ⤒", mwreset: "លុបចោល",
     resetq: "លុបពាក្យ អក្ខរាវិរុទ្ធ និងឃ្លាដែលបានរៀនទាំងអស់?", resetdone: "បានលុបហើយ",
     imported: "បាននាំចូលពាក្យ ✓", importbad: "អានឯកសារមិនបាន",
+    addtitle: "➕ បន្ថែមពាក្យ", addhint: "ពាក្យខ្មែរ · បន្ទាប់មកវិធីវាយសំឡេង (មួយ ឬច្រើន គាំដោយដកឃ្លា)។",
+    added: "បានបន្ថែម «%» ✓", addbad: "សូមបញ្ចូលពាក្យខ្មែរ និងវិធីវាយ",
     placeholder: "khnhom → ខ្ញុំ ... វាយសំឡេង ពាក្យលេចឡើងដូច Pinyin",
     tut1: "វាយ<b>សំឡេង</b>ពាក្យខ្មែរដោយអក្សរឡាតាំង — សាកល្បង <code>khnhom</code>",
     tut2: "ជ្រើសពាក្យខ្មែរពីរបារ៖ ចុចលើវា ឬចុច <b>Space</b> សម្រាប់ពាក្យទី១",
@@ -855,6 +891,8 @@ function setLang(l){
   $("#t-kbhint").innerHTML = s.kbhint;
   $("#t-mysummary").textContent = s.mysummary;
   $("#t-myhint").textContent = s.myhint;
+  $("#t-addtitle").textContent = s.addtitle;
+  $("#t-addhint").textContent = s.addhint;
   $("#mwexport").textContent = s.mwexport;
   $("#mwimport").textContent = s.mwimport;
   $("#mwreset").textContent = s.mwreset;

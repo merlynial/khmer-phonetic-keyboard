@@ -72,5 +72,14 @@ K.segmentPhrase("k".repeat(200000));
 check("large input bounded (<100ms)", Date.now() - t < 100);
 K.resetLearning();
 
+// --- add a word to the dictionary ---
+const ok = K.addWord("កម្មវិធីទូរស័ព្ទ", "apptex apptelly");
+check("addWord accepts valid input", Array.isArray(ok) && ok.length === 2);
+check("added word is suggested #1", K.suggest("apptex")[0]?.kh === "កម្មវិធីទូរស័ព្ទ");
+check("added word by 2nd spelling", K.suggest("apptelly")[0]?.kh === "កម្មវិធីទូរស័ព្ទ");
+check("addWord rejects non-Khmer", K.addWord("hello", "hi") === null);
+check("addWord rejects empty spelling", K.addWord("ស្អាត", "") === null);
+K.resetLearning();
+
 if (fail) { console.error(`\n${fail} failure(s)`); process.exit(1); }
 console.log("\nall green");
