@@ -193,7 +193,7 @@
   <header>
     <div class="logo">ក</div>
     <div style="flex:1">
-      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.11</span></h1>
+      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.11.1</span></h1>
       <div class="sub" id="t-sub">វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer</div>
     </div>
     <button class="btn alt" id="langbtn" style="padding:8px 14px;font-size:13px">EN</button>
@@ -863,24 +863,6 @@ function setLang(l){
 }
 $("#langbtn").addEventListener("click", ()=> setLang(LANG === "km" ? "en" : "km"));
 setLang(LANG);
-
-/* -------- first-visit tutorial -------- */
-if (!localStorage.getItem("khkb_seen")){
-  const s = STRINGS[LANG];
-  const ov = document.createElement("div");
-  ov.style.cssText = "position:fixed;inset:0;z-index:100;background:rgba(5,8,13,.8);backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px";
-  ov.innerHTML = `<div class="card" style="max-width:430px;margin:0">
-    <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">
-      <div class="logo">ក</div><h1 style="font-size:18px;margin:0">Khmer Phonetic Keyboard</h1></div>
-    <p style="margin:10px 0">1️⃣ ${s.tut1}</p>
-    <p style="margin:10px 0">2️⃣ ${s.tut2}</p>
-    <p style="margin:10px 0 18px">3️⃣ ${s.tut3}</p>
-    <button class="btn" id="tutok" style="width:100%">${s.gotit}</button></div>`;
-  document.body.appendChild(ov);
-  ov.querySelector("#tutok").addEventListener("click", ()=>{
-    localStorage.setItem("khkb_seen","1"); ov.remove(); inEl.focus();
-  });
-}
 
 /* -------- backup / restore -------- */
 $("#mwexport").addEventListener("click", ()=>{
