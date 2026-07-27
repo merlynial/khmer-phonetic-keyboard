@@ -4,7 +4,10 @@
 the Khmer word from live suggestions — exactly like a Chinese Pinyin keyboard,
 but for Khmer.
 
-**➡️ Use it here: <https://merlynial.github.io/khmer-phonetic-keyboard/>**
+**➡️ Use it in your browser: <https://merlynial.github.io/khmer-phonetic-keyboard/>**
+
+**➡️ Install it as a real keyboard on Android, iPhone or Windows:
+<https://merlynial.github.io/khmer-phonetic-keyboard/install.html>**
 
 ```
 khnhom  ⎵   srolanh  ⎵   kampuchea  ⎵     →     ខ្ញុំស្រឡាញ់កម្ពុជា
@@ -33,6 +36,20 @@ khnhom  ⎵   srolanh  ⎵   kampuchea  ⎵     →     ខ្ញុំស្រ
   like an app. No install, no tracking, no server: everything runs in your
   browser.
 
+## As a system keyboard
+
+The same romanization ships as a [Keyman](https://keyman.com) package, so you can
+type Khmer by sound in Telegram, Messenger, Word, or anywhere else — not only on
+this page. One file installs on **Android, iPhone, iPad, Windows, macOS and
+Linux**; a second, optional package adds a word-suggestion bar on phones.
+
+See [install.html](install.html) for per-platform steps, and
+[keyman/README.md](keyman/README.md) for how the keyboard is built and tested.
+
+The rules are generated from the same maps the web app uses and verified against
+it on every build — including a test that types tens of thousands of strings
+through the *compiled* keyboard that ships in the package.
+
 ## How to type
 
 | You type | You get | Note |
@@ -56,10 +73,21 @@ python3 -m http.server 4599
 # open http://localhost:4599
 ```
 
-- `index.html` — UI + phonetic conversion engine
+- `index.html` — UI + phonetic conversion engine (the source of truth for the
+  romanization: the Keyman keyboard is generated from the maps in this file)
 - `dict.js` — word dictionary + reverse-romanizer that auto-generates the
   fuzzy lookup keys (add a word: one line in `DICT`)
 - `sw.js` — offline cache
+- `install.html` — download and install page for the system keyboard
+
+The Keyman packages do have a build step:
+
+```sh
+npm install
+npm run build     # regenerate sources, compile both .kmp packages into dist/
+npm test          # rule table vs. the web engine
+npm run test:packages   # the compiled keyboard vs. the web engine
+```
 
 ## License
 

@@ -31,14 +31,32 @@ colloquial vocabulary that Wikipedia never contains.
 4. Better frequencies: re-rank with a conversational corpus (CC-100 km /
    OSCAR km subset) blended with Wikipedia.
 
-## Next session B — real system keyboard (Android IME)
-Goal: type Khmer-by-sound inside any app (Telegram, Word, browser).
+## Done — real system keyboard, every platform (Keyman)
+Typing Khmer-by-sound inside any app now works on Android, iPhone, iPad,
+Windows, macOS and Linux, without writing a native IME per platform.
+
+- `keyman/khmer_phonetic/` — the keyboard: the romanization compiled into a
+  72-state Keyman rule machine, a phone touch layout, a bundled Khmer font
+- `keyman/pakrinha.km.khmerphonetic/` — 20,000-word dictionary for the
+  suggestion bar on phones and tablets
+- Both are generated from `index.html` and `words.txt`, and CI fails if they
+  drift. `tests/compiled.mjs` types tens of thousands of strings through the
+  compiled keyboard that ships in the package.
+- Install page: `install.html`
+
+What this route does not carry over: the fuzzy sound matching. The Keyman
+keyboard converts spellings deterministically, so `sousdey` no longer finds
+សួស្តី the way the web app does — the dictionary only completes words already
+started. Closing that gap needs the Khmerlish work in session A, or a native
+IME.
+
+## Later — native IME, if the Keyman route proves limiting
 1. Kotlin `InputMethodService` project, new repo `khmer-ime`.
-2. Port the engine: qskel matcher + words.txt/bigrams.txt as packaged assets
-   (the data files are already exactly what the IME needs).
+2. Port the engine: qskel matcher + words.txt/bigrams.txt as packaged assets.
 3. Keyboard view: QWERTY + suggestion strip (reuse this app's layout logic).
 4. Personal learning in app storage; import/export.
-5. Later: iOS custom keyboard extension (same assets, Swift).
+5. iOS custom keyboard extension (same assets, Swift) — needs a paid Apple
+   developer account to distribute.
 
 ## Smaller improvements (any session)
 - Trigram / backoff prediction; predict after punctuation and at sentence start

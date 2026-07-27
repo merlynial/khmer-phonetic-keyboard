@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install the Khmer Phonetic keyboard on your phone or computer</title>
+<meta name="description" content="Install the Khmer Phonetic keyboard as a real system keyboard on Android, iPhone, iPad and Windows.">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root{
+    --bg:#0a0e15; --panel:rgba(255,255,255,.035); --panel2:rgba(255,255,255,.055);
+    --line:rgba(255,255,255,.09); --txt:#e8edf4; --muted:#93a0b0;
+    --accent:#3b82f6; --grad:linear-gradient(135deg,#3b82f6 0%,#8b5cf6 100%);
+    --khmer:#ffd27f;
+    --font-khmer:"Khmer OS Siemreap","Khmer OS Siemreab","Siemreap","Noto Sans Khmer",serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--txt); line-height:1.6;
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background-image:radial-gradient(900px 500px at 15% -5%,rgba(59,130,246,.14),transparent 60%),
+                     radial-gradient(700px 400px at 90% 0%,rgba(139,92,246,.12),transparent 60%);
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:32px 20px 72px}
+  header{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+  .logo{width:44px;height:44px;border-radius:12px;background:var(--grad);
+        display:grid;place-items:center;font-family:var(--font-khmer);font-size:24px;color:#fff}
+  h1{font-size:22px;margin:0;font-weight:650;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:14px}
+  h2{font-size:15px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);
+     font-weight:600;margin:40px 0 12px}
+  p{margin:.7em 0}
+  a{color:#8ab4ff}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;
+        padding:22px 24px;margin:16px 0}
+  ol{padding-left:22px;margin:.6em 0}
+  li{margin:.45em 0}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--panel2);
+       padding:2px 6px;border-radius:5px;font-size:.9em}
+  .kh{font-family:var(--font-khmer);color:var(--khmer);font-size:1.15em}
+  .dl{display:inline-flex;align-items:center;gap:9px;background:var(--grad);color:#fff;
+      text-decoration:none;padding:12px 20px;border-radius:11px;font-weight:600;font-size:15px;
+      margin:6px 10px 6px 0}
+  .dl.alt{background:var(--panel2);border:1px solid var(--line)}
+  .meta{color:var(--muted);font-size:13px}
+  .note{border-left:2px solid var(--line);padding-left:16px;color:var(--muted);font-size:14.5px}
+  footer{margin-top:52px;border-top:1px solid var(--line);padding-top:20px;
+         color:var(--muted);font-size:13.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="logo">ក</div>
+  <div>
+    <h1>Install on your phone or computer</h1>
+    <div class="sub">Type Khmer by sound in any app — Telegram, Messenger, Word, your browser</div>
+  </div>
+</header>
+
+<p>The <a href="./">web version</a> converts text you type into a box. This page installs the
+same romanization as a <strong>real system keyboard</strong>, so it works everywhere your
+phone or computer accepts typing.</p>
+
+<p>It runs on <a href="https://keyman.com">Keyman</a>, a free and open-source keyboarding
+app from SIL. You install Keyman once, then add this keyboard to it.</p>
+
+<h2>Download</h2>
+<div class="card">
+  <a class="dl" href="dist/khmer_phonetic.kmp" download>Khmer Phonetic keyboard</a>
+  <a class="dl alt" href="dist/pakrinha.km.khmerphonetic.model.kmp" download>Khmer dictionary (optional)</a>
+  <p class="meta">One package works on Android, iPhone, iPad, Windows, macOS and Linux.
+  The dictionary adds a word-suggestion bar on phones and tablets.</p>
+</div>
+
+<h2>Android</h2>
+<div class="card">
+  <ol>
+    <li>Install <a href="https://play.google.com/store/apps/details?id=com.tavultesoft.kmapro">Keyman</a> from Google Play.</li>
+    <li>Download the keyboard package above on the phone. Tap the downloaded
+        <code>.kmp</code> file — Keyman opens and offers to install it.</li>
+    <li>Keyman will walk you through enabling it in Android's system settings.</li>
+    <li>Anywhere you type, tap the globe key to switch to Khmer Phonetic.</li>
+  </ol>
+  <p class="note">Install the dictionary package the same way to get word suggestions
+  above the keyboard.</p>
+</div>
+
+<h2>iPhone and iPad</h2>
+<div class="card">
+  <ol>
+    <li>Install <a href="https://apps.apple.com/app/keyman/id933676545">Keyman</a> from the App Store.</li>
+    <li>Open this page on the device and tap the download button above. Choose to open
+        the file in Keyman.</li>
+    <li>In Settings → General → Keyboard → Keyboards, add Keyman and
+        <strong>allow full access</strong> — iOS requires this for any third-party keyboard.</li>
+    <li>Hold the globe key in any app to switch to Khmer Phonetic.</li>
+  </ol>
+</div>
+
+<h2>Windows</h2>
+<div class="card">
+  <ol>
+    <li>Install <a href="https://keyman.com/windows/">Keyman for Windows</a>.</li>
+    <li>Download the keyboard package and double-click the <code>.kmp</code> file.</li>
+    <li>Switch to it from the Keyman icon in the system tray, or with the Windows
+        language switcher.</li>
+  </ol>
+  <p class="note">Word suggestions are a phone and tablet feature; on Windows the keyboard
+  types Khmer directly with no suggestion bar.</p>
+</div>
+
+<h2>How to type</h2>
+<div class="card">
+  <p>Write the word the way it sounds. <code>suastei</code> gives <span class="kh">សួស្តី</span>,
+  <code>arkun</code> gives <span class="kh">អរគុណ</span>, <code>khnhom</code> gives
+  <span class="kh">ខ្ញុំ</span>.</p>
+  <p>Consonants typed together with no vowel between them stack with coeng automatically.
+  Type <code>.</code> to break a cluster: <code>ka.mpujaa</code> gives <span class="kh">កម្ពុជា</span>.</p>
+  <p>Capitals reach the second-series consonants — <code>d</code> <span class="kh">ដ</span> against
+  <code>D</code> <span class="kh">ឌ</span>, <code>n</code> <span class="kh">ន</span> against
+  <code>N</code> <span class="kh">ណ</span>. On a phone, hold the key instead of using Shift.</p>
+  <p>The full table is in the welcome page Keyman shows after installing, and on the
+  <a href="./">web version</a>.</p>
+</div>
+
+<h2>What is different from the web version</h2>
+<div class="card">
+  <p>The web version matches your spelling loosely and offers Khmer candidates from the
+  sound, the way a Pinyin keyboard does. The system keyboard converts letters directly and
+  exactly as you type — no guessing — and suggests whole words from a 20,000 word frequency
+  list once the dictionary is installed.</p>
+  <p>Both use the same romanization, so what you already know carries over. Every rule is
+  checked against the web version on each build.</p>
+</div>
+
+<footer>
+  <a href="./">← Back to the web keyboard</a> ·
+  <a href="https://github.com/merlynial/khmer-phonetic-keyboard">Source on GitHub</a> ·
+  MIT licence. Word frequencies from the Google Khmer pronunciation lexicon (CC-BY-4.0).
+</footer>
+
+</div>
+</body>
+</html>

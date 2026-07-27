@@ -1,0 +1,63 @@
+name: keyman packages
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+
+      - run: npm ci
+
+      # kmc's published tarball is missing the .gitignore its project templates
+      # expect; harmless here, but `kmc generate` fails without it.
+      - name: Patch kmc templates
+        run: |
+          for d in node_modules/@keymanapp/kmc-generate/build/src/template/*/; do
+            [ -f "$d/.gitignore" ] || printf 'build/\n' > "$d/.gitignore"
+          done
+
+      - name: Regenerate keyboard, wordlist and docs
+        run: npm run build:keyman && npm run build:wordlist && npm run build:docs
+
+      # The .kmn and the touch layout are generated from index.html. If they
+      # drift from what is committed, the scheme changed without a rebuild.
+      - name: Check generated sources are up to date
+        run: |
+          if ! git diff --quiet -- keyman/; then
+            echo "::error::keyman/ sources are stale — run 'npm run build' and commit the result"
+            git diff --stat -- keyman/
+            exit 1
+          fi
+
+      - name: Build packages
+        run: npm run build:packages
+
+      - name: Rule table matches the web engine
+        run: npm test
+
+      - name: Compiled keyboard matches the web engine
+        run: npm run test:packages
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keyman-packages
+          path: |
+            keyman/khmer_phonetic/build/khmer_phonetic.kmp
+            keyman/pakrinha.km.khmerphonetic/build/pakrinha.km.khmerphonetic.model.kmp
+
+      - name: Attach packages to the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            keyman/khmer_phonetic/build/khmer_phonetic.kmp
+            keyman/pakrinha.km.khmerphonetic/build/pakrinha.km.khmerphonetic.model.kmp

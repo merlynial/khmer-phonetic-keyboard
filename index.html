@@ -201,7 +201,7 @@
   <header>
     <div class="logo">ក</div>
     <div style="flex:1">
-      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.12</span></h1>
+      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.13</span></h1>
       <div class="sub" id="t-sub">វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer</div>
     </div>
     <button class="btn alt" id="langbtn" style="padding:8px 14px;font-size:13px">EN</button>
@@ -283,6 +283,15 @@
       Capitals matter: <code>d</code>=ដ but <code>D</code>=ឌ, <code>n</code>=ន but <code>N</code>=ណ, <code>l</code>=ល but <code>L</code>=ឡ.
     </p>
   </details>
+
+  <p style="text-align:center;margin:22px 0 8px">
+    <a href="install.html" style="display:inline-block;background:var(--grad);color:#fff;
+       text-decoration:none;padding:12px 22px;border-radius:11px;font-weight:600;font-size:15px"
+       id="t-install">Install as a real keyboard — Android, iPhone, Windows</a>
+  </p>
+  <p class="hint" style="text-align:center" id="t-installsub">
+    Type Khmer by sound in every app, not just this page
+  </p>
 
   <p class="hint" style="text-align:center" id="t-footer">
     Works offline · add to Home Screen to use like an app ·
@@ -853,6 +862,8 @@ const STRINGS = {
     tut2: "Pick the Khmer word from the bar: tap it, or press <b>Space</b> for the first one",
     tut3: "After each word, the strip on the keyboard <b>predicts your next word</b> — and it learns the words you use",
     gotit: "Got it — let me type!",
+    install: "Install as a real keyboard — Android, iPhone, Windows",
+    installsub: "Type Khmer by sound in every app, not just this page",
     langbtn: "ខ្មែរ",
   },
   km: {
@@ -875,6 +886,8 @@ const STRINGS = {
     tut2: "ជ្រើសពាក្យខ្មែរពីរបារ៖ ចុចលើវា ឬចុច <b>Space</b> សម្រាប់ពាក្យទី១",
     tut3: "បន្ទាប់ពីពាក្យនីមួយៗ របារលើក្ដារចុច<b>ទាយពាក្យបន្ទាប់</b> — ហើយវារៀនពាក្យដែលអ្នកប្រើ",
     gotit: "យល់ហើយ!",
+    install: "ដំឡើងជាក្ដារចុចប្រព័ន្ធ — Android, iPhone, Windows",
+    installsub: "វាយខ្មែរតាមសំឡេងក្នុងគ្រប់កម្មវិធី មិនត្រឹមតែទំព័រនេះ",
     langbtn: "EN",
   },
 };
@@ -896,6 +909,8 @@ function setLang(l){
   $("#mwexport").textContent = s.mwexport;
   $("#mwimport").textContent = s.mwimport;
   $("#mwreset").textContent = s.mwreset;
+  $("#t-install").textContent = s.install;
+  $("#t-installsub").textContent = s.installsub;
   $("#langbtn").textContent = s.langbtn;
   inEl.placeholder = s.placeholder;
 }

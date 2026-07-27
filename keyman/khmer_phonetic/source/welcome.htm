@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Khmer Phonetic</title>
+<style>
+body { font: 16px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif;
+       margin: 0 auto; padding: 20px; max-width: 44em; color: #1a1a1a; }
+h1 { font-size: 1.5rem; margin: 0 0 .2em; }
+h2 { font-size: 1.05rem; margin: 1.8em 0 .5em; text-transform: uppercase;
+     letter-spacing: .06em; color: #666; font-weight: 600; }
+p { margin: .6em 0; }
+code { font-family: ui-monospace, Menlo, Consolas, monospace; background: #f2f2f4;
+       padding: 1px 5px; border-radius: 4px; font-size: .92em; }
+table { border-collapse: collapse; width: 100%; margin: .4em 0 1em; }
+td { padding: 5px 8px; border-bottom: 1px solid #ececef; white-space: nowrap; }
+td.kh { font-family: "Khmer OS Siemreap", Siemreap, "Khmer OS", sans-serif;
+        font-size: 1.25em; padding-right: 18px; }
+.ex { font-family: "Khmer OS Siemreap", Siemreap, sans-serif; font-size: 1.2em; }
+.note { background: #f7f7f9; border-left: 3px solid #d8d8de; padding: .7em 1em;
+        margin: 1em 0; }
+@media (prefers-color-scheme: dark) {
+  body { background: #16161a; color: #e8e8ea; }
+  h2 { color: #9a9aa4; }
+  code { background: #26262c; }
+  td { border-bottom-color: #2a2a31; }
+  .note { background: #1e1e24; border-left-color: #3a3a44; }
+}</style>
+</head>
+<body>
+<h1>Khmer Phonetic</h1>
+<p>Type Khmer by sound. Write the word the way it sounds in Latin letters and it
+becomes Khmer as you type — no need to learn key positions.</p>
+
+<h2>Try these</h2>
+<table><tr><td><code>suastei</code></td><td class="kh">សួស្តី</td><td>hello</td></tr><tr><td><code>arkun</code></td><td class="kh">អរគុណ</td><td>thank you</td></tr><tr><td><code>khnhom</code></td><td class="kh">ខ្ញុំ</td><td>I / me</td></tr><tr><td><code>baadd</code></td><td class="kh">បាទ</td><td>yes (m.)</td></tr><tr><td><code>ka.mpujaa</code></td><td class="kh">កម្ពុជា</td><td>Cambodia</td></tr><tr><td><code>m*aong</code></td><td class="kh">ម៉ោង</td><td>hour</td></tr></table>
+
+<h2>Three rules worth knowing</h2>
+<div class="note">
+<p><b>Consonants stack automatically.</b> Two consonants typed with no vowel
+between them join with coeng: <code>khnhom</code> gives <span class="ex">ខ្ញុំ</span>.
+Type <code>.</code> to break a cluster: <code>ka.mpujaa</code> gives
+<span class="ex">កម្ពុជា</span>.</p>
+<p><b>Capitals matter.</b> <code>d</code> is <span class="ex">ដ</span> but
+<code>D</code> is <span class="ex">ឌ</span>; <code>n</code> is
+<span class="ex">ន</span> but <code>N</code> is <span class="ex">ណ</span>. On a
+phone, hold the key to reach the capital.</p>
+<p><b><code>a</code> is the built-in vowel.</b> It writes nothing on its own — it
+just ends the consonant, so <code>ka</code> is <span class="ex">ក</span>.</p>
+</div>
+
+<h2>Consonants</h2>
+<table><tr><td><code>k</code></td><td class="kh">ក</td><td><code>kh</code></td><td class="kh">ខ</td><td><code>g</code></td><td class="kh">គ</td><td><code>gh</code></td><td class="kh">ឃ</td></tr><tr><td><code>ng</code></td><td class="kh">ង</td><td><code>ch</code></td><td class="kh">ច</td><td><code>chh</code></td><td class="kh">ឆ</td><td><code>j</code></td><td class="kh">ជ</td></tr><tr><td><code>jh</code></td><td class="kh">ឈ</td><td><code>ny</code></td><td class="kh">ញ</td><td><code>nh</code></td><td class="kh">ញ</td><td><code>d</code></td><td class="kh">ដ</td></tr><tr><td><code>TH</code></td><td class="kh">ឋ</td><td><code>D</code></td><td class="kh">ឌ</td><td><code>DH</code></td><td class="kh">ឍ</td><td><code>N</code></td><td class="kh">ណ</td></tr><tr><td><code>t</code></td><td class="kh">ត</td><td><code>th</code></td><td class="kh">ថ</td><td><code>dd</code></td><td class="kh">ទ</td><td><code>dh</code></td><td class="kh">ធ</td></tr><tr><td><code>n</code></td><td class="kh">ន</td><td><code>b</code></td><td class="kh">ប</td><td><code>ph</code></td><td class="kh">ផ</td><td><code>p</code></td><td class="kh">ព</td></tr><tr><td><code>bh</code></td><td class="kh">ភ</td><td><code>m</code></td><td class="kh">ម</td><td><code>y</code></td><td class="kh">យ</td><td><code>r</code></td><td class="kh">រ</td></tr><tr><td><code>l</code></td><td class="kh">ល</td><td><code>v</code></td><td class="kh">វ</td><td><code>w</code></td><td class="kh">វ</td><td><code>s</code></td><td class="kh">ស</td></tr><tr><td><code>h</code></td><td class="kh">ហ</td><td><code>L</code></td><td class="kh">ឡ</td><td><code>q</code></td><td class="kh">អ</td></tr></table>
+
+<h2>Vowels</h2>
+<table><tr><td><code>aa</code></td><td class="kh">ា</td><td><code>i</code></td><td class="kh">ិ</td><td><code>ii</code></td><td class="kh">ី</td><td><code>ei</code></td><td class="kh">ី</td></tr><tr><td><code>eu</code></td><td class="kh">ឹ</td><td><code>euu</code></td><td class="kh">ឺ</td><td><code>u</code></td><td class="kh">ុ</td><td><code>uu</code></td><td class="kh">ូ</td></tr><tr><td><code>ou</code></td><td class="kh">ូ</td><td><code>ua</code></td><td class="kh">ួ</td><td><code>oe</code></td><td class="kh">ើ</td><td><code>aeu</code></td><td class="kh">ើ</td></tr><tr><td><code>oea</code></td><td class="kh">ឿ</td><td><code>ie</code></td><td class="kh">ៀ</td><td><code>e</code></td><td class="kh">េ</td><td><code>ae</code></td><td class="kh">ែ</td></tr><tr><td><code>eae</code></td><td class="kh">ែ</td><td><code>ai</code></td><td class="kh">ៃ</td><td><code>ey</code></td><td class="kh">ៃ</td><td><code>ao</code></td><td class="kh">ោ</td></tr><tr><td><code>o</code></td><td class="kh">ោ</td><td><code>oa</code></td><td class="kh">ោ</td><td><code>au</code></td><td class="kh">ៅ</td><td><code>ov</code></td><td class="kh">ៅ</td></tr><tr><td><code>am</code></td><td class="kh">ាំ</td><td><code>aM</code></td><td class="kh">ាំ</td><td><code>um</code></td><td class="kh">ុំ</td><td><code>om</code></td><td class="kh">ុំ</td></tr><tr><td><code>ah</code></td><td class="kh">ះ</td><td><code>eah</code></td><td class="kh">េះ</td><td><code>oh</code></td><td class="kh">ោះ</td><td><code>uh</code></td><td class="kh">ុះ</td></tr><tr><td><code>ih</code></td><td class="kh">ិះ</td></tr></table>
+
+<h2>Independent vowels</h2>
+<table><tr><td><code>'e</code></td><td class="kh">ឯ</td><td><code>'ai</code></td><td class="kh">ឰ</td><td><code>'o</code></td><td class="kh">ឱ</td><td><code>'au</code></td><td class="kh">ឳ</td></tr><tr><td><code>'ri</code></td><td class="kh">ឫ</td><td><code>'rii</code></td><td class="kh">ឬ</td><td><code>'li</code></td><td class="kh">ឭ</td><td><code>'lii</code></td><td class="kh">ឮ</td></tr><tr><td><code>'q</code></td><td class="kh">ឥ</td><td><code>'qi</code></td><td class="kh">ឦ</td><td><code>'qu</code></td><td class="kh">ឧ</td><td><code>'quu</code></td><td class="kh">ឩ</td></tr></table>
+
+<h2>Signs and punctuation</h2>
+<table><tr><td><code>M</code></td><td class="kh">ំ</td><td><code>H</code></td><td class="kh">ះ</td><td><code>'</code></td><td class="kh">់</td><td><code>^</code></td><td class="kh">័</td></tr><tr><td><code>~</code></td><td class="kh">៍</td><td><code>*</code></td><td class="kh">៉</td><td><code>`</code></td><td class="kh">៊</td><td><code>//</code></td><td class="kh">។</td></tr><tr><td><code>///</code></td><td class="kh">៕</td><td><code>**</code></td><td class="kh">ៗ</td><td><code>&lt;&lt;</code></td><td class="kh">«</td><td><code>&gt;&gt;</code></td><td class="kh">»</td></tr><tr><td><code>::</code></td><td class="kh">៖</td></tr></table>
+
+<h2>Word suggestions</h2>
+<p>On Android and iPhone, install the <b>Khmer Phonetic Dictionary</b> package as
+well to get a suggestion bar above the keyboard, drawn from a 20,000 word
+frequency list.</p>
+
+<p>Full documentation and the web version:
+<a href="https://merlynial.github.io/khmer-phonetic-keyboard/">merlynial.github.io/khmer-phonetic-keyboard</a></p>
+</body>
+</html>

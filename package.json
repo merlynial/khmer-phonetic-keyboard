@@ -1,0 +1,29 @@
+{
+  "name": "khmer-phonetic-keyboard",
+  "version": "1.0.0",
+  "description": "Type Khmer by sound. A phonetic Khmer keyboard as a web app, and as a Keyman package for Android, iOS and Windows.",
+  "type": "commonjs",
+  "scripts": {
+    "build:keyman": "node tools/build_keyman.mjs",
+    "build:wordlist": "node tools/build_wordlist.mjs",
+    "build:docs": "node tools/build_docs.mjs",
+    "build:packages": "kmc build keyman/pakrinha.km.khmerphonetic/pakrinha.km.khmerphonetic.kpj --no-error-reporting && kmc build keyman/khmer_phonetic/khmer_phonetic.kpj --no-error-reporting -m KM0209A",
+    "build": "npm run build:keyman && npm run build:wordlist && npm run build:docs && npm run build:packages && node tools/collect_dist.mjs",
+    "test": "node tests/golden.mjs && node tests/keyman.mjs",
+    "test:packages": "node tests/compiled.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/merlynial/khmer-phonetic-keyboard.git"
+  },
+  "keywords": ["khmer", "keyboard", "phonetic", "keyman", "input-method"],
+  "author": "Keang Pakrinha",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/merlynial/khmer-phonetic-keyboard/issues"
+  },
+  "homepage": "https://merlynial.github.io/khmer-phonetic-keyboard/",
+  "devDependencies": {
+    "@keymanapp/kmc": "^18.0.249"
+  }
+}

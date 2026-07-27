@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package>
+  <System>
+    <KeymanDeveloperVersion>18.0.249.0</KeymanDeveloperVersion>
+    <FileVersion>12.0</FileVersion>
+  </System>
+  <Options>
+    <ExecuteProgram></ExecuteProgram>
+    <ReadMeFile>readme.htm</ReadMeFile>
+    <LicenseFile>..\LICENSE.md</LicenseFile>
+  </Options>
+  <Info>
+    <Name URL="">Khmer Phonetic Dictionary</Name>
+    <Copyright URL="">© Keang Pakrinha</Copyright>
+    <Author URL="">Keang Pakrinha</Author>
+    <Version URL="">1.0</Version>
+    <Description URL="">Khmer word predictions</Description>
+  </Info>
+  <Files>
+    <File>
+      <Name>..\build\pakrinha.km.khmerphonetic.model.js</Name>
+    </File>
+    <File>
+      <Name>welcome.htm</Name>
+    </File>
+    <File>
+      <Name>readme.htm</Name>
+    </File>
+    <File>
+      <Name>..\LICENSE.md</Name>
+    </File>
+  </Files>
+  <Keyboards/>
+  <LexicalModels>
+    <LexicalModel>
+      <Name>Khmer Phonetic Dictionary</Name>
+      <ID>pakrinha.km.khmerphonetic</ID>
+            <Languages>
+        <Language ID="km">Khmer</Language>
+      </Languages>
+    </LexicalModel>
+  </LexicalModels>
+  <RelatedPackages/>
+</Package>
