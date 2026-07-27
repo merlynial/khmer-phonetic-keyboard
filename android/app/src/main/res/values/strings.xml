@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Khmer Phonetic</string>
+    <string name="ime_name">Khmer Phonetic · ខ្មែរតាមសំឡេង</string>
+
+    <string name="setup_title">Khmer Phonetic</string>
+    <string name="setup_tagline">វាយខ្មែរតាមសំឡេង · Type Khmer by sound</string>
+
+    <string name="step_enable_title">1. Turn the keyboard on</string>
+    <string name="step_enable_body">Android hides new keyboards until you enable them in settings.</string>
+    <string name="step_enable_button">Open keyboard settings</string>
+
+    <string name="step_select_title">2. Switch to it</string>
+    <string name="step_select_body">Pick Khmer Phonetic as your input method. You can switch back any time with the globe key.</string>
+    <string name="step_select_button">Choose input method</string>
+
+    <string name="step_try_title">3. Try it</string>
+    <string name="step_try_body">Type the sound of a Khmer word here — try khnhom, arkun, or suastei.</string>
+    <string name="try_hint">Type here to test the keyboard</string>
+
+    <string name="how_title">How to type</string>
+</resources>

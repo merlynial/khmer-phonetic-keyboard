@@ -63,28 +63,38 @@
 same romanization as a <strong>real system keyboard</strong>, so it works everywhere your
 phone or computer accepts typing.</p>
 
-<p>It runs on <a href="https://keyman.com">Keyman</a>, a free and open-source keyboarding
-app from SIL. You install Keyman once, then add this keyboard to it.</p>
+<p>On Android that is a standalone app. On iPhone and Windows it goes through
+<a href="https://keyman.com">Keyman</a>, a free and open-source keyboarding app from SIL —
+you install Keyman once, then add this keyboard to it.</p>
 
-<h2>Download</h2>
+<h2>Android — the app</h2>
 <div class="card">
-  <a class="dl" href="dist/khmer_phonetic.kmp" download>Khmer Phonetic keyboard</a>
-  <a class="dl alt" href="dist/pakrinha.km.khmerphonetic.model.kmp" download>Khmer dictionary (optional)</a>
-  <p class="meta">One package works on Android, iPhone, iPad, Windows, macOS and Linux.
-  The dictionary adds a word-suggestion bar on phones and tablets.</p>
+  <a class="dl" href="dist/khmer-phonetic.apk" download>Download Khmer Phonetic (3.3 MB)</a>
+  <ol>
+    <li>Open this page on your phone and tap the button above.</li>
+    <li>Tap the downloaded file to install. Android will ask you to allow installing
+        apps from your browser — this app is not on Google Play, so that step is
+        expected.</li>
+    <li>Open <strong>Khmer Phonetic</strong> from your app list. It walks you through
+        turning the keyboard on and choosing it.</li>
+    <li>Anywhere you type, tap the globe key to switch to it.</li>
+  </ol>
+  <p class="note">This one has the sound-matching suggestion bar from the web version:
+  type <code>sousdey</code>, <code>suosdei</code> or <code>suastei</code> and it still
+  finds <span class="kh">សួស្តី</span>. It learns the words and spellings you use, and
+  keeps them on the phone.</p>
 </div>
 
-<h2>Android</h2>
+<h2>iPhone, iPad and Windows — the Keyman package</h2>
 <div class="card">
-  <ol>
-    <li>Install <a href="https://play.google.com/store/apps/details?id=com.tavultesoft.kmapro">Keyman</a> from Google Play.</li>
-    <li>Download the keyboard package above on the phone. Tap the downloaded
-        <code>.kmp</code> file — Keyman opens and offers to install it.</li>
-    <li>Keyman will walk you through enabling it in Android's system settings.</li>
-    <li>Anywhere you type, tap the globe key to switch to Khmer Phonetic.</li>
-  </ol>
-  <p class="note">Install the dictionary package the same way to get word suggestions
-  above the keyboard.</p>
+  <a class="dl alt" href="dist/khmer_phonetic.kmp" download>Khmer Phonetic keyboard</a>
+  <a class="dl alt" href="dist/pakrinha.km.khmerphonetic.model.kmp" download>Khmer dictionary (optional)</a>
+  <p class="meta">One package, every platform: iPhone, iPad, Windows, macOS, Linux —
+  and Android too, if you would rather use Keyman than install the app.
+  The dictionary adds a word-suggestion bar on phones and tablets.</p>
+  <p class="note">The Keyman keyboard converts spelling exactly, with no sound
+  matching — <code>sousdey</code> will not find <span class="kh">សួស្តី</span> there
+  the way it does in the app and on the web.</p>
 </div>
 
 <h2>iPhone and iPad</h2>
@@ -125,14 +135,17 @@ app from SIL. You install Keyman once, then add this keyboard to it.</p>
   <a href="./">web version</a>.</p>
 </div>
 
-<h2>What is different from the web version</h2>
+<h2>Which one behaves like the web version</h2>
 <div class="card">
-  <p>The web version matches your spelling loosely and offers Khmer candidates from the
-  sound, the way a Pinyin keyboard does. The system keyboard converts letters directly and
-  exactly as you type — no guessing — and suggests whole words from a 20,000 word frequency
-  list once the dictionary is installed.</p>
-  <p>Both use the same romanization, so what you already know carries over. Every rule is
-  checked against the web version on each build.</p>
+  <p>The <strong>Android app</strong> does. It carries the same sound-matching suggestions
+  as this site — loose spellings still find the right word — and it learns from what you
+  pick.</p>
+  <p>The <strong>Keyman package</strong> converts letters exactly as typed, with no
+  guessing, and suggests whole words from a 20,000 word frequency list once the dictionary
+  is installed. That is the trade for reaching iPhone and Windows at all.</p>
+  <p>All three use the same romanization, so what you already know carries over. Both
+  builds are checked against the web version automatically — tens of thousands of spellings
+  on every build, and any disagreement fails the build.</p>
 </div>
 
 <footer>

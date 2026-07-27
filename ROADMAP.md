@@ -45,18 +45,28 @@ Windows, macOS and Linux, without writing a native IME per platform.
 - Install page: `install.html`
 
 What this route does not carry over: the fuzzy sound matching. The Keyman
-keyboard converts spellings deterministically, so `sousdey` no longer finds
-សួស្តី the way the web app does — the dictionary only completes words already
-started. Closing that gap needs the Khmerlish work in session A, or a native
-IME.
+keyboard converts spellings deterministically, so `sousdey` does not find
+សួស្តី there — the dictionary only completes words already started.
 
-## Later — native IME, if the Keyman route proves limiting
-1. Kotlin `InputMethodService` project, new repo `khmer-ime`.
-2. Port the engine: qskel matcher + words.txt/bigrams.txt as packaged assets.
-3. Keyboard view: QWERTY + suggestion strip (reuse this app's layout logic).
-4. Personal learning in app storage; import/export.
-5. iOS custom keyboard extension (same assets, Swift) — needs a paid Apple
-   developer account to distribute.
+## Done — native Android app (`android/`)
+A standalone `InputMethodService` app, so Android needs nothing but the APK, and
+the fuzzy sound matching the Keyman route drops is back.
+
+- `PhoneticScheme.kt` generated from `index.html`; `curated.tsv` is dict.js's own
+  index precomputed, so `romVariants` never had to be ported
+- `Suggestions.kt` ports the qskel matcher and the tiering over both lexicons
+- Learning: usage counts and personal spellings in app storage
+- `EngineTest` replays 29,142 web-engine conversions through the Kotlin port
+- `dist/khmer-phonetic.apk`, debug-signed
+
+Still open there: phrase mode (`segmentPhrase`), next-word prediction (bigrams
+ship in the APK but nothing reads them), backup/restore, long-press capitals.
+
+## Not attempted — native iOS and Windows
+An iOS keyboard extension needs Xcode and, to reach anyone else's phone, a paid
+Apple developer account. A Windows input method is TSF/COM and must be compiled
+on Windows. Keyman covers both, and is the sensible answer unless one of those
+platforms becomes a daily driver.
 
 ## Smaller improvements (any session)
 - Trigram / backoff prediction; predict after punctuation and at sentence start

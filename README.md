@@ -38,17 +38,24 @@ khnhom  ⎵   srolanh  ⎵   kampuchea  ⎵     →     ខ្ញុំស្រ
 
 ## As a system keyboard
 
-The same romanization ships as a [Keyman](https://keyman.com) package, so you can
-type Khmer by sound in Telegram, Messenger, Word, or anywhere else — not only on
-this page. One file installs on **Android, iPhone, iPad, Windows, macOS and
-Linux**; a second, optional package adds a word-suggestion bar on phones.
+Type Khmer by sound in Telegram, Messenger, Word, or anywhere else — not only on
+this page. Two builds, because no single one reaches every platform:
 
-See [install.html](install.html) for per-platform steps, and
-[keyman/README.md](keyman/README.md) for how the keyboard is built and tested.
+| | What it is | Sound matching |
+|---|---|---|
+| **[Android app](android/README.md)** — `dist/khmer-phonetic.apk` | A standalone keyboard app. Nothing else to install. | Yes — the same fuzzy matching as the web app |
+| **[Keyman package](keyman/README.md)** — `dist/*.kmp` | Runs inside [Keyman](https://keyman.com). Reaches **iPhone, iPad, Windows, macOS, Linux** and Android. | No — spellings convert exactly as typed |
 
-The rules are generated from the same maps the web app uses and verified against
-it on every build — including a test that types tens of thousands of strings
-through the *compiled* keyboard that ships in the package.
+See [install.html](install.html) for per-platform steps.
+
+Both are generated from the maps in `index.html` and checked against the web app
+on every build: the Keyman build types tens of thousands of strings through the
+*compiled* keyboard that ships in the package, and the Android build replays
+29,142 conversions through the Kotlin port. Any disagreement fails the build.
+
+There is no native iPhone or Windows app: an iOS keyboard extension needs Xcode
+and an Apple developer account, and a Windows input method must be compiled on
+Windows. Keyman is what covers those two.
 
 ## How to type
 
@@ -80,13 +87,19 @@ python3 -m http.server 4599
 - `sw.js` — offline cache
 - `install.html` — download and install page for the system keyboard
 
-The Keyman packages do have a build step:
+- `android/` — the Android keyboard app (Kotlin)
+- `keyman/` — the Keyman keyboard and dictionary packages
+
+The keyboards do have a build step:
 
 ```sh
 npm install
-npm run build     # regenerate sources, compile both .kmp packages into dist/
-npm test          # rule table vs. the web engine
-npm run test:packages   # the compiled keyboard vs. the web engine
+npm run build            # regenerate sources, compile both .kmp packages into dist/
+npm test                 # rule table vs. the web engine
+npm run test:packages    # the compiled Keyman keyboard vs. the web engine
+npm run build:android    # regenerate the Kotlin scheme and app assets
+npm run android:test     # the Kotlin engine vs. the web engine
+npm run android:apk      # debug APK into dist/
 ```
 
 ## License
