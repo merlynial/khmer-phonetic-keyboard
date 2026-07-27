@@ -44,12 +44,13 @@ class KhmerPhoneticService : InputMethodService(), KeyboardView.Listener {
         // typing and conversion work immediately, suggestions appear a moment
         // later.
         Thread {
-            val loaded = Suggestions(
-                curatedLines = assets.open("curated.tsv").bufferedReader().lineSequence(),
-                lexiconLines = assets.open("words.txt").bufferedReader().lineSequence(),
-                learned = learning,
-            )
-            suggestions = loaded
+            // Both sequences are consumed inside the constructor, so they can be
+            // read and closed within these use blocks.
+            suggestions = assets.open("curated.tsv").bufferedReader().use { curated ->
+                assets.open("words.txt").bufferedReader().use { lexicon ->
+                    Suggestions(curated.lineSequence(), lexicon.lineSequence(), learning)
+                }
+            }
         }.apply { name = "khmer-lexicon-load"; priority = Thread.MIN_PRIORITY }.start()
     }
 
