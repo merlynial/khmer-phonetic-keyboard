@@ -156,7 +156,9 @@ class KhmerPhoneticService : InputMethodService(), KeyboardView.Listener {
             return
         }
         connection.setComposingText(PhoneticEngine.convert(buffer.toString()), 1)
-        keyboard?.showSuggestions(suggestions?.suggest(buffer.toString()).orEmpty())
+        val lexicon = suggestions
+        if (lexicon == null) keyboard?.showLoading()
+        else keyboard?.showSuggestions(lexicon.suggest(buffer.toString()))
     }
 
     /** Freeze whatever is composing and forget the buffer. */

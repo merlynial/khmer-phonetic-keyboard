@@ -31,6 +31,18 @@ class Suggestions(
     private val lexKhmer = ArrayList<String>(62000)
     private val lexSkel = ArrayList<String>(62000)
 
+    /* Sorted views used to binary-search a prefix range instead of scanning.
+     *
+     * The first version walked all ~77,000 entries on every keystroke. On a
+     * desktop JVM that is 0.6 ms and looks fine; on a phone it is tens of
+     * milliseconds of main-thread work per letter, which both delays the word
+     * bar and makes the keyboard miss taps. Each array below holds row indices
+     * ordered by the string being searched, so a lookup touches only the
+     * matching range. */
+    private lateinit var curatedByKey: IntArray
+    private lateinit var curatedByVskel: IntArray
+    private lateinit var lexBySkel: IntArray
+
     init {
         for (line in curatedLines) {
             if (line.isBlank() || line.startsWith("#")) continue
@@ -45,9 +57,46 @@ class Suggestions(
                 lexSkel.add(line.substring(tab + 1).trim())
             }
         }
+        curatedByKey = sortedIndices(curated.size) { curated[it].key }
+        curatedByVskel = sortedIndices(curated.size) { curated[it].vskel }
+        lexBySkel = sortedIndices(lexSkel.size) { lexSkel[it] }
     }
 
     val lexiconSize: Int get() = lexKhmer.size
+
+    private inline fun sortedIndices(size: Int, crossinline key: (Int) -> String): IntArray =
+        (0 until size).sortedBy(key).toIntArray()
+
+    /** First position in [order] whose string is >= [target]. */
+    private inline fun lowerBound(order: IntArray, target: String, crossinline key: (Int) -> String): Int {
+        var lo = 0
+        var hi = order.size
+        while (lo < hi) {
+            val mid = (lo + hi) ushr 1
+            if (key(order[mid]) < target) lo = mid + 1 else hi = mid
+        }
+        return lo
+    }
+
+    /**
+     * Visit every row whose string starts with [prefix], in sorted order.
+     * [visit] returns false to stop early.
+     */
+    private inline fun forEachWithPrefix(
+        order: IntArray,
+        prefix: String,
+        crossinline key: (Int) -> String,
+        visit: (row: Int, value: String) -> Boolean,
+    ) {
+        var i = lowerBound(order, prefix, key)
+        while (i < order.size) {
+            val row = order[i]
+            val value = key(row)
+            if (!value.startsWith(prefix)) return
+            if (!visit(row, value)) return
+            i++
+        }
+    }
 
     /** What the user has picked before, so their words float up. */
     interface Learning {
@@ -91,34 +140,35 @@ class Suggestions(
 
         val qv = vskel(q)
         val fuzzyOk = q.length >= 3
-        for (c in curated) {
-            val tier: Int
-            var sub = 0L
-            when {
-                c.key == q -> tier = 0
-                c.key.startsWith(q) -> { tier = 1; sub = (c.key.length - q.length).toLong() }
-                fuzzyOk && c.vskel == qv -> tier = 2
-                fuzzyOk && c.vskel.startsWith(qv) -> { tier = 3; sub = (c.vskel.length - qv.length).toLong() }
-                else -> continue
-            }
-            add(c.khmer, tier, sub, c.gloss)
+
+        // Spelled exactly, or the query is the start of a longer spelling.
+        forEachWithPrefix(curatedByKey, q, { curated[it].key }) { row, key ->
+            val c = curated[row]
+            if (key == q) add(c.khmer, 0, 0, c.gloss)
+            else add(c.khmer, 1, (key.length - q.length).toLong(), c.gloss)
+            true
         }
 
+        // Same consonants, vowels written differently.
+        if (fuzzyOk) {
+            forEachWithPrefix(curatedByVskel, qv, { curated[it].vskel }) { row, skel ->
+                val c = curated[row]
+                if (skel == qv) add(c.khmer, 2, 0, c.gloss)
+                else add(c.khmer, 3, (skel.length - qv.length).toLong(), c.gloss)
+                true
+            }
+        }
+
+        // The 62k lexicon, matched on how the word sounds rather than how it is
+        // spelled. `sub` keeps corpus rank as the tie-break, so common words win.
         if (fuzzyOk && lexKhmer.isNotEmpty()) {
             val qk = qskel(q)
             if (qk.length >= 2) {
-                var found = 0
-                var i = 0
-                while (i < lexSkel.size && found < MAX_LEXICON_HITS) {
-                    val sk = lexSkel[i]
-                    if (sk == qk) {
-                        add(lexKhmer[i], 4, i.toLong())
-                        found++
-                    } else if (sk.startsWith(qk)) {
-                        add(lexKhmer[i], 5, (sk.length - qk.length) * 100_000L + i)
-                        found++
-                    }
-                    i++
+                var visited = 0
+                forEachWithPrefix(lexBySkel, qk, { lexSkel[it] }) { row, skel ->
+                    if (skel == qk) add(lexKhmer[row], 4, row.toLong())
+                    else add(lexKhmer[row], 5, (skel.length - qk.length) * 100_000L + row)
+                    ++visited < MAX_LEXICON_VISITS
                 }
             }
         }
@@ -136,7 +186,10 @@ class Suggestions(
 
     companion object {
         private const val MAX_TOKEN = 32
-        private const val MAX_LEXICON_HITS = 300
+        // A guard against a one-letter skeleton matching half the lexicon. The
+        // ranking still runs over everything visited, so raising this costs
+        // time but never quality.
+        private const val MAX_LEXICON_VISITS = 4000
         private const val GLOSS_YOURS = "yours"
 
         /** Collapse vowel runs, so "sousdey" and "suosdei" key alike. */

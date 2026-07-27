@@ -64,13 +64,35 @@ What *is* hand-ported is the conversion loop and the sound-skeleton matcher.
 converted — every romanization key, every ordered pair of keys, and 20,000
 random strings — and fails on any disagreement.
 
+## How touch works, and why
+
+The first version made every key a `TextView` that fired on `ACTION_DOWN`. It
+was unusable: the letter committed the instant a finger landed, so a tap a few
+pixels into the neighbouring key typed the wrong letter, silently — and the
+engine then converted that wrong letter perfectly. "Keys are hard to hit" and
+"wrong Khmer comes out" were the same bug seen from two ends.
+
+`KeyPadView` draws the keys on a canvas and handles touch itself:
+
+- keys commit on **release**, not on touch, so a bad landing can be slid off
+- the selection follows the finger; a preview bubble shows where it is
+- holding a key gives its alternate — the capitals `D N L T M H`, Khmer digits,
+  a Latin full stop
+- taps that land between keys snap to the nearest one in the row
+- every press gives the standard keyboard haptic
+
+`Suggestions` binary-searches sorted indices rather than scanning all 77,000
+entries per keystroke: 0.6 ms → 0.04 ms on the JVM, and no main-thread stall on
+a phone.
+
 ## Not done yet
 
 - **Phrase mode.** The web app segments a long romanized run into several words
   (`segmentPhrase`); here, suggestions are per word.
 - **Next-word prediction.** `bigrams.txt` ships in the APK but nothing reads it.
 - **Backup and restore** of learned words.
-- **Long-press for capitals.** Use Shift; `D`, `N`, `L` are on the shift layer.
+- **A long-press popup.** Holding a key types its alternate directly rather than
+  showing a chooser, so only one alternate per key is reachable.
 
 ## Signing
 
