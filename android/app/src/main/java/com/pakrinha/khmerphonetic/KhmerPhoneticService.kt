@@ -3,6 +3,7 @@ package com.pakrinha.khmerphonetic
 import android.content.Context
 import android.inputmethodservice.InputMethodService
 import android.os.Build
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -44,13 +45,19 @@ class KhmerPhoneticService : InputMethodService(), KeyboardView.Listener {
         // typing and conversion work immediately, suggestions appear a moment
         // later.
         Thread {
-            // Both sequences are consumed inside the constructor, so they can be
-            // read and closed within these use blocks.
-            suggestions = assets.open("curated.tsv").bufferedReader().use { curated ->
-                assets.open("words.txt").bufferedReader().use { lexicon ->
-                    Suggestions(curated.lineSequence(), lexicon.lineSequence(), learning)
+            // An uncaught exception on a background thread takes the whole
+            // process down with it. A missing or corrupt lexicon should cost the
+            // suggestion bar, not the ability to type.
+            runCatching {
+                // Both sequences are consumed inside the constructor, so they can
+                // be read and closed within these use blocks.
+                assets.open("curated.tsv").bufferedReader().use { curated ->
+                    assets.open("words.txt").bufferedReader().use { lexicon ->
+                        Suggestions(curated.lineSequence(), lexicon.lineSequence(), learning)
+                    }
                 }
-            }
+            }.onSuccess { suggestions = it }
+                .onFailure { Log.e(TAG, "could not load the lexicons; typing still works", it) }
         }.apply { name = "khmer-lexicon-load"; priority = Thread.MIN_PRIORITY }.start()
     }
 
@@ -181,5 +188,6 @@ class KhmerPhoneticService : InputMethodService(), KeyboardView.Listener {
 
     private companion object {
         const val PREFS = "khmer_phonetic_learning"
+        const val TAG = "KhmerPhonetic"
     }
 }

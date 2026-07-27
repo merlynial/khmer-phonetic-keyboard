@@ -5,12 +5,14 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowInsets
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -223,6 +225,25 @@ class KeyboardView(
 
             is KeyboardLayout.Key.Gap -> Unit
         }
+    }
+
+    /**
+     * Keep the bottom row clear of the navigation bar.
+     *
+     * With gesture navigation the system's touch area overlays the bottom of the
+     * screen, and it wins. Without this padding the whole last row — ?123, the
+     * globe, space, Enter — is swallowed by it: pressing ?123 dismisses the
+     * keyboard instead of switching layers.
+     */
+    override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        val bottom = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            insets.getInsets(WindowInsets.Type.navigationBars()).bottom
+        } else {
+            @Suppress("DEPRECATION")
+            insets.systemWindowInsetBottom
+        }
+        setPadding(0, 0, 0, bottom)
+        return super.onApplyWindowInsets(insets)
     }
 
     /** Reset to the plain letter layer, for a fresh input field. */
