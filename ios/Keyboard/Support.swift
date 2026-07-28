@@ -17,22 +17,6 @@ enum Palette {
     static let accent = UIColor(red: 0.231, green: 0.510, blue: 0.965, alpha: 1)
 }
 
-enum Fonts {
-    /// Siemreap ships in the extension's bundle so Khmer renders identically to
-    /// the web app. If registration fails, the system Khmer face is fine.
-    private static let registered: Bool = {
-        guard let url = Bundle.main.url(forResource: "Siemreap-Regular", withExtension: "ttf") else {
-            return false
-        }
-        return CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
-    }()
-
-    static func khmer(size: CGFloat) -> UIFont {
-        _ = registered
-        return UIFont(name: "Siemreap", size: size) ?? .systemFont(ofSize: size)
-    }
-}
-
 /// Key feedback.
 ///
 /// `UIImpactFeedbackGenerator` is silently ignored inside a keyboard extension

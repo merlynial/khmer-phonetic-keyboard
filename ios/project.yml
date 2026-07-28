@@ -37,6 +37,11 @@ targets:
     sources:
       - path: App
       - path: Shared
+    # `Bundle.main` inside an extension is the extension's own bundle, so the
+    # app needs its own copy of the font for the setup screen's examples.
+    resources:
+      - path: Resources/Siemreap-Regular.ttf
+        buildPhase: resources
     # No `info:` key here on purpose. That tells XcodeGen to *generate* the
     # plist, which overwrites the hand-written one — and the extension's plist
     # carries the NSExtension block the keyboard cannot work without.
