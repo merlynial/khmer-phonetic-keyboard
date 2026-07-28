@@ -85,40 +85,45 @@ you install Keyman once, then add this keyboard to it.</p>
   keeps them on the phone.</p>
 </div>
 
-<h2>iPhone, iPad and Windows — the Keyman package</h2>
+<h2>iPhone and iPad — the app</h2>
+<div class="card">
+  <ol>
+    <li>Download <code>KhmerPhonetic.ipa</code> from the latest green run of the
+        <a href="https://github.com/merlynial/khmer-phonetic-keyboard/actions/workflows/ios.yml">iOS build</a>.</li>
+    <li>Install <a href="https://sidestore.io">SideStore</a> on the iPhone, then open the
+        <code>.ipa</code> in it. SideStore signs it with your own Apple ID — no developer
+        account needed.</li>
+    <li>Settings → General → Keyboard → Keyboards → Add New Keyboard →
+        <strong>Khmer Phonetic</strong>.</li>
+    <li>Hold the globe key in any app to switch to it. It never asks for
+        &ldquo;Allow Full Access&rdquo;.</li>
+  </ol>
+  <p class="note">A free Apple ID signs apps for <strong>7 days</strong> — that is Apple's
+  rule, not this app's, and only the EU, Japan and Brazil have a way around it. SideStore
+  re-signs on the phone over Wi-Fi, so the renewal happens by itself rather than needing a
+  computer.</p>
+  <p class="note">Built but <strong>not yet tested on a device</strong> — it compiles and
+  packages correctly, and the typing engine is verified against the web version, but the
+  keyboard itself has never been run. Tell me what breaks.</p>
+</div>
+
+<h2>Windows — the Keyman package</h2>
 <div class="card">
   <a class="dl alt" href="dist/khmer_phonetic.kmp" download>Khmer Phonetic keyboard</a>
   <a class="dl alt" href="dist/pakrinha.km.khmerphonetic.model.kmp" download>Khmer dictionary (optional)</a>
-  <p class="meta">One package, every platform: iPhone, iPad, Windows, macOS, Linux —
-  and Android too, if you would rather use Keyman than install the app.
-  The dictionary adds a word-suggestion bar on phones and tablets.</p>
-  <p class="note">The Keyman keyboard converts spelling exactly, with no sound
-  matching — <code>sousdey</code> will not find <span class="kh">សួស្តី</span> there
-  the way it does in the app and on the web.</p>
-</div>
-
-<h2>iPhone and iPad</h2>
-<div class="card">
-  <ol>
-    <li>Install <a href="https://apps.apple.com/app/keyman/id933676545">Keyman</a> from the App Store.</li>
-    <li>Open this page on the device and tap the download button above. Choose to open
-        the file in Keyman.</li>
-    <li>In Settings → General → Keyboard → Keyboards, add Keyman and
-        <strong>allow full access</strong> — iOS requires this for any third-party keyboard.</li>
-    <li>Hold the globe key in any app to switch to Khmer Phonetic.</li>
-  </ol>
-</div>
-
-<h2>Windows</h2>
-<div class="card">
   <ol>
     <li>Install <a href="https://keyman.com/windows/">Keyman for Windows</a>.</li>
     <li>Download the keyboard package and double-click the <code>.kmp</code> file.</li>
     <li>Switch to it from the Keyman icon in the system tray, or with the Windows
         language switcher.</li>
   </ol>
-  <p class="note">Word suggestions are a phone and tablet feature; on Windows the keyboard
-  types Khmer directly with no suggestion bar.</p>
+  <p class="meta">Windows is the one platform with no app of its own — a Windows input
+  method has to be compiled on Windows. The same package also works on macOS, Linux, and
+  on phones if you would rather use Keyman than install an app.</p>
+  <p class="note">The Keyman keyboard converts spelling exactly, with no sound
+  matching — <code>sousdey</code> will not find <span class="kh">សួស្តី</span> there
+  the way it does in the apps and on the web. Word suggestions are a phone and tablet
+  feature; on Windows there is no suggestion bar.</p>
 </div>
 
 <h2>How to type</h2>

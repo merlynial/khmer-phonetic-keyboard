@@ -4,55 +4,63 @@ A native keyboard extension. Same romanization, same 62,000-word lexicon, and
 the same sound matching as the web app and the Android app — `sousdey` still
 finds សួស្តី.
 
-**You have to build this yourself.** I could not, and neither can anyone without
-a Mac running Xcode: Apple has no route for handing someone an iOS keyboard as a
-file. What follows is everything needed to get it onto your own phone.
+## Installing it — no Mac, no Xcode
 
-## What you need
+CI builds an **unsigned `.ipa`** on every push, on GitHub's macOS runners.
+Signing happens on your device with your own Apple ID, so nothing here needs an
+Apple account, a paid membership, or a secret in this repo.
 
-| | |
-| --- | --- |
-| **Xcode** | Free, from the Mac App Store, ~15 GB. Not installed on this machine. |
-| **An Apple ID** | A free one works. See the signing note below. |
-| **XcodeGen** | `brew install xcodegen` — generates the `.xcodeproj` |
+1. Grab `KhmerPhonetic.ipa` from the latest green run of the
+   [ios app workflow](../../../actions/workflows/ios.yml), or from a release.
+2. Install [SideStore](https://sidestore.io) on the iPhone.
+3. Open the `.ipa` in SideStore. It signs with your Apple ID and installs.
+4. Settings → General → Keyboard → Keyboards → Add New Keyboard → Khmer
+   Phonetic. Hold the globe key in any app to switch to it.
 
-## Build it
+**The seven-day expiry still applies**, and there is no way around it here:
+Apple's alternative app marketplaces, where apps install permanently, are
+restricted to the EU, Japan and Brazil. Outside those, a free Apple ID signs for
+seven days.
+
+What SideStore changes is who does the work. It re-signs **on the device over
+Wi-Fi**, so the renewal is a background refresh rather than a weekly session at a
+Mac. A paid Apple Developer account ($99/yr) extends signing to a year and is the
+only way to put this on anyone else's phone.
+
+The app plus its keyboard extension consume 2 of the 10 App IDs a free Apple
+account gets, so there is room to spare.
+
+## Building it locally instead
+
+Only needed if you want to change it. Requires Xcode.
 
 ```bash
 npm run build:ios          # regenerate PhoneticScheme.swift and the lexicons
+brew install xcodegen
 cd ios && xcodegen generate
 open KhmerPhonetic.xcodeproj
 ```
 
-In Xcode: select the **KhmerPhonetic** scheme, pick your iPhone as the
-destination, set your team under Signing & Capabilities on **both** targets
-(app and keyboard), and press Run.
-
-Then on the phone: Settings → General → Keyboard → Keyboards → Add New
-Keyboard → Khmer Phonetic. Hold the globe key in any app to switch to it.
-
-## Signing, and the seven-day problem
-
-- **Free Apple ID.** Works, but the app stops launching after **7 days** and has
-  to be rebuilt and reinstalled from Xcode. Fine for trying it; wearing for
-  daily use.
-- **Apple Developer Program, $99/yr.** Signs for a year, and is the only way to
-  put it on anyone else's phone or on the App Store.
-
-There is no third option. Sideloading tools like AltStore still re-sign with a
-free Apple ID and hit the same seven-day expiry.
+Select the **KhmerPhonetic** scheme, pick your iPhone, set your team under
+Signing & Capabilities on **both** targets, and Run.
 
 ## What is verified, and what is not
 
-`npm run ios:verify` compiles the engine with the Command Line Tools' Swift
-compiler and replays **29,142 conversions** the web engine produced, plus the
-suggestion checks — `suastei`, `suosdei`, `sousdey` and `sousdei` must all reach
-សួស្តី. It runs on macOS, so no Xcode is needed, and it passes.
+**The engine.** `npm run ios:verify` compiles it with the Command Line Tools'
+Swift compiler and replays **29,142 conversions** the web engine produced, plus
+the suggestion checks — `suastei`, `suosdei`, `sousdey` and `sousdei` must all
+reach សួស្តី. It runs on macOS with no Xcode, and CI runs it too.
 
-What that does **not** cover is everything touching UIKit: the keys, the touch
-handling, the layout, the suggestion strip. None of it has been compiled against
-the iOS SDK or run on a device, because neither is available here. Expect to fix
-something the first time it builds.
+**That it compiles and packages.** CI builds the whole thing against the iOS SDK
+and then asserts the two ways a green build can still be useless: a missing
+keyboard extension, and an extension shipped without its lexicon. The second
+assertion earned its keep immediately — XcodeGen accepts a `resources:` target
+key and silently ignores it, so the first working build produced a keyboard with
+no dictionary.
+
+**Not verified: that it behaves.** Nothing has been run on a device or a
+simulator. Layout, touch handling, the delete-and-reinsert conversion, and how it
+interacts with real apps are all unexercised. Compiling is not working.
 
 ## Notes on the iOS design
 
