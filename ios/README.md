@@ -58,9 +58,18 @@ assertion earned its keep immediately — XcodeGen accepts a `resources:` target
 key and silently ignores it, so the first working build produced a keyboard with
 no dictionary.
 
-**Not verified: that it behaves.** Nothing has been run on a device or a
-simulator. Layout, touch handling, the delete-and-reinsert conversion, and how it
-interacts with real apps are all unexercised. Compiling is not working.
+**That it works.** Run on the iOS 26.5 simulator: the keyboard registers under
+Settings → Keyboards as a third-party keyboard, renders, converts live
+(`khnhom` → ខ្ញុំ), suggests words, commits them on tap, and finds សួស្តី from the
+loose spelling `sousdey`.
+
+That run immediately found a bug no amount of reading would have: see
+`deleteBack` in `KeyboardViewController`. Typing `khnhom` produced ខខខ្ញុំ,
+three stray consonants, because deleting one `deleteBackward()` per Swift
+`Character` removes less than a Khmer cluster.
+
+**Still not verified:** a real device (touch pressure, haptics, memory limits),
+landscape, iPad, and behaviour inside other apps.
 
 ## Notes on the iOS design
 

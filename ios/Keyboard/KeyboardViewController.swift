@@ -5,9 +5,12 @@
 //  `setComposingText`, an underlined region it can rewrite freely as a word
 //  takes shape. iOS gives a custom keyboard only `insertText` and
 //  `deleteBackward`, so live conversion has to be emulated: remember exactly
-//  what was inserted last, delete that many characters, insert the new
-//  conversion. `lastOutput.count` counts grapheme clusters, which is what
-//  `deleteBackward()` removes, so a Khmer cluster like ខ្ញុំ deletes as one unit.
+//  what was inserted last, delete it, insert the new conversion.
+//
+//  Deleting it is the subtle part. One `deleteBackward()` per Swift `Character`
+//  is wrong: Swift counts ខ្ញុំ as a single extended grapheme cluster while the
+//  text system deletes a smaller unit, so the call strips the vowel and leaves
+//  the consonant. See `deleteBack`, which measures rather than assumes.
 //
 //  Committing simply forgets the buffer and leaves the text where it is.
 //
@@ -115,7 +118,7 @@ final class KeyboardViewController: UIInputViewController {
         let next = buffer.isEmpty ? "" : PhoneticEngine.convert(buffer)
 
         if next != lastOutput {
-            for _ in 0..<lastOutput.count { proxy.deleteBackward() }
+            deleteBack(lastOutput)
             if !next.isEmpty { proxy.insertText(next) }
             lastOutput = next
         }
@@ -131,6 +134,32 @@ final class KeyboardViewController: UIInputViewController {
         }
     }
 
+    /// Remove exactly `text` from behind the cursor.
+    ///
+    /// Calling `deleteBackward()` once per Swift `Character` does **not** work.
+    /// Swift counts ខ្ញុំ as one extended grapheme cluster; the text system
+    /// deletes a smaller unit, so one call removes the vowel and leaves the
+    /// consonant behind. Typing khnhom that way produced ខខខ្ញុំ — a stray base
+    /// consonant for every rewrite.
+    ///
+    /// So measure instead of assuming: delete until the context before the
+    /// cursor has actually shrunk by the required number of characters. The cap
+    /// stops a host that reports a frozen context from spinning.
+    private func deleteBack(_ text: String) {
+        guard !text.isEmpty else { return }
+        let proxy = textDocumentProxy
+        let before = (proxy.documentContextBeforeInput ?? "").count
+        let target = max(before - text.count, 0)
+
+        var attempts = 0
+        while attempts < Self.maxDeletes {
+            proxy.deleteBackward()
+            attempts += 1
+            let now = (proxy.documentContextBeforeInput ?? "").count
+            if now <= target { return }
+        }
+    }
+
     /// Freeze what is on screen and forget the buffer.
     private func commit() {
         buffer = ""
@@ -140,12 +169,16 @@ final class KeyboardViewController: UIInputViewController {
 
     private func pick(_ candidate: Candidate) {
         let proxy = textDocumentProxy
-        for _ in 0..<lastOutput.count { proxy.deleteBackward() }
+        deleteBack(lastOutput)
         // No trailing space: Khmer runs words together.
         proxy.insertText(candidate.khmer)
         learning.record(khmer: candidate.khmer, spelling: buffer)
         commit()
     }
+
+    /// Safety cap on deleteBack's loop, in case a host reports a context that
+    /// never shrinks. Comfortably above the longest conversion a buffer produces.
+    private static let maxDeletes = 24
 }
 
 /// Required for `playInputClick()` to make any sound at all.
