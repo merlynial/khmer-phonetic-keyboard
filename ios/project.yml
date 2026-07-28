@@ -1,0 +1,70 @@
+# Xcode project spec for XcodeGen.
+#
+# The .xcodeproj is generated rather than committed: a pbxproj is thousands of
+# lines of machine-written XML that no one can review, and it conflicts on every
+# merge. This file is the readable source.
+#
+#   brew install xcodegen
+#   cd ios && xcodegen generate
+#   open KhmerPhonetic.xcodeproj
+#
+# DEVELOPMENT_TEAM is deliberately unset. Xcode will ask you to pick a team the
+# first time you build; a free Apple ID works, with the caveat that the app stops
+# running after seven days and has to be reinstalled.
+
+name: KhmerPhonetic
+options:
+  bundleIdPrefix: com.pakrinha
+  deploymentTarget:
+    iOS: "15.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    CODE_SIGN_STYLE: Automatic
+    # Left blank on purpose — set it in Xcode's Signing & Capabilities, or pass
+    # DEVELOPMENT_TEAM=XXXXXXXXXX on the xcodebuild command line.
+    DEVELOPMENT_TEAM: ""
+    TARGETED_DEVICE_FAMILY: "1,2"
+
+targets:
+
+  KhmerPhonetic:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      - path: Shared
+    # No `info:` key here on purpose. That tells XcodeGen to *generate* the
+    # plist, which overwrites the hand-written one — and the extension's plist
+    # carries the NSExtension block the keyboard cannot work without.
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.pakrinha.khmerphonetic
+        INFOPLIST_FILE: App/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: ""
+    dependencies:
+      - target: KhmerPhoneticKeyboard
+        embed: true
+
+  KhmerPhoneticKeyboard:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Keyboard
+      - path: Shared
+    # The lexicons live in the extension's own bundle, so it can read them
+    # without an App Group and therefore without "Allow Full Access".
+    resources:
+      - path: Resources/curated.tsv
+        buildPhase: resources
+      - path: Resources/words.txt
+        buildPhase: resources
+      - path: Resources/Siemreap-Regular.ttf
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.pakrinha.khmerphonetic.keyboard
+        INFOPLIST_FILE: Keyboard/Info.plist
