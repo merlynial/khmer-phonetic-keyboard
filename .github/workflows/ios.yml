@@ -1,0 +1,91 @@
+name: ios app
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+    paths:
+      - "ios/**"
+      - "tools/build_ios.mjs"
+      - "tools/scheme.mjs"
+      - "index.html"
+      - ".github/workflows/ios.yml"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    # GitHub's macOS runners ship Xcode, which this project's own Mac does not.
+    # That is the whole point of this workflow: it compiles the UIKit half that
+    # cannot be built locally, and produces an .ipa to sideload.
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+
+      - run: npm ci
+
+      - name: Regenerate the Swift scheme and lexicons
+        run: npm run build:ios
+
+      # The engine is pure Foundation, so it can be proven correct on its own,
+      # separately from anything that needs a device.
+      - name: Engine matches the web engine
+        run: npm run ios:verify
+
+      - name: Check generated sources are up to date
+        run: |
+          if ! git diff --quiet -- ios/; then
+            echo "::error::ios/ sources are stale — run 'npm run build:ios' and commit the result"
+            git diff --stat -- ios/
+            exit 1
+          fi
+
+      - run: brew install xcodegen
+
+      - name: Generate the Xcode project
+        run: cd ios && xcodegen generate
+
+      # Unsigned: signing happens on the device, by whoever installs it, with
+      # their own Apple ID. Nothing here needs an Apple account or a secret.
+      - name: Build (unsigned)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project ios/KhmerPhonetic.xcodeproj \
+            -scheme KhmerPhonetic \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package the .ipa
+        run: |
+          APP="build/Build/Products/Release-iphoneos/KhmerPhonetic.app"
+          test -d "$APP" || { echo "::error::no .app was produced"; exit 1; }
+          # The keyboard is the point; a build that quietly dropped the
+          # extension would install and do nothing.
+          test -d "$APP/PlugIns/KhmerPhoneticKeyboard.appex" \
+            || { echo "::error::the keyboard extension is missing from the app"; exit 1; }
+          test -f "$APP/PlugIns/KhmerPhoneticKeyboard.appex/words.txt" \
+            || { echo "::error::the lexicon did not make it into the extension"; exit 1; }
+          mkdir -p Payload
+          cp -R "$APP" Payload/
+          zip -qry KhmerPhonetic.ipa Payload
+          ls -lh KhmerPhonetic.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KhmerPhonetic-ipa
+          path: KhmerPhonetic.ipa
+
+      - name: Attach the .ipa to the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: KhmerPhonetic.ipa
