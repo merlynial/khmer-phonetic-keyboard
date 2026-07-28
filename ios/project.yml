@@ -37,9 +37,12 @@ targets:
     sources:
       - path: App
       - path: Shared
-    # `Bundle.main` inside an extension is the extension's own bundle, so the
-    # app needs its own copy of the font for the setup screen's examples.
-    resources:
+      # `Bundle.main` inside an extension is the extension's own bundle, so the
+      # app needs its own copy of the font for the setup screen's examples.
+      #
+      # Note this is a `sources` entry, not a `resources` one: XcodeGen has no
+      # `resources` target key and silently ignores it, which is how the first
+      # build produced an app whose keyboard had no lexicon.
       - path: Resources/Siemreap-Regular.ttf
         buildPhase: resources
     # No `info:` key here on purpose. That tells XcodeGen to *generate* the
@@ -60,14 +63,9 @@ targets:
     sources:
       - path: Keyboard
       - path: Shared
-    # The lexicons live in the extension's own bundle, so it can read them
-    # without an App Group and therefore without "Allow Full Access".
-    resources:
-      - path: Resources/curated.tsv
-        buildPhase: resources
-      - path: Resources/words.txt
-        buildPhase: resources
-      - path: Resources/Siemreap-Regular.ttf
+      # The lexicons live in the extension's own bundle, so it can read them
+      # without an App Group and therefore without "Allow Full Access".
+      - path: Resources
         buildPhase: resources
     settings:
       base:
