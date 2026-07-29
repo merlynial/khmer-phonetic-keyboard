@@ -24,7 +24,15 @@ final class KeyPadView: UIView {
 
     weak var delegate: KeyPadDelegate?
 
-    static let rowHeight: CGFloat = 54
+    /// iPad needs taller rows. A 54pt row is right on a phone but leaves a 13"
+    /// iPad with squat, wide keys and a keyboard a fifth the height of the
+    /// screen — it looks broken next to the system keyboard.
+    static var rowHeight: CGFloat { isPad ? 76 : 54 }
+
+    private static var isPad: Bool { UIDevice.current.userInterfaceIdiom == .pad }
+
+    /// Type scales with the keys, or the labels swim in the middle of them.
+    private static var textScale: CGFloat { isPad ? 1.35 : 1 }
 
     private struct Placed {
         let key: Key
@@ -50,10 +58,11 @@ final class KeyPadView: UIView {
     private let altFont: UIFont
 
     override init(frame: CGRect) {
-        labelFont = .systemFont(ofSize: 19, weight: .regular)
-        functionFont = .systemFont(ofSize: 15, weight: .regular)
-        hintFont = Fonts.khmer(size: 12)
-        altFont = Fonts.khmer(size: 9)
+        let scale = Self.textScale
+        labelFont = .systemFont(ofSize: 19 * scale, weight: .regular)
+        functionFont = .systemFont(ofSize: 15 * scale, weight: .regular)
+        hintFont = Fonts.khmer(size: 12 * scale)
+        altFont = Fonts.khmer(size: 9 * scale)
         super.init(frame: frame)
         backgroundColor = Palette.background
         isMultipleTouchEnabled = false
@@ -122,12 +131,12 @@ final class KeyPadView: UIView {
 
             let label = p.key.label
             let hint = p.key.hint
-            let font = isFunction ? functionFont : (isKhmer(label) ? Fonts.khmer(size: 19) : labelFont)
+            let font = isFunction ? functionFont : (isKhmer(label) ? Fonts.khmer(size: 19 * Self.textScale) : labelFont)
 
             if let hint {
-                draw(label, in: p.frame, dy: -7, font: font, color: Palette.text)
-                draw(hint, in: p.frame, dy: 11,
-                     font: isKhmer(hint) ? hintFont : .systemFont(ofSize: 11),
+                draw(label, in: p.frame, dy: -7 * Self.textScale, font: font, color: Palette.text)
+                draw(hint, in: p.frame, dy: 11 * Self.textScale,
+                     font: isKhmer(hint) ? hintFont : .systemFont(ofSize: 11 * Self.textScale),
                      color: Palette.khmerHint)
             } else {
                 draw(label, in: p.frame, dy: 0, font: font, color: Palette.text)
@@ -135,7 +144,7 @@ final class KeyPadView: UIView {
 
             if let alternate = p.key.alternate {
                 let attributes: [NSAttributedString.Key: Any] = [
-                    .font: isKhmer(alternate) ? altFont : UIFont.systemFont(ofSize: 9),
+                    .font: isKhmer(alternate) ? altFont : UIFont.systemFont(ofSize: 9 * Self.textScale),
                     .foregroundColor: Palette.hint,
                 ]
                 let size = (alternate as NSString).size(withAttributes: attributes)

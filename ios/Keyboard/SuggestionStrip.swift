@@ -9,7 +9,8 @@ import UIKit
 
 final class SuggestionStrip: UIScrollView {
 
-    static let height: CGFloat = 48
+    /// Matches the taller keys on iPad.
+    static var height: CGFloat { UIDevice.current.userInterfaceIdiom == .pad ? 62 : 48 }
 
     var onPick: ((Candidate) -> Void)?
 
@@ -77,7 +78,7 @@ final class SuggestionStrip: UIScrollView {
     private func chip(_ candidate: Candidate) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(candidate.khmer, for: .normal)
-        button.titleLabel?.font = Fonts.khmer(size: 22)
+        button.titleLabel?.font = Fonts.khmer(size: UIDevice.current.userInterfaceIdiom == .pad ? 28 : 22)
         button.setTitleColor(Palette.text, for: .normal)
         button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 18)
         button.addAction(
