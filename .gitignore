@@ -9,3 +9,4 @@ android/local.properties
 android/.kotlin/
 ios/KhmerPhonetic.xcodeproj/
 ios/DerivedData/
+ios/build/
