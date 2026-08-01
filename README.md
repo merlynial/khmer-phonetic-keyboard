@@ -104,4 +104,13 @@ npm run android:apk      # debug APK into dist/
 
 ## License
 
-MIT
+MIT for the keyboard itself.
+
+Two bundled works keep their own licences:
+
+- **Siemreap** (`fonts/`, and inside the Android, iOS and Keyman builds) —
+  © 2010 Danh Hong, [khmertype.blogspot.com](https://khmertype.blogspot.com),
+  under the SIL Open Font License 1.1. Full text in [OFL.txt](OFL.txt).
+  Reserved Font Name: Siemreap.
+- **Khmer pronunciation lexicon** (`words.txt`) — from the Google Khmer
+  pronunciation lexicon, CC-BY-4.0.
