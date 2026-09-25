@@ -201,7 +201,7 @@
   <header>
     <div class="logo">ក</div>
     <div style="flex:1">
-      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.14</span></h1>
+      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.14.1</span></h1>
       <div class="sub" id="t-sub">វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer</div>
     </div>
     <button class="btn alt" id="langbtn" style="padding:8px 14px;font-size:13px">EN</button>
@@ -385,6 +385,14 @@ for (const k in SIGN)  MAP[k]=SIGN[k];
 
 // keys sorted longest-first for greedy matching
 const KEYS = Object.keys(MAP).sort((a,b)=>b.length-a.length);
+// ...and grouped by first character, still longest-first, so each position
+// only tries the few keys that can start there (space is handled as text)
+const KEYS_AT = new Map();
+for (const k of KEYS){
+  if (k === " ") continue;
+  if (!KEYS_AT.has(k[0])) KEYS_AT.set(k[0], []);
+  KEYS_AT.get(k[0]).push(k);
+}
 
 function convert(text, opts){
   opts = opts||{};
@@ -399,8 +407,7 @@ function convert(text, opts){
     }
     // longest matching phonetic key
     let matched = null;
-    for (const key of KEYS){
-      if (key === " ") continue;               // handle space below
+    for (const key of KEYS_AT.get(text[i]) || []){
       if (text.startsWith(key, i)){ matched = key; break; }
     }
     if (matched){
@@ -436,7 +443,22 @@ const spacesel = $("#spacesel"), sugEl = $("#sug");
 
 function run(){
   const opts = { autostack: autostack.checked, khnum: khnum.checked };
-  outEl.textContent = convert(inEl.value, opts);
+  setText(outEl, convert(inEl.value, opts));
+}
+// Edit the existing text node in place, touching only the span that changed:
+// replacing the node would make the browser re-shape all of the Khmer on
+// every keystroke, which gets slow as the text grows.
+function setText(el, s){
+  const node = el.firstChild;
+  if (!node || node.nodeType !== Node.TEXT_NODE || node.nextSibling){ el.textContent = s; return; }
+  const old = node.data;
+  if (old === s) return;
+  const max = Math.min(old.length, s.length);
+  let head = 0, tail = 0;
+  while (head < max && old.charCodeAt(head) === s.charCodeAt(head)) head++;
+  while (tail < max - head &&
+         old.charCodeAt(old.length - 1 - tail) === s.charCodeAt(s.length - 1 - tail)) tail++;
+  node.replaceData(head, old.length - head - tail, s.slice(head, s.length - tail));
 }
 inEl.addEventListener("input", ()=>{ if (live.checked) run(); updateSug(); });
 [autostack, khnum].forEach(el=>el.addEventListener("change", run));
@@ -462,9 +484,13 @@ function currentToken(){
   return { token: v.slice(s, p), start: s, end: p };
 }
 
-/* caret pixel position via a hidden mirror of the textarea */
-let mirror = null;
+/* caret pixel position via a hidden mirror of the textarea. The bar sits at
+   the start of the word being typed, which stays put while the word grows, so
+   the answer is remembered: laying the mirror out again is the costly part. */
+let mirror = null, caretMemo = null;
 function caretXY(pos){
+  const before = inEl.value.slice(0, pos), width = inEl.clientWidth;
+  if (caretMemo && caretMemo.before === before && caretMemo.width === width) return caretMemo.xy;
   if (!mirror){
     mirror = document.createElement("div");
     mirror.style.cssText = "position:absolute;visibility:hidden;top:0;left:-9999px;";
@@ -477,20 +503,25 @@ function caretXY(pos){
     mirror.style[p] = cs[p];
   mirror.style.whiteSpace = "pre-wrap";
   mirror.style.wordBreak = "break-word";
-  mirror.style.width = inEl.clientWidth + "px";
-  mirror.textContent = inEl.value.slice(0, pos);
+  mirror.style.width = width + "px";
+  mirror.textContent = before;
   const m = document.createElement("span");
   m.textContent = "​";
   mirror.appendChild(m);
-  return { x: m.offsetLeft, y: m.offsetTop,
-           h: m.offsetHeight || parseFloat(cs.lineHeight) || 24 };
+  const xy = { x: m.offsetLeft, y: m.offsetTop,
+               h: m.offsetHeight || parseFloat(cs.lineHeight) || 24 };
+  caretMemo = { before, width, xy };
+  return xy;
 }
 
 const stripEl = $("#sugstrip");
 
 function renderSel(){
-  for (const box of [sugEl, stripEl]){
+  // all class changes first, then the scrolls: scrollIntoView forces a style
+  // and layout pass, and interleaving the two would force one per box
+  for (const box of [sugEl, stripEl])
     [...box.children].forEach((c, i) => c.classList.toggle("sel", i === sugSel));
+  for (const box of [sugEl, stripEl]){
     const el = box.children[sugSel];
     if (el) el.scrollIntoView({ inline:"nearest", block:"nearest" });
   }
@@ -560,7 +591,9 @@ function showIdleWords(){
   sugEl.classList.remove("show"); sugEl.innerHTML = "";
 }
 
+let sugFor = null;             // [value, selectionStart, selectionEnd] last shown for
 function updateSug(){
+  sugFor = [inEl.value, inEl.selectionStart, inEl.selectionEnd];
   const { token, start, end } = currentToken();
   if (token !== dismissed) dismissed = "";   // Esc only mutes the current token
   sugState = { token, start, end, items: [] };
@@ -582,9 +615,17 @@ function updateSug(){
   buildCands(sugEl);
   buildCands(stripEl);
 
-  // place the bar just under the start of the composed word (Apple-style)
   const wasShown = sugEl.classList.contains("show");
-  const c = caretXY(start);
+  placeSug();
+  if (!wasShown){    // spring in on first appearance, stay still while typing
+    sugEl.classList.remove("in"); void sugEl.offsetWidth; sugEl.classList.add("in");
+  }
+  renderSel();
+}
+
+// place the bar just under the start of the composed word (Apple-style)
+function placeSug(){
+  const c = caretXY(sugState.start);
   sugEl.style.visibility = "hidden";
   sugEl.classList.add("show");
   const wrapW = sugEl.parentElement.clientWidth;
@@ -594,10 +635,6 @@ function updateSug(){
   sugEl.style.left = left + "px";
   sugEl.style.top  = top + "px";
   sugEl.style.visibility = "";
-  if (!wasShown){    // spring in on first appearance, stay still while typing
-    sugEl.classList.remove("in"); void sugEl.offsetWidth; sugEl.classList.add("in");
-  }
-  renderSel();
 }
 
 function commitSug(i){
@@ -640,7 +677,17 @@ inEl.addEventListener("keydown", e => {
   }
 });
 document.addEventListener("selectionchange", ()=>{
-  if (document.activeElement === inEl) updateSug();
+  if (document.activeElement !== inEl) return;
+  // Every keystroke also moves the caret, but its input event has already
+  // refreshed the bar. All that can have changed since is the box's scroll —
+  // it scrolls to keep the caret in view after the input event — so the bar
+  // only needs placing again, not rebuilding.
+  if (sugFor && sugFor[0] === inEl.value && sugFor[1] === inEl.selectionStart
+      && sugFor[2] === inEl.selectionEnd){
+    if (sugEl.classList.contains("show")){ placeSug(); renderSel(); }
+    return;
+  }
+  updateSug();
 });
 $("#conv").addEventListener("click", run);
 $("#clear").addEventListener("click", ()=>{ inEl.value=""; outEl.textContent=""; inEl.focus(); });
@@ -724,13 +771,16 @@ function haptic(){ if (COARSE && navigator.vibrate) try{ navigator.vibrate(8); }
 let keypop = null;
 function popKey(el, label){
   if (!COARSE) return;
+  // measure the key before changing anything, so the tap does not force a
+  // layout; call this before marking the key pressed for the same reason
+  const w = Math.max(el.offsetWidth + 14, 46);
+  const left = el.offsetLeft + el.offsetWidth/2 - w/2, top = el.offsetTop - 52;
   const kb = $("#kb");
   if (!keypop){ keypop = document.createElement("div"); keypop.className = "keypop"; kb.appendChild(keypop); }
   keypop.textContent = label;
-  const w = Math.max(el.offsetWidth + 14, 46);
   keypop.style.minWidth = w + "px";
-  keypop.style.left = (el.offsetLeft + el.offsetWidth/2 - w/2) + "px";
-  keypop.style.top  = (el.offsetTop - 52) + "px";
+  keypop.style.left = left + "px";
+  keypop.style.top  = top + "px";
   keypop.classList.add("up");
 }
 function unpopKey(){ if (keypop) keypop.classList.remove("up"); }
@@ -778,8 +828,8 @@ function drawKB(animate){
       b.addEventListener("pointerdown", e => {
         e.preventDefault();
         haptic();
-        b.classList.add("pressed");
         if (isStr || (it.t !== undefined && !it.a)) popKey(b, label);
+        b.classList.add("pressed");
         keyPress(it);
         if (!isStr && it.a === "BKSP"){          // hold to repeat, like Apple
           stopBksp();

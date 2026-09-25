@@ -536,28 +536,69 @@
     ["អរគុណច្រើន","thanks a lot","orkunchraeun akunchren orkunchren"],
   ];
 
+  /* ---- prefix groups: what lets suggest() skip rows that cannot match ----
+     Rows grouped by the first `min`..`max` characters of a string, each group
+     kept in row order. A query at least `min` long only has to scan the group
+     for its first `max` characters: every row that can match is in it, met in
+     the same order a full scan would meet them, so results, the 300-hit cap
+     and tie-breaks all come out exactly as they did with a full scan. */
+  function prefixGroups(n, str, min, max) {
+    const groups = new Map();
+    for (let row = 0; row < n; row++) {
+      const s = str(row);
+      for (let len = min; len <= Math.min(max, s.length); len++) {
+        const p = s.slice(0, len);
+        const g = groups.get(p);
+        if (g) g.push(row); else groups.set(p, [row]);
+      }
+    }
+    return groups;
+  }
+  const NO_ROWS = [];
+
   /* ---- curated index: key -> word indices ------------------------------ */
   // vowel skeleton: collapse vowel runs so sousdey/suosdei meet at "s8sd8"
   function vskel(s) { return s.replace(/[aeiouy]+/g, "8"); }
 
-  const INDEX = [];               // {k, sk, wi}
-  DICT.forEach((entry, wi) => {
-    const keys = new Set(romVariants(entry[0]));
-    if (entry[2]) entry[2].split(/\s+/).forEach(k => k && keys.add(k.toLowerCase()));
-    keys.forEach(k => INDEX.push({ k, sk: vskel(k), wi }));
-  });
+  // Built on first use rather than while the page loads: it is the bulk of this
+  // script's start-up cost, and the page can draw the keyboard without it.
+  let INDEX = null;               // {k, sk, wi}
+  let BY_KEY, BY_SKEL;            // prefix groups over INDEX's k and sk
+  function curatedIndex() {
+    if (INDEX) return;
+    INDEX = [];
+    DICT.forEach((entry, wi) => {
+      const keys = new Set(romVariants(entry[0]));
+      if (entry[2]) entry[2].split(/\s+/).forEach(k => k && keys.add(k.toLowerCase()));
+      keys.forEach(k => INDEX.push({ k, sk: vskel(k), wi }));
+    });
+    BY_KEY  = prefixGroups(INDEX.length, i => INDEX[i].k, 1, 2);
+    BY_SKEL = prefixGroups(INDEX.length, i => INDEX[i].sk, 1, 2);
+  }
+  // ...but still ahead of the first keystroke: as soon as the browser is idle.
+  if (typeof requestIdleCallback === "function") requestIdleCallback(curatedIndex, { timeout: 1000 });
+  else setTimeout(curatedIndex, 0);
 
   /* ---- big lexicon (words.txt): 62k words from the Google Khmer
      pronunciation lexicon, ranked by Khmer-Wikipedia frequency. Each line is
      "khmer\tSKEL" where SKEL is a coarse sound-class skeleton. ------------- */
   let BIG_KH = [], BIG_SK = [];
+  let BIG_BY_SKEL = new Map();    // rows by first 2 and 3 sound classes, rank order
   fetch("words.txt")
     .then(r => (r.ok ? r.text() : ""))
     .then(t => {
-      for (const ln of t.split("\n")) {
-        const i = ln.indexOf("\t");
-        if (i > 0) { BIG_KH.push(ln.slice(0, i)); BIG_SK.push(ln.slice(i + 1)); }
+      // Walk the text in place rather than split() it into 62k line strings
+      // first; this parse runs while the page is still starting up.
+      for (let a = 0, tab = -1; a < t.length; ) {
+        let e = t.indexOf("\n", a);
+        if (e < 0) e = t.length;
+        if (tab < a) tab = t.indexOf("\t", a);   // first tab at or after this line
+        if (tab < 0) break;                      // none left: no more rows
+        if (tab > a && tab < e) { BIG_KH.push(t.slice(a, tab)); BIG_SK.push(t.slice(tab + 1, e)); }
+        a = e + 1;
       }
+      // queries are at least two classes long, so shorter skeletons never match
+      BIG_BY_SKEL = prefixGroups(BIG_SK.length, i => BIG_SK[i], 2, 3);
     })
     .catch(() => {});               // offline/file:// -> curated dict only
 
@@ -615,7 +656,7 @@
     if (!prev || !next) return;
     const m = NEXTP[prev] = NEXTP[prev] || {};
     m[next] = (m[next] || 0) + 1;
-    try { localStorage.setItem("khkb_next", JSON.stringify(NEXTP)); } catch (e) {}
+    save("next");
   }
   function predictNext(prev) {
     if (!prev) return [];
@@ -721,30 +762,40 @@
         }
       }
     }
-    try {
-      localStorage.setItem("khkb_usage",    JSON.stringify(USAGE));
-      localStorage.setItem("khkb_personal", JSON.stringify(PERSONAL));
-      localStorage.setItem("khkb_next",     JSON.stringify(NEXTP));
-    } catch (e) {}
+    save("usage", "personal", "next");
+    flush();
     return true;
   }
 
   /* ---- your frequent words (Apple keyboard-dictionary style) ----------- */
+  // The n most-used [word, count] pairs, ties in the order they were learned:
+  // the head of a stable sort by count, without sorting every word ever learned.
+  function topEntries(n) {
+    const top = [];
+    for (const w of Object.keys(USAGE)) {
+      const c = USAGE[w];
+      let at = top.length;
+      while (at > 0 && c - top[at - 1][1] > 0) at--;
+      if (at < n) {
+        top.splice(at, 0, [w, c]);
+        if (top.length > n) top.pop();
+      }
+    }
+    return top;
+  }
   function topUsed(n) {
-    return Object.entries(USAGE)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, n)
-      .map(([w]) => w);
+    return topEntries(n).map(([w]) => w);
   }
   function stats() {
     return {
-      top: Object.entries(USAGE).sort((a, b) => b[1] - a[1]).slice(0, 30),
+      top: topEntries(30),
       personal: Object.entries(PERSONAL),
       phrases: Object.keys(NEXTP).length,
     };
   }
   function resetLearning() {
     USAGE = {}; PERSONAL = {}; NEXTP = {};
+    dirty.clear(); clearTimeout(saveTimer); saveTimer = 0;
     try {
       localStorage.removeItem("khkb_usage");
       localStorage.removeItem("khkb_personal");
@@ -758,15 +809,39 @@
     USAGE    = JSON.parse(localStorage.getItem("khkb_usage")    || "{}");
     PERSONAL = JSON.parse(localStorage.getItem("khkb_personal") || "{}");
   } catch (e) {}
+
+  // Writes are batched. Each one re-serialises everything ever learned, which
+  // only grows, so a pick just marks its table dirty and the batch goes out a
+  // moment later — or straight away if the page is being hidden or closed.
+  const STORE = { usage: "khkb_usage", personal: "khkb_personal", next: "khkb_next" };
+  const dirty = new Set();
+  let saveTimer = 0;
+  function save(...tables) {
+    for (const t of tables) dirty.add(t);
+    if (!saveTimer) saveTimer = setTimeout(flush, 500);
+  }
+  function flush() {
+    clearTimeout(saveTimer); saveTimer = 0;
+    const data = { usage: USAGE, personal: PERSONAL, next: NEXTP };
+    for (const t of dirty) {
+      try { localStorage.setItem(STORE[t], JSON.stringify(data[t])); } catch (e) {}
+    }
+    dirty.clear();
+  }
+  if (typeof document !== "undefined") {
+    addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") flush();
+    });
+  }
+
   function learn(kh, token, wasRaw) {
     USAGE[kh] = (USAGE[kh] || 0) + 1;
+    save("usage");
     if (wasRaw && token && token.replace(/[^a-z]/gi, "").length >= 3) {
       PERSONAL[token.toLowerCase()] = kh;     // user's own word + own spelling
+      save("personal");
     }
-    try {
-      localStorage.setItem("khkb_usage",    JSON.stringify(USAGE));
-      localStorage.setItem("khkb_personal", JSON.stringify(PERSONAL));
-    } catch (e) {}
   }
 
   /* ---- add a word to your dictionary (manual) --------------------------
@@ -781,10 +856,8 @@
     if (!sps.length) return null;
     for (const s of sps) PERSONAL[s] = kh;
     USAGE[kh] = Math.max(USAGE[kh] || 0, 5);      // boost so it wins its spelling
-    try {
-      localStorage.setItem("khkb_usage",    JSON.stringify(USAGE));
-      localStorage.setItem("khkb_personal", JSON.stringify(PERSONAL));
-    } catch (e) {}
+    save("usage", "personal");
+    flush();                                      // an explicit add is kept at once
     return sps;
   }
 
@@ -810,9 +883,14 @@
       else if (t.startsWith(q)) add(PERSONAL[t], -1, t.length - q.length, "yours");
     }
 
+    curatedIndex();
     const qs = vskel(q);
     const fuzzyOK = q.length >= 3;
-    for (const { k, sk, wi } of INDEX) {
+    // A key that starts with q has a skeleton that starts with qs, so the
+    // skeleton group holds every row either test below can accept.
+    const rows = (fuzzyOK ? BY_SKEL.get(qs.slice(0, 2)) : BY_KEY.get(q.slice(0, 2))) || NO_ROWS;
+    for (const r of rows) {
+      const { k, sk, wi } = INDEX[r];
       let tier, sub = 0;
       if (k === q) tier = 0;
       else if (k.startsWith(q)) { tier = 1; sub = k.length - q.length; }
@@ -825,8 +903,10 @@
     if (fuzzyOK && BIG_KH.length) {
       const qk = qskel(q);
       if (qk.length >= 2) {
+        const rows = BIG_BY_SKEL.get(qk.slice(0, 3)) || NO_ROWS;
         let hits = 0;
-        for (let i = 0; i < BIG_SK.length && hits < 300; i++) {
+        for (let j = 0; j < rows.length && hits < 300; j++) {
+          const i = rows[j];
           if (BIG_SK[i] === qk) { add(BIG_KH[i], 4, i); hits++; }
           else if (BIG_SK[i].startsWith(qk)) {
             add(BIG_KH[i], 5, (BIG_SK[i].length - qk.length) * 1e5 + i); hits++;
