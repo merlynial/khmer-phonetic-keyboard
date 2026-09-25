@@ -3,30 +3,56 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "17 3 3 * *"   # monthly: 3rd day, 03:17 UTC
+
+# The job commits the rebuilt dictionary back to main. Without this the
+# GITHUB_TOKEN is read-only and the push is refused with a 403.
+permissions:
+  contents: write
+
 jobs:
   rebuild:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
+
+      # -f: a failed download must stop the job here, not hand an error page
+      # to the build as if it were a corpus. CC-100 is optional; without it
+      # build_words.py falls back to Wikipedia-only frequencies.
       - name: Fetch corpora
         run: |
-          curl -sL -o g_lex.tsv "https://raw.githubusercontent.com/google/language-resources/master/km/data/lexicon.tsv"
-          curl -sL -o kmwiki.xml.bz2 "https://dumps.wikimedia.org/kmwiki/latest/kmwiki-latest-pages-articles.xml.bz2"
-          curl -sL -o km_cc100.txt.xz "https://data.statmt.org/cc-100/km.txt.xz" || true
+          curl -fsSL -o g_lex.tsv "https://raw.githubusercontent.com/google/language-resources/master/km/data/lexicon.tsv"
+          curl -fsSL -o kmwiki.xml.bz2 "https://dumps.wikimedia.org/kmwiki/latest/kmwiki-latest-pages-articles.xml.bz2"
+          curl -fsSL -o km_cc100.txt.xz "https://data.statmt.org/cc-100/km.txt.xz" || rm -f km_cc100.txt.xz
+
       - name: Build words.txt + bigrams.txt
-        run: |
-          cp tools/build_words.py .
-          python3 build_words.py
-          mv -f words.txt bigrams.txt "$GITHUB_WORKSPACE/" || true
-      - name: Verify with golden tests
-        uses: actions/setup-node@v4
+        run: python3 tools/build_words.py
+
+      - uses: actions/setup-node@v4
         with: { node-version: 20 }
-      - run: node tests/golden.mjs
+
+      - run: npm ci
+
+      # The Keyman wordlist and the Android and iOS bundles are built from
+      # words.txt and bigrams.txt. Regenerate them for the same commit, or the
+      # keyman and ios workflows fail their stale-sources checks on main.
+      - name: Regenerate files built from the lexicon
+        run: npm run build:wordlist && npm run build:ios
+
+      # A push made with the GITHUB_TOKEN does not start other workflows, so
+      # nothing else checks this commit before it lands.
+      - name: Verify
+        run: |
+          npm test
+          npm run build:packages
+
       - name: Commit if changed
         run: |
           git config user.name "dict-rebuild-bot"
           git config user.email "actions@github.com"
-          git add words.txt bigrams.txt
+          git add words.txt bigrams.txt \
+            keyman/pakrinha.km.khmerphonetic/source/wordlist.tsv \
+            android/app/src/main/assets/words.txt android/app/src/main/assets/bigrams.txt \
+            ios/Resources/words.txt
           git diff --cached --quiet || git commit -m "Monthly dictionary rebuild from fresh corpora"
           git push
