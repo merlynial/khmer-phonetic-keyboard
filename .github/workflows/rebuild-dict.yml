@@ -46,10 +46,12 @@ jobs:
           npm test
           npm run build:packages
 
+      # Every commit in this repository is authored by its owner (CLAUDE.md),
+      # the monthly rebuild included.
       - name: Commit if changed
         run: |
-          git config user.name "dict-rebuild-bot"
-          git config user.email "actions@github.com"
+          git config user.name "merlynial"
+          git config user.email "keang.pakrinha@gmail.com"
           git add words.txt bigrams.txt \
             keyman/pakrinha.km.khmerphonetic/source/wordlist.tsv \
             android/app/src/main/assets/words.txt android/app/src/main/assets/bigrams.txt \
