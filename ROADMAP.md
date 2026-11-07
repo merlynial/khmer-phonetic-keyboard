@@ -31,14 +31,13 @@ colloquial vocabulary that Wikipedia never contains.
 4. Better frequencies: re-rank with a conversational corpus (CC-100 km /
    OSCAR km subset) blended with Wikipedia.
 
-## Done — real system keyboard, every platform (Keyman)
-Typing Khmer-by-sound inside any app now works on Android, iPhone, iPad,
-Windows, macOS and Linux, without writing a native IME per platform.
+## Done — the desktops, via Keyman
+Typing Khmer-by-sound inside any app on Windows, macOS and Linux, without
+writing a native IME for each of them.
 
 - `keyman/khmer_phonetic/` — the keyboard: the romanization compiled into a
-  72-state Keyman rule machine, a phone touch layout, a bundled Khmer font
-- `keyman/pakrinha.km.khmerphonetic/` — 20,000-word dictionary for the
-  suggestion bar on phones and tablets
+  72-state Keyman rule machine, a touch layout, a bundled Khmer font
+- `keyman/pakrinha.km.khmerphonetic/` — 20,000-word dictionary package
 - Both are generated from `index.html` and `words.txt`, and CI fails if they
   drift. `tests/compiled.mjs` types tens of thousands of strings through the
   compiled keyboard that ships in the package.
@@ -47,6 +46,11 @@ Windows, macOS and Linux, without writing a native IME per platform.
 What this route does not carry over: the fuzzy sound matching. The Keyman
 keyboard converts spellings deterministically, so `sousdey` does not find
 សួស្តី there — the dictionary only completes words already started.
+
+This was once the answer for phones too. It no longer is: Android and iOS each
+have a native app that keeps the sound matching, so Keyman is documented as the
+desktop route only. The package still installs on a phone if someone wants it —
+nothing was removed from the build — but nothing points them there.
 
 ## Done — native Android app (`android/`)
 A standalone `InputMethodService` app, so Android needs nothing but the APK, and
@@ -62,11 +66,22 @@ the fuzzy sound matching the Keyman route drops is back.
 Still open there: phrase mode (`segmentPhrase`), next-word prediction (bigrams
 ship in the APK but nothing reads them), backup/restore, long-press capitals.
 
-## Not attempted — native iOS and Windows
-An iOS keyboard extension needs Xcode and, to reach anyone else's phone, a paid
-Apple developer account. A Windows input method is TSF/COM and must be compiled
-on Windows. Keyman covers both, and is the sensible answer unless one of those
-platforms becomes a daily driver.
+## Done — native iOS app (`ios/`)
+A keyboard extension plus a host app, with the same engine, the same 62k lexicon
+and the same fuzzy matching as the web and Android builds.
+
+- `PhoneticScheme.swift` generated from `index.html`, verified against the web
+  engine by `npm run ios:verify` in CI
+- CI builds an unsigned `.ipa` on GitHub's macOS runners; signing happens on the
+  device with the user's own Apple ID via SideStore, so the repo needs no Apple
+  account and holds no secrets
+
+Still open there: it has never been run on a physical device — only built and
+verified. The seven-day free-signing expiry is Apple's, not this project's.
+
+## Not attempted — native Windows
+A Windows input method is TSF/COM and must be compiled on Windows. Keyman covers
+it, and is the sensible answer unless Windows becomes a daily driver.
 
 ## Smaller improvements (any session)
 - Trigram / backoff prediction; predict after punctuation and at sentence start

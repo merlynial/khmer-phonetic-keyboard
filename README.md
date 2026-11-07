@@ -39,23 +39,29 @@ khnhom  ⎵   srolanh  ⎵   kampuchea  ⎵     →     ខ្ញុំស្រ
 ## As a system keyboard
 
 Type Khmer by sound in Telegram, Messenger, Word, or anywhere else — not only on
-this page. Two builds, because no single one reaches every platform:
+this page. Three builds, because no single one reaches every platform:
 
 | | What it is | Sound matching |
 |---|---|---|
 | **[Android app](android/README.md)** — `dist/khmer-phonetic.apk` | A standalone keyboard app. Nothing else to install. | Yes — the same fuzzy matching as the web app |
-| **[Keyman package](keyman/README.md)** — `dist/*.kmp` | Runs inside [Keyman](https://keyman.com). Reaches **iPhone, iPad, Windows, macOS, Linux** and Android. | No — spellings convert exactly as typed |
+| **[iOS app](ios/README.md)** — `KhmerPhonetic.ipa` from CI | A native keyboard extension for iPhone and iPad, sideloaded with [SideStore](https://sidestore.io) and signed by your own Apple ID. | Yes — the same fuzzy matching as the web app |
+| **[Keyman package](keyman/README.md)** — `dist/*.kmp` | Runs inside [Keyman](https://keyman.com). Covers the desktops: **Windows, macOS, Linux**. | No — spellings convert exactly as typed |
 
 See [install.html](install.html) for per-platform steps.
 
-Both are generated from the maps in `index.html` and checked against the web app
-on every build: the Keyman build types tens of thousands of strings through the
-*compiled* keyboard that ships in the package, and the Android build replays
-29,142 conversions through the Kotlin port. Any disagreement fails the build.
+All three are generated from the maps in `index.html` and checked against the web
+app on every build: the Keyman build types tens of thousands of strings through
+the *compiled* keyboard that ships in the package, the Android build replays
+29,142 conversions through the Kotlin port, and the iOS build runs the same
+comparison against the Swift port. Any disagreement fails the build.
 
-There is no native iPhone or Windows app: an iOS keyboard extension needs Xcode
-and an Apple developer account, and a Windows input method must be compiled on
-Windows. Keyman is what covers those two.
+Every phone gets a real app of its own, with the sound matching intact. Keyman is
+the desktop answer only — a Windows input method is TSF/COM and has to be compiled
+on Windows, and one `.kmp` covers all three desktops instead.
+
+Two caveats on iOS: a free Apple ID signs a sideloaded app for **seven days** at a
+time (SideStore re-signs on the device over Wi-Fi, so it renews itself), and the
+keyboard has been built and verified but **not yet run on a physical device**.
 
 ## How to type
 

@@ -72,6 +72,18 @@ K.segmentPhrase("k".repeat(200000));
 check("large input bounded (<100ms)", Date.now() - t < 100);
 K.resetLearning();
 
+// Typing must stay off the full 62k lexicon. This is deliberately loose — it
+// is here to catch a return to scanning every word per keystroke (which cost
+// ~2s for this loop), not to police milliseconds on a busy CI box.
+const typed = ["khnhom", "srolanh", "kampuchea", "sousdey", "chomreabsuor", "banhchob", "zzzqqq"];
+t = Date.now();
+let strokes = 0;
+for (let rep = 0; rep < 100; rep++)
+  for (const w of typed)
+    for (let i = 1; i <= w.length; i++) { K.suggest(w.slice(0, i)); strokes++; }
+const ms = Date.now() - t;
+check(`${strokes} keystrokes in ${ms}ms (<1000ms — lexicon still indexed)`, ms < 1000);
+
 // --- add a word to the dictionary ---
 const ok = K.addWord("កម្មវិធីទូរស័ព្ទ", "apptex apptelly");
 check("addWord accepts valid input", Array.isArray(ok) && ok.length === 2);

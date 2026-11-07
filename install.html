@@ -63,8 +63,9 @@
 same romanization as a <strong>real system keyboard</strong>, so it works everywhere your
 phone or computer accepts typing.</p>
 
-<p>On Android that is a standalone app. On iPhone and Windows it goes through
-<a href="https://keyman.com">Keyman</a>, a free and open-source keyboarding app from SIL —
+<p>Android and iPhone each have an app of their own, with the sound matching the web
+version has — nothing else to install. Windows, macOS and Linux go through
+<a href="https://keyman.com">Keyman</a>, a free and open-source keyboarding app from SIL:
 you install Keyman once, then add this keyboard to it.</p>
 
 <h2>Android — the app</h2>
@@ -107,23 +108,27 @@ you install Keyman once, then add this keyboard to it.</p>
   keyboard itself has never been run. Tell me what breaks.</p>
 </div>
 
-<h2>Windows — the Keyman package</h2>
+<h2>Windows, macOS and Linux — the Keyman package</h2>
 <div class="card">
   <a class="dl alt" href="dist/khmer_phonetic.kmp" download>Khmer Phonetic keyboard</a>
   <a class="dl alt" href="dist/pakrinha.km.khmerphonetic.model.kmp" download>Khmer dictionary (optional)</a>
   <ol>
-    <li>Install <a href="https://keyman.com/windows/">Keyman for Windows</a>.</li>
+    <li>Install <a href="https://keyman.com/windows/">Keyman</a> for your system —
+        it also has macOS and Linux builds.</li>
     <li>Download the keyboard package and double-click the <code>.kmp</code> file.</li>
-    <li>Switch to it from the Keyman icon in the system tray, or with the Windows
-        language switcher.</li>
+    <li>Switch to it from the Keyman icon in the system tray or menu bar, or with your
+        system's language switcher.</li>
   </ol>
-  <p class="meta">Windows is the one platform with no app of its own — a Windows input
-  method has to be compiled on Windows. The same package also works on macOS, Linux, and
-  on phones if you would rather use Keyman than install an app.</p>
+  <p class="meta">These are the platforms with no app of their own — a Windows input
+  method has to be compiled on Windows, and a desktop keyboard is not where this project
+  spends its effort. Keyman covers all three with one package.</p>
   <p class="note">The Keyman keyboard converts spelling exactly, with no sound
   matching — <code>sousdey</code> will not find <span class="kh">សួស្តី</span> there
-  the way it does in the apps and on the web. Word suggestions are a phone and tablet
-  feature; on Windows there is no suggestion bar.</p>
+  the way it does in the apps and on the web.</p>
+  <p class="note">The dictionary package is optional and only does something on a phone:
+  Keyman draws its suggestion bar on mobile, and on a computer there is no bar to fill.
+  On a phone, use the Android or iPhone app instead — they suggest by sound, which this
+  does not.</p>
 </div>
 
 <h2>How to type</h2>
@@ -136,21 +141,21 @@ you install Keyman once, then add this keyboard to it.</p>
   <p>Capitals reach the second-series consonants — <code>d</code> <span class="kh">ដ</span> against
   <code>D</code> <span class="kh">ឌ</span>, <code>n</code> <span class="kh">ន</span> against
   <code>N</code> <span class="kh">ណ</span>. On a phone, hold the key instead of using Shift.</p>
-  <p>The full table is in the welcome page Keyman shows after installing, and on the
-  <a href="./">web version</a>.</p>
+  <p>The full table is built into the <a href="./">web version</a> — and, if you went the
+  Keyman route, into the welcome page it shows after installing.</p>
 </div>
 
 <h2>Which one behaves like the web version</h2>
 <div class="card">
-  <p>The <strong>Android app</strong> does. It carries the same sound-matching suggestions
-  as this site — loose spellings still find the right word — and it learns from what you
-  pick.</p>
+  <p>The <strong>Android and iPhone apps</strong> do. Both carry the same sound-matching
+  suggestions as this site — loose spellings still find the right word — and both learn
+  from what you pick.</p>
   <p>The <strong>Keyman package</strong> converts letters exactly as typed, with no
-  guessing, and suggests whole words from a 20,000 word frequency list once the dictionary
-  is installed. That is the trade for reaching iPhone and Windows at all.</p>
-  <p>All three use the same romanization, so what you already know carries over. Both
-  builds are checked against the web version automatically — tens of thousands of spellings
-  on every build, and any disagreement fails the build.</p>
+  guessing. That is the trade for covering Windows, macOS and Linux without writing a
+  native input method for each of them.</p>
+  <p>All three use the same romanization, so what you already know carries over. Every
+  build is checked against the web version automatically — tens of thousands of spellings
+  each time, and any disagreement fails the build.</p>
 </div>
 
 <footer>

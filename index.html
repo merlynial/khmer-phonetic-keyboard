@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1f6feb">
 <meta name="description" content="Type Khmer by its sound — a free phonetic Khmer keyboard with Pinyin-style word suggestions. Works offline, no install.">
 <meta property="og:title" content="Khmer Phonetic Keyboard — type Khmer by sound">
@@ -170,8 +170,10 @@
   /* "My words" learned-dictionary panel */
   .addbox{background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:14px; padding:12px 13px; margin:4px 0 14px;}
   .addrow{display:flex; gap:8px; align-items:stretch;}
+  /* 16px minimum: below that, focusing an input makes iOS Safari zoom the page
+     in. Pinch-zoom stays available (the viewport no longer locks the scale). */
   .addinput{flex:1 1 0; min-width:0; background:rgba(0,0,0,.28); color:var(--txt); border:1px solid var(--line);
-    border-radius:10px; padding:9px 12px; font-size:15px; outline:none;
+    border-radius:10px; padding:9px 12px; font-size:16px; outline:none;
     font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
   .addinput.kh{font-family:var(--font-khmer); color:var(--khmer); font-size:19px;}
   .addinput:focus{border-color:rgba(59,130,246,.65); box-shadow:0 0 0 3px rgba(59,130,246,.16);}
@@ -201,7 +203,7 @@
   <header>
     <div class="logo">ក</div>
     <div style="flex:1">
-      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.14.1</span></h1>
+      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.15</span></h1>
       <div class="sub" id="t-sub">វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer</div>
     </div>
     <button class="btn alt" id="langbtn" style="padding:8px 14px;font-size:13px">EN</button>
@@ -212,7 +214,7 @@
     <div class="sugwrap">
       <textarea id="in" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="none"
         placeholder="khnhom → ខ្ញុំ ...  suggestions pop up at your cursor, like Pinyin"></textarea>
-      <div class="sugbar" id="sug"></div>
+      <div class="sugbar" id="sug" role="listbox" aria-label="Khmer word candidates"></div>
     </div>
 
     <div class="toggles">
@@ -234,8 +236,8 @@
   </div>
 
   <div class="card">
-    <div class="sugstrip" id="sugstrip"></div>
-    <div class="kb" id="kb"></div>
+    <div class="sugstrip" id="sugstrip" role="listbox" aria-label="Khmer word candidates"></div>
+    <div class="kb" id="kb" role="group" aria-label="On-screen keyboard"></div>
     <p class="hint" style="margin-top:10px" id="t-kbhint">Tap the sound — word suggestions appear above, like Pinyin.
       <b>⇧</b> gives the scheme's capitals (<code>D</code>=ឌ <code>N</code>=ណ <code>L</code>=ឡ <code>M</code>=ំ <code>H</code>=ះ) ·
       <b>?123</b> has digits, Khmer punctuation &amp; sign keys.</p>
@@ -520,7 +522,11 @@ function renderSel(){
   // all class changes first, then the scrolls: scrollIntoView forces a style
   // and layout pass, and interleaving the two would force one per box
   for (const box of [sugEl, stripEl])
-    [...box.children].forEach((c, i) => c.classList.toggle("sel", i === sugSel));
+    [...box.children].forEach((c, i) => {
+      const on = i === sugSel;
+      c.classList.toggle("sel", on);
+      c.setAttribute("aria-selected", on ? "true" : "false");
+    });
   for (const box of [sugEl, stripEl]){
     const el = box.children[sugSel];
     if (el) el.scrollIntoView({ inline:"nearest", block:"nearest" });
@@ -534,6 +540,8 @@ function buildCands(box){
     c.className = "cand" + (it.raw ? " raw" : "");
     c.innerHTML = `<span class="num">${i+1}</span><span class="kh">${esc(it.kh)}</span>`
       + (it.gloss ? `<span class="gl">${esc(it.gloss)}</span>` : "");
+    c.setAttribute("role", "option");
+    c.setAttribute("aria-label", `${i+1} ${it.kh}${it.gloss ? ", " + it.gloss : ""}`);
     c.addEventListener("pointerdown", e => { e.preventDefault(); commitSug(i); });
     box.appendChild(c);
   });
@@ -549,15 +557,17 @@ function hideSug(){
    that usually follow (corpus bigrams + phrases you have typed before) */
 let lastCommit = null;            // {kh, end} of the most recent committed word
 
-function showPredictions(){
-  const preds = KHDICT.predictNext(lastCommit.kh);
-  if (!preds.length){ hideSug(); return; }
+/* one-tap words in the strip: next-word predictions, or your frequent words */
+function showWordStrip(words){
+  if (!words.length){ hideSug(); return; }
   stripEl.innerHTML = "";
-  preds.forEach((kh, i) => {
+  words.forEach((kh, i) => {
     const c = document.createElement("div");
     c.className = "cand pin";
     c.style.setProperty("--i", i);
     c.innerHTML = `<span class="kh">${esc(kh)}</span>`;
+    c.setAttribute("role", "option");
+    c.setAttribute("aria-label", kh);
     c.addEventListener("pointerdown", e => { e.preventDefault(); commitPred(kh); });
     stripEl.appendChild(c);
   });
@@ -576,20 +586,7 @@ function commitPred(kh){
 }
 
 /* idle: offer YOUR most frequent words, ready to tap (Apple QuickType style) */
-function showIdleWords(){
-  const words = KHDICT.topUsed(8);
-  if (!words.length){ hideSug(); return; }
-  stripEl.innerHTML = "";
-  words.forEach((kh, i) => {
-    const c = document.createElement("div");
-    c.className = "cand pin";
-    c.style.setProperty("--i", i);
-    c.innerHTML = `<span class="kh">${esc(kh)}</span>`;
-    c.addEventListener("pointerdown", e => { e.preventDefault(); commitPred(kh); });
-    stripEl.appendChild(c);
-  });
-  sugEl.classList.remove("show"); sugEl.innerHTML = "";
-}
+function showIdleWords(){ showWordStrip(KHDICT.topUsed(8)); }
 
 let sugFor = null;             // [value, selectionStart, selectionEnd] last shown for
 function updateSug(){
@@ -599,7 +596,9 @@ function updateSug(){
   sugState = { token, start, end, items: [] };
   sugSel = 0; sugNav = false;
   if (!token || token === dismissed){
-    if (!token && lastCommit && end === lastCommit.end){ showPredictions(); return; }
+    if (!token && lastCommit && end === lastCommit.end){
+      showWordStrip(KHDICT.predictNext(lastCommit.kh)); return;
+    }
     if (!token){ showIdleWords(); return; }
     hideSug(); return;
   }
@@ -676,6 +675,8 @@ inEl.addEventListener("keydown", e => {
     hideSug(); sugState.items = [];
   }
 });
+/* Moving the caret changes which word is being composed, so suggestions have
+   to follow it. */
 document.addEventListener("selectionchange", ()=>{
   if (document.activeElement !== inEl) return;
   // Every keystroke also moves the caret, but its input event has already
@@ -690,7 +691,12 @@ document.addEventListener("selectionchange", ()=>{
   updateSug();
 });
 $("#conv").addEventListener("click", run);
-$("#clear").addEventListener("click", ()=>{ inEl.value=""; outEl.textContent=""; inEl.focus(); });
+$("#clear").addEventListener("click", ()=>{
+  inEl.value=""; outEl.textContent=""; inEl.focus();
+  lastCommit = null; dismissed = "";
+  sugState = { token:"", start:0, end:0, items:[] };
+  hideSug();                       // else the old candidates stay up, and
+});                                // picking one types into the cleared box
 
 function toast(msg){
   const t=$("#toast"); t.textContent=msg; t.classList.add("show");
@@ -714,6 +720,21 @@ $("#copy").addEventListener("click", async ()=>{
 const devkb = $("#devkb");
 devkb.addEventListener("change", ()=> inEl.setAttribute("inputmode", devkb.checked ? "text" : "none"));
 
+/* Remember the switches. Someone who types on their phone's own keyboard, or
+   wants Khmer digits, should not have to say so again on every visit. */
+for (const el of [autostack, khnum, live, spacesel, devkb]){
+  const key = "khkb_opt_" + el.id;
+  let saved = null;
+  try { saved = localStorage.getItem(key); } catch(e){}
+  if (saved !== null && (saved === "1") !== el.checked){
+    el.checked = saved === "1";
+    el.dispatchEvent(new Event("change"));
+  }
+  el.addEventListener("change", ()=>{
+    try { localStorage.setItem(key, el.checked ? "1" : "0"); } catch(e){}
+  });
+}
+
 const SUB = {  // tiny Khmer hint under each letter key
   q:"អ", w:"វ", e:"េ", r:"រ", t:"ត", y:"យ", u:"ុ", i:"ិ", o:"ោ", p:"ព",
   s:"ស", d:"ដ", g:"គ", h:"ហ", j:"ជ", k:"ក", l:"ល",
@@ -736,6 +757,7 @@ const ROWS_SYM = [
    {t:",",l:","},{t:"-",l:"-"},{a:"BKSP",l:"⌫",w:1.5}],
   [{a:"SYM",l:"ABC",w:1.8}, {a:"SPACE",l:"space",w:5}, {t:"។",l:"។",kh:1}, {a:"ENTER",l:"⏎",w:1.3}],
 ];
+const KEY_NAMES = { SHIFT:"shift", BKSP:"backspace", SYM:"symbols", SPACE:"space", ENTER:"enter" };
 let kbLayer = "abc", kbShift = false;
 
 function ensureCaret(){
@@ -824,6 +846,9 @@ function drawKB(animate){
       // letters: tiny Khmer hint; sign keys: show what you'd type (e.g. ់ ← ')
       const sub = isStr ? (SUB[ch] || "") : (it.kh && it.t !== it.l ? it.t : "");
       b.innerHTML = `<span>${label}</span><span class="sub">${sub || "&nbsp;"}</span>`;
+      // the glyph labels ("⇧", "⌫") say nothing out loud on their own
+      b.setAttribute("role", "button");
+      b.setAttribute("aria-label", isStr ? ch : (KEY_NAMES[it.a] || it.t || it.l));
       if (!isStr && it.w) b.style.flexGrow = it.w;
       b.addEventListener("pointerdown", e => {
         e.preventDefault();
@@ -944,6 +969,8 @@ const STRINGS = {
 let LANG = localStorage.getItem("khkb_lang") || "km";
 function setLang(l){
   LANG = l; localStorage.setItem("khkb_lang", l);
+  // screen readers and font fallback both read this; it was stuck on "en"
+  document.documentElement.lang = l === "km" ? "km" : "en";
   const s = STRINGS[l];
   $("#t-sub").textContent = s.sub;
   $("#t-instr").innerHTML = s.instr;

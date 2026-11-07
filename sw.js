@@ -6,7 +6,7 @@
 // The big files that rarely change (the lexicon, the bigrams, the font, the
 // icons) come straight from the cache and are refreshed in the background for
 // next time. Fetching them first made every launch wait on ~3 MB of network.
-const CACHE = "khmer-kbd-0.14.1";
+const CACHE = "khmer-kbd-0.15";
 const ASSETS = ["./", "./index.html", "./install.html", "./dict.js", "./words.txt",
                 "./bigrams.txt", "./fonts/Siemreap-Regular.ttf", "./icons/icon-192.png",
                 "./manifest.webmanifest"];
@@ -26,7 +26,7 @@ self.addEventListener("activate", e => {
 // Keep a good response for offline use. An error page must never replace a
 // working copy, and an unchanged file is not written again.
 async function keep(req, res) {
-  if (!res.ok) return;
+  if (!res.ok || res.type !== "basic") return;
   const cache = await caches.open(CACHE);
   const tag = r => r && (r.headers.get("etag") || r.headers.get("last-modified"));
   if (tag(res) && tag(res) === tag(await cache.match(req))) return;

@@ -1,16 +1,22 @@
 # Keyman packages — the system keyboard
 
 The web app types Khmer into its own box. These two packages type Khmer into
-**any** app, on Android, iPhone, iPad, Windows, macOS and Linux, by way of
+**any** app on **Windows, macOS and Linux**, by way of
 [Keyman](https://keyman.com) — SIL's free, open-source keyboarding platform.
 
-Install instructions for each platform: [install.html](../install.html), live at
+This is the desktop route. Phones are served by their own apps — [`../android/`](../android/README.md)
+and [`../ios/`](../ios/README.md) — which keep the fuzzy sound matching that
+Keyman cannot carry. The packages below still install on Android and iOS, and
+nothing here is built to exclude them, but the install page no longer sends
+anyone that way.
+
+Install instructions: [install.html](../install.html), live at
 <https://merlynial.github.io/khmer-phonetic-keyboard/install.html>.
 
 | Package | What it is |
 | --- | --- |
-| `khmer_phonetic/` | The keyboard: the romanization rules, the on-screen layout for phones, and a bundled Khmer font |
-| `pakrinha.km.khmerphonetic/` | The dictionary: 20,000 Khmer words for the suggestion bar on phones and tablets |
+| `khmer_phonetic/` | The keyboard: the romanization rules, an on-screen touch layout, and a bundled Khmer font |
+| `pakrinha.km.khmerphonetic/` | The dictionary: 20,000 Khmer words. Keyman only draws a suggestion bar on mobile, so this does nothing on a desktop |
 
 Keyman does not allow one package to hold both a keyboard and a lexical model,
 so they ship as two `.kmp` files. The keyboard package names the dictionary as a
@@ -57,9 +63,9 @@ npm run test:packages   # the COMPILED keyboard vs. the web engine
 ```
 
 The second one matters more. It loads the real `khmer_phonetic.js` — the file
-that ships inside the `.kmp` and runs on the phone — behind a small shim of the
-five host functions a KeymanWeb keyboard calls, and types tens of thousands of
-strings through it. It tests what kmc produced, not what this repo intended.
+that ships inside the `.kmp` and runs on the user's machine — behind a small shim
+of the five host functions a KeymanWeb keyboard calls, and types tens of thousands
+of strings through it. It tests what kmc produced, not what this repo intended.
 
 ## Building without Keyman Developer
 
@@ -84,5 +90,6 @@ affected — `build` is fine. The CI workflow patches it in three lines.
 - **Predictions are syllable-anchored.** Khmer is written without spaces between
   words, so Keyman's word breaker splits at every syllable. Suggestions appear
   from the first syllable but do not accumulate across a whole word.
-- **Suggestions are mobile-only.** Keyman shows the prediction bar on Android and
-  iOS; on Windows the keyboard types Khmer with no suggestion bar.
+- **Suggestions are mobile-only.** Keyman only draws its prediction bar on
+  Android and iOS. On the desktops this package actually targets, the keyboard
+  types Khmer with no suggestion bar and the dictionary package is inert.
