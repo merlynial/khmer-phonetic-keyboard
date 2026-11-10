@@ -46,7 +46,7 @@ jobs:
           npm test
           npm run build:packages
 
-      # Every commit in this repository is authored by its owner (CLAUDE.md),
+      # Every commit in this repository is authored by its owner,
       # the monthly rebuild included.
       - name: Commit if changed
         run: |
