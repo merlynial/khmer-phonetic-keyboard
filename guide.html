@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="km" data-lang="km"
+  data-title-en="Typing guide · Khmer Keyboard"
+  data-title-km="របៀបវាយ · ក្ដារចុចខ្មែរ"
+  data-desc-en="The complete romanization for the Khmer phonetic keyboard: consonants, vowels, signs, punctuation and clusters, with live examples."
+  data-desc-km="ប្រព័ន្ធសរសេរឡាតាំងពេញលេញសម្រាប់ក្ដារចុចខ្មែរតាមសំឡេង៖ ព្យញ្ជនៈ ស្រៈ សញ្ញា វណ្ណយុត្តិ និងជើងអក្សរ ជាមួយឧទាហរណ៍ផ្ទាល់។">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F1E8">
+<title>Typing guide · Khmer Keyboard</title>
+<meta name="description" content="The complete romanization for the Khmer phonetic keyboard: consonants, vowels, signs, punctuation and clusters, with live examples.">
+<link rel="canonical" href="https://khmerkeyboard.com/guide.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://khmerkeyboard.com/guide.html">
+<meta property="og:title" content="Typing guide · Khmer Keyboard">
+<meta property="og:description" content="The complete romanization for the Khmer phonetic keyboard: consonants, vowels, signs, punctuation and clusters, with live examples.">
+<meta property="og:image" content="https://khmerkeyboard.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<script>
+  (function () {
+    var d = document.documentElement, l = null, t = null;
+    try { l = localStorage.getItem("khkb_lang"); t = localStorage.getItem("kk_theme"); } catch (e) {}
+    d.setAttribute("data-lang", l === "en" ? "en" : "km"); d.lang = d.getAttribute("data-lang");
+    if (t === "dark" || t === "light") d.setAttribute("data-theme", t);
+  })();
+</script>
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<a class="skip" href="#main"><span data-l="en">Skip to content</span><span data-l="km">រំលងទៅខ្លឹមសារ</span></a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="Khmer Keyboard">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="2" y="2" width="96" height="96" rx="24" style="fill:var(--ink)"/><path transform="translate(5 6)" style="fill:var(--paper)" d="M33.33 75V50Q33.33 40 50 40Q66.67 40 66.67 50V75H56.67V50Q56.67 43.33 50 43.33Q43.33 43.33 43.33 50V75ZM31.67 37.43V34.93Q31.67 33.2 33.8 31.17L35.97 29.13Q40.23 25 41.3 25Q42.5 25 46.03 28.73L47.8 30.6Q48.7 31.57 49.67 31.57Q50.5 31.57 51.33 30.6L52.97 28.73Q56.3 25 57.47 25Q58.6 25 60.47 27.07L64.33 31.23Q65.5 32.47 66.67 32.47Q67.5 32.47 68.33 31.87Q66.03 38.43 63.9 38.43Q61.7 38.43 59.17 36.08Q56.63 33.73 55.57 33.73Q54.17 33.73 52.25 36.08Q50.33 38.43 48.7 38.43Q46.33 38.43 43.5 36.08Q40.67 33.73 39.43 33.73Q38.03 33.73 37.3 34.47Q36.57 35.2 36.57 36.4Q36.57 37.4 41.07 39.73L36.83 42.77Q31.67 40.73 31.67 37.43Z"/><path style="fill:none;stroke:var(--accent);stroke-width:4.4;stroke-linecap:round;stroke-linejoin:round" d="M17 15v16M25 20.2l-7.2 5.6m2.9-2.3 4.7 7.7"/></svg>
+      <span data-l="en">Khmer Keyboard</span><span data-l="km">ក្ដារចុចខ្មែរ</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html#how"><span data-l="en">How it works</span><span data-l="km">របៀបដំណើរការ</span></a>
+      <a href="install.html"><span data-l="en">Download</span><span data-l="km">ទាញយក</span></a>
+      <a href="guide.html" aria-current="page"><span data-l="en">Typing guide</span><span data-l="km">របៀបវាយ</span></a>
+      <a href="index.html#faq"><span data-l="en">Questions</span><span data-l="km">សំណួរ</span></a>
+    </nav>
+    <div class="tools">
+      <div class="lang-switch" role="group" aria-label="Language · ភាសា">
+        <button type="button" data-set-lang="en" lang="en" aria-pressed="false">EN</button>
+        <button type="button" data-set-lang="km" lang="km" aria-pressed="true">ខ្មែរ</button>
+      </div>
+      <button type="button" class="icon-btn theme-btn" aria-label="Switch theme">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6Z"/></svg>
+      </button>
+      <a class="btn btn-primary btn-sm" href="app.html"><span data-l="en">Open keyboard</span><span data-l="km">បើកក្ដារចុច</span></a>
+      <button type="button" class="icon-btn menu-btn" aria-controls="menu" aria-expanded="false" data-aria-en="Menu" data-aria-km="ម៉ឺនុយ" aria-label="ម៉ឺនុយ">
+        <svg class="bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+        <svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="sheet" id="menu">
+  <nav aria-label="Mobile">
+    <a href="index.html#how"><span data-l="en">How it works</span><span data-l="km">របៀបដំណើរការ</span></a>
+    <a href="install.html"><span data-l="en">Download</span><span data-l="km">ទាញយក</span></a>
+    <a href="guide.html" aria-current="page"><span data-l="en">Typing guide</span><span data-l="km">របៀបវាយ</span></a>
+    <a href="index.html#faq"><span data-l="en">Questions</span><span data-l="km">សំណួរ</span></a>
+  </nav>
+  <div class="sheet-tools">
+    <div class="lang-switch" role="group" aria-label="Language · ភាសា">
+      <button type="button" data-set-lang="en" lang="en" aria-pressed="false">EN</button>
+      <button type="button" data-set-lang="km" lang="km" aria-pressed="true">ខ្មែរ</button>
+    </div>
+    <button type="button" class="icon-btn theme-btn" aria-label="Switch theme">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6Z"/></svg>
+    </button>
+  </div>
+</div>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="label"><span data-l="en">Typing guide</span><span data-l="km">របៀបវាយ</span></p>
+      <h1 class="display"><span data-l="en">How to type every sound.</span><span data-l="km">របៀបវាយគ្រប់សំឡេង។</span></h1>
+      <p class="lead">
+        <span data-l="en">The complete romanization, letter by letter. Day to day you won't need most of it, because suggestions finish words for you. It is the exact scheme for when you want full control: names, rare words, or the Keyman keyboard on a computer.</span>
+        <span data-l="km">ប្រព័ន្ធសរសេរឡាតាំងពេញលេញ តាមអក្សរនីមួយៗ។ ក្នុងការវាយប្រចាំថ្ងៃ អ្នកមិនសូវត្រូវការវាទេ ព្រោះការណែនាំបំពេញពាក្យឲ្យអ្នក។ វាជាប្រព័ន្ធច្បាស់លាស់ សម្រាប់ពេលដែលអ្នកចង់គ្រប់គ្រងទាំងស្រុង៖ ឈ្មោះ ពាក្យកម្រ ឬក្ដារចុច Keyman នៅលើកុំព្យូទ័រ។</span>
+      </p>
+    </div>
+  </section>
+
+  <div class="wrap doc">
+    <nav class="toc" aria-label="On this page">
+      <p><span data-l="en">On this page</span><span data-l="km">ក្នុងទំព័រនេះ</span></p>
+      <a href="#try"><span data-l="en">Try a spelling</span><span data-l="km">សាកវាយ</span></a>
+      <a href="#consonants"><span data-l="en">Consonants</span><span data-l="km">ព្យញ្ជនៈ</span></a>
+      <a href="#vowels"><span data-l="en">Vowels</span><span data-l="km">ស្រៈ</span></a>
+      <a href="#independent"><span data-l="en">Independent vowels</span><span data-l="km">ស្រៈពេញតួ</span></a>
+      <a href="#signs"><span data-l="en">Signs</span><span data-l="km">សញ្ញា</span></a>
+      <a href="#punctuation"><span data-l="en">Punctuation and numbers</span><span data-l="km">វណ្ណយុត្តិ និងលេខ</span></a>
+      <a href="#clusters"><span data-l="en">Clusters</span><span data-l="km">ជើងអក្សរ</span></a>
+      <a href="#tips"><span data-l="en">Good to know</span><span data-l="km">គួរដឹង</span></a>
+    </nav>
+
+    <div class="doc-body">
+      <section class="doc-section" id="try" aria-labelledby="try-title">
+        <h2 id="try-title"><span data-l="en">Try a spelling</span><span data-l="km">សាកវាយ</span></h2>
+        <p><span data-l="en">Type anything to see how it is read. This is the letter-by-letter engine on its own, without the dictionary.</span>
+           <span data-l="km">វាយអ្វីក៏បាន ដើម្បីមើលថាវាត្រូវបានអានយ៉ាងដូចម្ដេច។ នេះគឺជាម៉ាស៊ីនបម្លែងតាមអក្សរនីមួយៗ ដោយគ្មានវចនានុក្រម។</span></p>
+        <div data-xray style="margin-top:26px">
+          <label for="xray-in" class="visually-hidden"><span data-l="en">Spelling</span><span data-l="km">អក្ខរាវិរុទ្ធ</span></label>
+          <input id="xray-in" class="xray-input" value="khnhom" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="40">
+          <p class="xray-try"><span data-l="en">Try</span><span data-l="km">សាកល្បង</span>
+            <button type="button" data-try>khnhom</button> ·
+            <button type="button" data-try>sruk</button> ·
+            <button type="button" data-try>chhnam</button> ·
+            <button type="button" data-try>skl</button> ·
+            <button type="button" data-try>ka.mpujaa</button> ·
+            <button type="button" data-try>m*aong</button> ·
+            <button type="button" data-try>s`ii</button>
+          </p>
+          <div class="tokens" data-tokens style="margin-top:30px"></div>
+          <div class="result">
+            <span class="result-eq"><span data-l="en">reads as</span><span data-l="km">អានជា</span></span>
+            <span class="result-word" lang="km" data-result></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="doc-section" id="consonants" aria-labelledby="cons-title">
+        <h2 id="cons-title"><span data-l="en">Consonants</span><span data-l="km">ព្យញ្ជនៈ</span></h2>
+        <p><span data-l="en">Thirty-three consonants, in the traditional order. Lower case covers most of them, and a capital reaches the second letter for the same sound. Where two keys are listed, either one works.</span>
+           <span data-l="km">ព្យញ្ជនៈសាមសិបបី តាមលំដាប់ប្រពៃណី។ អក្សរតូចគ្របដណ្ដប់ភាគច្រើន ហើយអក្សរធំប្រើសម្រាប់អក្សរទីពីរដែលមានសំឡេងដូចគ្នា។ កន្លែងដែលមានគ្រាប់ចុចពីរ អ្នកអាចប្រើមួយណាក៏បាន។</span></p>
+        <div class="chart cols-5" data-chart="cons" role="list"></div>
+      </section>
+
+      <section class="doc-section" id="vowels" aria-labelledby="vow-title">
+        <h2 id="vow-title"><span data-l="en">Vowels</span><span data-l="km">ស្រៈ</span></h2>
+        <p><span data-l="en">A vowel is typed after the consonant it belongs to. Each one is shown here on <span class="kh" lang="km">ក</span>. Typing <code>a</code> on its own adds nothing, because every consonant already carries a built-in vowel.</span>
+           <span data-l="km">ស្រៈត្រូវវាយបន្ទាប់ពីព្យញ្ជនៈរបស់វា។ ស្រៈនីមួយៗបង្ហាញនៅទីនេះជាមួយ ក។ ការវាយ <code>a</code> តែឯង មិនបន្ថែមអ្វីទេ ព្រោះព្យញ្ជនៈនីមួយៗមានស្រៈក្នុងខ្លួនរួចហើយ។</span></p>
+        <div class="chart" data-chart="vow" role="list"></div>
+      </section>
+
+      <section class="doc-section" id="independent" aria-labelledby="ind-title">
+        <h2 id="ind-title"><span data-l="en">Independent vowels</span><span data-l="km">ស្រៈពេញតួ</span></h2>
+        <p><span data-l="en">A few vowels are letters in their own right and stand without a consonant. Type them with an apostrophe first.</span>
+           <span data-l="km">ស្រៈមួយចំនួនជាអក្សរដាច់ដោយឡែក ហើយឈរដោយគ្មានព្យញ្ជនៈ។ វាយវាដោយចុចសញ្ញា <code>'</code> ជាមុនសិន។</span></p>
+        <div class="chart" data-chart="indep" role="list"></div>
+      </section>
+
+      <section class="doc-section" id="signs" aria-labelledby="sign-title">
+        <h2 id="sign-title"><span data-l="en">Signs</span><span data-l="km">សញ្ញា</span></h2>
+        <p><span data-l="en">Signs attach to the letter before them. The two series shifters change which vowel series a consonant belongs to: <code>*</code> gives <span class="kh" lang="km">៉</span>, as in <code>m*aong</code>, and <code>`</code> gives <span class="kh" lang="km">៊</span>, as in <code>s`ii</code>.</span>
+           <span data-l="km">សញ្ញាភ្ជាប់ទៅនឹងអក្សរខាងមុខវា។ សញ្ញាប្ដូរវគ្គទាំងពីរ ប្ដូរវគ្គសំឡេងរបស់ព្យញ្ជនៈ៖ <code>*</code> ផ្ដល់ ៉ ដូចក្នុង <code>m*aong</code> ហើយ <code>`</code> ផ្ដល់ ៊ ដូចក្នុង <code>s`ii</code>។</span></p>
+        <div class="chart" data-chart="sign" role="list"></div>
+        <ul class="examples" data-examples>
+          <li data-in="m*aong" data-why-en="* puts musikatoan on ម" data-why-km="* ដាក់មូសិកទន្តលើ ម"></li>
+          <li data-in="s`ii" data-why-en="` puts treisap on ស" data-why-km="` ដាក់ត្រីសព្ទលើ ស"></li>
+          <li data-in="kaat'" data-why-en="' adds bantoc, which shortens the vowel" data-why-km="' បន្ថែមបន្តក់ ដែលធ្វើឲ្យស្រៈខ្លី"></li>
+        </ul>
+      </section>
+
+      <section class="doc-section" id="punctuation" aria-labelledby="punct-title">
+        <h2 id="punct-title"><span data-l="en">Punctuation and numbers</span><span data-l="km">វណ្ណយុត្តិ និងលេខ</span></h2>
+        <p><span data-l="en">Khmer punctuation is typed with doubled keys, so single characters stay free for spelling.</span>
+           <span data-l="km">វណ្ណយុត្តិខ្មែរវាយដោយចុចគ្រាប់ចុចពីរដង ដើម្បីទុកអក្សរតែមួយសម្រាប់ការសរសេរ។</span></p>
+        <div class="chart" data-chart="punct" role="list"></div>
+        <h3><span data-l="en">Numbers</span><span data-l="km">លេខ</span></h3>
+        <p><span data-l="en">Digits become Khmer digits when <strong>Khmer digits</strong> is switched on in the keyboard.</span>
+           <span data-l="km">លេខនឹងក្លាយជាលេខខ្មែរ ពេលបើកជម្រើស <strong>លេខខ្មែរ</strong> នៅក្នុងក្ដារចុច។</span></p>
+        <div class="chart" data-chart="digits" role="list" style="grid-template-columns:repeat(auto-fill,minmax(64px,1fr))"></div>
+      </section>
+
+      <section class="doc-section" id="clusters" aria-labelledby="clus-title">
+        <h2 id="clus-title"><span data-l="en">Clusters</span><span data-l="km">ជើងអក្សរ</span></h2>
+        <p><span data-l="en">Type consonants one after another with no vowel between them, and every one after the first becomes a subscript. To stop a cluster, or to keep two letters from being read as one vowel, put a full stop between them. The full stop itself is not typed.</span>
+           <span data-l="km">វាយព្យញ្ជនៈបន្តបន្ទាប់គ្នាដោយគ្មានស្រៈនៅចន្លោះ ហើយព្យញ្ជនៈនីមួយៗក្រោយព្យញ្ជនៈទីមួយនឹងក្លាយជាជើង។ ដើម្បីបញ្ឈប់ជើង ឬកុំឲ្យអក្សរពីរត្រូវបានអានជាស្រៈតែមួយ សូមដាក់សញ្ញាចុច (.) នៅចន្លោះ។ សញ្ញាចុចនោះមិនបង្ហាញក្នុងលទ្ធផលទេ។</span></p>
+        <ul class="examples" data-examples>
+          <li data-in="khnhom" data-why-en="kh, then nh as a subscript, then the vowel om" data-why-km="kh បន្ទាប់មក nh ជាជើង រួចស្រៈ om"></li>
+          <li data-in="thngai" data-why-en="th with ng below it, then the vowel ai" data-why-km="th មាន ng ជាជើង រួចស្រៈ ai"></li>
+          <li data-in="skl" data-why-en="every consonant after the first drops below" data-why-km="ព្យញ្ជនៈនីមួយៗក្រោយព្យញ្ជនៈទីមួយ ធ្លាក់ទៅជាជើង"></li>
+          <li data-in="kampujaa" data-why-en="am is read as the vowel ាំ, which is not what was meant" data-why-km="am ត្រូវបានអានជាស្រៈ ាំ ដែលមិនមែនជាអ្វីដែលចង់បាន"></li>
+          <li data-in="ka.mpujaa" data-why-en="the full stop splits a from m, so m starts a cluster with p" data-why-km="សញ្ញាចុចបំបែក a ពី m ដូច្នេះ m ចាប់ផ្ដើមជើងជាមួយ p"></li>
+        </ul>
+      </section>
+
+      <section class="doc-section" id="tips" aria-labelledby="tips-title">
+        <h2 id="tips-title"><span data-l="en">Good to know</span><span data-l="km">គួរដឹង</span></h2>
+        <ul style="padding-left:20px;margin:0">
+          <li><span data-l="en"><strong>Capitals matter.</strong> <code>d</code> is <span class="kh" lang="km">ដ</span> but <code>D</code> is <span class="kh" lang="km">ឌ</span>; <code>th</code> is <span class="kh" lang="km">ថ</span> but <code>TH</code> is <span class="kh" lang="km">ឋ</span>; <code>l</code> is <span class="kh" lang="km">ល</span> but <code>L</code> is <span class="kh" lang="km">ឡ</span>.</span>
+              <span data-l="km"><strong>អក្សរធំមានន័យ។</strong> <code>d</code> គឺ ដ ប៉ុន្តែ <code>D</code> គឺ ឌ, <code>th</code> គឺ ថ ប៉ុន្តែ <code>TH</code> គឺ ឋ, <code>l</code> គឺ ល ប៉ុន្តែ <code>L</code> គឺ ឡ។</span></li>
+          <li><span data-l="en"><strong>Common words don't need any of this.</strong> Type the sound loosely and pick from the suggestions; the scheme above is what fills the gaps.</span>
+              <span data-l="km"><strong>ពាក្យទូទៅមិនត្រូវការរឿងទាំងនេះទេ។</strong> វាយសំឡេងតាមដែលអ្នកស្គាល់ ហើយជ្រើសពីការណែនាំ។ ប្រព័ន្ធខាងលើគឺសម្រាប់បំពេញចន្លោះ។</span></li>
+          <li><span data-l="en"><strong>It is the same everywhere.</strong> The Android and iPhone apps and the Keyman package all use this scheme, and every build is checked against the web version, so what you learn here carries over.</span>
+              <span data-l="km"><strong>វាដូចគ្នាគ្រប់កន្លែង។</strong> កម្មវិធី Android និង iPhone ព្រមទាំងកញ្ចប់ Keyman ប្រើប្រព័ន្ធនេះទាំងអស់ ហើយការសាងសង់នីមួយៗត្រូវបានផ្ទៀងផ្ទាត់ជាមួយកំណែវេប ដូច្នេះអ្វីដែលអ្នករៀននៅទីនេះ អាចប្រើបានគ្រប់កន្លែង។</span></li>
+        </ul>
+        <p style="margin-top:34px"><a class="btn btn-primary" href="app.html"><span data-l="en">Open keyboard</span><span data-l="km">បើកក្ដារចុច</span></a></p>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="./">
+          <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="2" y="2" width="96" height="96" rx="24" style="fill:var(--ink)"/><path transform="translate(5 6)" style="fill:var(--paper)" d="M33.33 75V50Q33.33 40 50 40Q66.67 40 66.67 50V75H56.67V50Q56.67 43.33 50 43.33Q43.33 43.33 43.33 50V75ZM31.67 37.43V34.93Q31.67 33.2 33.8 31.17L35.97 29.13Q40.23 25 41.3 25Q42.5 25 46.03 28.73L47.8 30.6Q48.7 31.57 49.67 31.57Q50.5 31.57 51.33 30.6L52.97 28.73Q56.3 25 57.47 25Q58.6 25 60.47 27.07L64.33 31.23Q65.5 32.47 66.67 32.47Q67.5 32.47 68.33 31.87Q66.03 38.43 63.9 38.43Q61.7 38.43 59.17 36.08Q56.63 33.73 55.57 33.73Q54.17 33.73 52.25 36.08Q50.33 38.43 48.7 38.43Q46.33 38.43 43.5 36.08Q40.67 33.73 39.43 33.73Q38.03 33.73 37.3 34.47Q36.57 35.2 36.57 36.4Q36.57 37.4 41.07 39.73L36.83 42.77Q31.67 40.73 31.67 37.43Z"/><path style="fill:none;stroke:var(--accent);stroke-width:4.4;stroke-linecap:round;stroke-linejoin:round" d="M17 15v16M25 20.2l-7.2 5.6m2.9-2.3 4.7 7.7"/></svg>
+          <span data-l="en">Khmer Keyboard</span><span data-l="km">ក្ដារចុចខ្មែរ</span>
+        </a>
+        <p><span data-l="en">A free phonetic keyboard for Khmer. Open source, works offline, no tracking.</span>
+           <span data-l="km">ក្ដារចុចខ្មែរតាមសំឡេង ឥតគិតថ្លៃ។ កូដចំហ ដំណើរការក្រៅបណ្ដាញ គ្មានការតាមដាន។</span></p>
+      </div>
+      <div>
+        <h2><span data-l="en">Keyboard</span><span data-l="km">ក្ដារចុច</span></h2>
+        <ul>
+          <li><a href="app.html"><span data-l="en">Open keyboard</span><span data-l="km">បើកក្ដារចុច</span></a></li>
+          <li><a href="install.html"><span data-l="en">Install</span><span data-l="km">ដំឡើង</span></a></li>
+          <li><a href="guide.html"><span data-l="en">Typing guide</span><span data-l="km">របៀបវាយ</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h2><span data-l="en">Project</span><span data-l="km">គម្រោង</span></h2>
+        <ul>
+          <li><a href="https://github.com/merlynial/khmer-phonetic-keyboard"><span data-l="en">Source code</span><span data-l="km">កូដប្រភព</span></a></li>
+          <li><a href="https://github.com/merlynial/khmer-phonetic-keyboard/issues"><span data-l="en">Report a problem</span><span data-l="km">រាយការណ៍បញ្ហា</span></a></li>
+          <li><a href="https://github.com/merlynial/khmer-phonetic-keyboard/blob/main/LICENSE"><span data-l="en">MIT licence</span><span data-l="km">អាជ្ញាប័ណ្ណ MIT</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h2><span data-l="en">Credits</span><span data-l="km">ប្រភព</span></h2>
+        <p class="footer-credits">
+          <span data-l="en">Word list from the Google Khmer pronunciation lexicon (CC BY 4.0), ranked with Khmer Wikipedia and CC-100. Fonts: Kantumruy by Sovichet Tep and Siemreap by Danh Hong, under the SIL Open Font License.</span>
+          <span data-l="km">បញ្ជីពាក្យពីវចនានុក្រមបញ្ចេញសំឡេងខ្មែររបស់ Google (CC BY 4.0) តម្រៀបតាមវិគីភីឌាខ្មែរ និង CC-100។ ពុម្ពអក្សរ Kantumruy ដោយ Sovichet Tep និង Siemreap ដោយ Danh Hong ក្រោមអាជ្ញាប័ណ្ណ SIL Open Font License។</span>
+        </p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Keang Pakrinha</span>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script src="engine.js"></script>
+<script src="xray.js"></script>
+<script src="guide.js"></script>
+</body>
+</html>

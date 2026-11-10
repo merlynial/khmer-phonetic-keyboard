@@ -147,7 +147,7 @@ export function emitKmn(scheme, table, meta) {
   L.push(`c`);
   L.push(`c GENERATED FILE — do not edit by hand.`);
   L.push(`c   regenerate with:  npm run build:keyman`);
-  L.push(`c   source of truth:  the romanization maps in ../index.html`);
+  L.push(`c   source of truth:  the romanization maps in ../engine.js`);
   L.push(`c`);
   L.push(`c ${states.length} states, ${states.reduce((a, s) => a + s.rules.length, 0)} transitions,`);
   L.push(`c compiled from ${scheme.KEYS.length} romanization keys.`);

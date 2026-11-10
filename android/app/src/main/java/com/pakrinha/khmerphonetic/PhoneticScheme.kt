@@ -3,7 +3,7 @@ package com.pakrinha.khmerphonetic
 /**
  * GENERATED FILE - do not edit by hand.
  *   regenerate with:  npm run build:android
- *   source of truth:  the romanization maps in index.html
+ *   source of truth:  the romanization maps in engine.js
  *
  * The maps below are lifted verbatim from the web app, so the phone types what
  * the browser types. PhoneticEngine.convert() is the port of the loop that

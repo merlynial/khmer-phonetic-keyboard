@@ -28,7 +28,7 @@ jobs:
       - name: Regenerate keyboard, wordlist and docs
         run: npm run build:keyman && npm run build:wordlist && npm run build:docs
 
-      # The .kmn and the touch layout are generated from index.html. If they
+      # The .kmn and the touch layout are generated from engine.js. If they
       # drift from what is committed, the scheme changed without a rebuild.
       - name: Check generated sources are up to date
         run: |

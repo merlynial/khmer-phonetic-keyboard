@@ -8,7 +8,7 @@ on:
       - "ios/**"
       - "tools/build_ios.mjs"
       - "tools/scheme.mjs"
-      - "index.html"
+      - "engine.js"
       - ".github/workflows/ios.yml"
   pull_request:
   workflow_dispatch:

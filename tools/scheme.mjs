@@ -1,10 +1,11 @@
 /* Single source of truth for the romanization scheme.
  *
- * The scheme lives in index.html because that file is the shipping web app.
- * Rather than keep a second copy here (which would drift), this module lifts
- * the engine section straight out of index.html and evaluates it, so the
- * Keyman keyboard is generated from the exact maps and the exact convert()
- * that the PWA runs.
+ * The scheme lives in engine.js, the plain script the web pages load (the
+ * keyboard in app.html, the demo on the home page and the typing guide).
+ * Rather than keep a second copy here (which would drift), this module
+ * evaluates that same file, so the Keyman keyboard and the Android and iOS
+ * schemes are generated from the exact maps and the exact convert() that the
+ * web app runs.
  */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -14,17 +15,15 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO = join(HERE, "..");
 
 const START = "const COENG";
-const END = "/* =========================== UI WIRING";
 
-export function loadScheme(htmlPath = join(REPO, "index.html")) {
-  const html = readFileSync(htmlPath, "utf8");
-  const a = html.indexOf(START);
-  const b = html.indexOf(END);
-  if (a < 0 || b < 0 || b < a) {
-    throw new Error("could not locate the engine section in " + htmlPath +
-      " — did the START/END markers in tools/scheme.mjs go stale?");
+export function loadScheme(enginePath = join(REPO, "engine.js")) {
+  const file = readFileSync(enginePath, "utf8");
+  const a = file.indexOf(START);
+  if (a < 0 || !file.includes("function convert(")) {
+    throw new Error("could not locate the engine in " + enginePath +
+      " — engine.js must define the maps (from `const COENG`) and convert()");
   }
-  const src = html.slice(a, b);
+  const src = file.slice(a);
   const exportNames = "COENG,CONS,INDEP,VOW,SIGN,DIGITS,MAP,IS_CONS,KEYS,convert";
   // eslint-disable-next-line no-new-func
   const engine = new Function(`${src}\nreturn {${exportNames}};`)();

@@ -1,6 +1,6 @@
 {
   "name": "khmer-phonetic-keyboard",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "Type Khmer by sound. A phonetic Khmer keyboard as a web app, and as a Keyman package for Android, iOS and Windows.",
   "type": "commonjs",
   "scripts": {

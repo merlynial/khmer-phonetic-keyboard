@@ -1,1048 +1,479 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="km" data-lang="km"
+  data-title-en="Khmer Keyboard · Type Khmer the way it sounds"
+  data-title-km="ក្ដារចុចខ្មែរ · វាយខ្មែរតាមសំឡេង"
+  data-desc-en="A free phonetic Khmer keyboard. Spell the sound in Latin letters and pick the Khmer word. Works in the browser, on Android and iPhone, and offline."
+  data-desc-km="ក្ដារចុចខ្មែរតាមសំឡេង ឥតគិតថ្លៃ។ សរសេរសំឡេងជាអក្សរឡាតាំង ហើយជ្រើសរើសពាក្យខ្មែរ។ ដំណើរការលើវេប Android iPhone និងក្រៅបណ្ដាញ។">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#1f6feb">
-<meta name="description" content="Type Khmer by its sound — a free phonetic Khmer keyboard with Pinyin-style word suggestions. Works offline, no install.">
-<meta property="og:title" content="Khmer Phonetic Keyboard — type Khmer by sound">
-<meta property="og:description" content="Type the sound in English letters, pick the Khmer word from suggestions — like a Chinese Pinyin keyboard, for Khmer.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F5F1E8">
+<title>ក្ដារចុចខ្មែរ · វាយខ្មែរតាមសំឡេង</title>
+<meta name="description" content="A free phonetic Khmer keyboard. Spell the sound in Latin letters and pick the Khmer word. Works in the browser, on Android and iPhone, and offline.">
+<link rel="canonical" href="https://khmerkeyboard.com/">
 <meta property="og:type" content="website">
-<title>Khmer Phonetic Keyboard · វាយខ្មែរតាមសំឡេង</title>
-<link rel="manifest" href="manifest.webmanifest">
+<meta property="og:url" content="https://khmerkeyboard.com/">
+<meta property="og:title" content="Khmer Keyboard · Type Khmer the way it sounds">
+<meta property="og:description" content="Spell the sound in Latin letters and pick the Khmer word, like a Pinyin keyboard for Khmer. Free, open source, works offline.">
+<meta property="og:image" content="https://khmerkeyboard.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<style>
-  @font-face{
-    font-family:"Siemreap Web";
-    src:url("fonts/Siemreap-Regular.ttf") format("truetype");
-    font-display:swap;
-  }
-  :root{
-    --bg:#0a0e15; --panel:rgba(255,255,255,.035); --panel2:rgba(255,255,255,.055);
-    --line:rgba(255,255,255,.09); --txt:#e8edf4; --muted:#93a0b0;
-    --accent:#3b82f6; --accent2:#22c55e;
-    --grad:linear-gradient(135deg,#3b82f6 0%,#8b5cf6 100%);
-    --khmer:#ffd27f; --key:rgba(255,255,255,.07); --keyhi:rgba(255,255,255,.15);
-    --font-khmer:"Khmer OS Siemreap","Khmer OS Siemreab","Siemreap Web","Siemreap",
-                 "Noto Sans Khmer","Khmer OS",serif;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{
-    background:
-      radial-gradient(1000px 520px at 50% -12%, rgba(59,130,246,.16), transparent 62%),
-      radial-gradient(760px 420px at 92% 4%, rgba(139,92,246,.10), transparent 56%),
-      var(--bg);
-    color:var(--txt);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    -webkit-text-size-adjust:100%; line-height:1.45;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:860px; margin:0 auto; padding:20px 14px 60px;}
-  header{display:flex; align-items:center; gap:13px; flex-wrap:wrap; margin-bottom:18px;}
-  header h1{font-size:20px; margin:0; font-weight:700; letter-spacing:-.015em;}
-  header .sub{color:var(--muted); font-size:13px; margin-top:2px;}
-  .logo{width:42px;height:42px;border-radius:13px;background:var(--grad);
-    display:grid;place-items:center;font-family:var(--font-khmer);font-size:23px;color:#fff;flex:0 0 auto;
-    box-shadow:0 6px 18px rgba(59,130,246,.35);}
-  .card{
-    background:var(--panel); border:1px solid var(--line); border-radius:20px;
-    padding:18px; margin-bottom:16px;
-    box-shadow:0 14px 40px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.04);
-  }
-  label.fld{display:block; font-size:11.5px; color:var(--muted); margin-bottom:8px;
-    text-transform:uppercase; letter-spacing:.07em; font-weight:600;}
-  textarea{
-    width:100%; min-height:92px; resize:vertical; background:rgba(0,0,0,.28); color:var(--txt);
-    border:1px solid var(--line); border-radius:14px; padding:13px 15px; font-size:17px;
-    font-family:ui-monospace,SFMono-Regular,Menlo,monospace; outline:none;
-    transition:border-color .18s ease, box-shadow .18s ease;
-  }
-  textarea:focus{border-color:rgba(59,130,246,.65); box-shadow:0 0 0 3.5px rgba(59,130,246,.18);}
-  .out{
-    width:100%; min-height:70px; background:rgba(34,197,94,.05); border:1px solid rgba(34,197,94,.22);
-    border-radius:14px; padding:15px 17px; font-family:var(--font-khmer); font-size:30px;
-    color:var(--khmer); line-height:1.85; word-break:break-word; white-space:pre-wrap; overflow-wrap:anywhere;
-  }
-  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px;}
-  button.btn{
-    background:var(--grad); color:#fff; border:0; border-radius:999px; padding:11px 19px;
-    font-size:14px; font-weight:600; cursor:pointer; -webkit-tap-highlight-color:transparent;
-    box-shadow:0 6px 16px rgba(59,130,246,.28);
-    transition:transform .12s ease, filter .15s ease, box-shadow .15s ease;
-  }
-  button.btn:hover{filter:brightness(1.12); transform:translateY(-1px);}
-  button.btn.alt{background:var(--panel2); border:1px solid var(--line); color:var(--txt); box-shadow:none;}
-  button.btn.green{background:#199e4b; box-shadow:0 6px 16px rgba(34,197,94,.25);}
-  button.btn:active{transform:translateY(1px); filter:brightness(.96);}
-  /* floating candidate bar at the caret — modeled on the macOS Pinyin IME */
-  .sugwrap{position:relative;}
-  .sugbar{
-    position:absolute; z-index:30; display:none; align-items:center; gap:2px;
-    max-width:calc(100% - 8px); overflow-x:auto; white-space:nowrap;
-    background:rgba(15,20,28,.82); border:1px solid rgba(255,255,255,.12); border-radius:15px;
-    padding:4px 6px; box-shadow:0 14px 36px rgba(0,0,0,.55);
-    backdrop-filter:blur(14px) saturate(1.4); -webkit-backdrop-filter:blur(14px) saturate(1.4);
-    -webkit-overflow-scrolling:touch; scrollbar-width:none;
-  }
-  .sugbar::-webkit-scrollbar{display:none;}
-  .sugbar.show{display:flex;}
-  .cand{
-    flex:0 0 auto; display:flex; align-items:baseline; gap:6px; padding:3px 11px 5px;
-    border-radius:9px; cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent;
-    touch-action:manipulation;
-    transition:background-color .14s ease, transform .1s ease;
-  }
-  .cand .num{font-size:10.5px; color:var(--muted); transition:color .14s ease;}
-  .cand .kh{font-family:var(--font-khmer); font-size:20px; color:var(--khmer); line-height:1.7; transition:color .14s ease;}
-  .cand .gl{font-size:10px; color:var(--muted); max-width:88px; overflow:hidden; text-overflow:ellipsis; transition:color .14s ease;}
-  .cand:hover{background:var(--keyhi);}
-  .cand:active{transform:scale(.95);}
-  .cand.sel{background:var(--accent);}
-  .cand.sel .kh,.cand.sel .num,.cand.sel .gl{color:#fff;}
-  .cand.raw .kh{color:var(--txt);}
-  @media (prefers-reduced-motion: no-preference){
-    .sugbar.in{animation:sugin .18s cubic-bezier(.16,1,.3,1.15);}
-    @keyframes sugin{from{opacity:0; transform:translateY(5px) scale(.96);} to{opacity:1; transform:none;}}
-    .sugstrip .cand.pin{animation:candin .22s cubic-bezier(.16,1,.3,1) both; animation-delay:calc(var(--i)*26ms);}
-    @keyframes candin{from{opacity:0; transform:translateX(8px);} to{opacity:1; transform:none;}}
-  }
-  /* suggestion strip docked above the keys (Gboard-style) */
-  .sugstrip{
-    display:flex; align-items:center; gap:4px; overflow-x:auto; white-space:nowrap;
-    min-height:50px; margin:0 auto 10px; max-width:560px; padding:2px 2px 7px;
-    border-bottom:1px solid var(--line); -webkit-overflow-scrolling:touch; scrollbar-width:none;
-  }
-  .sugstrip::-webkit-scrollbar{display:none;}
-  .sugstrip .cand{padding:5px 13px 7px;}
-  .sugstrip:empty::after{content:"…"; color:var(--line); margin:0 auto; font-size:14px;}
-  .toggles{display:flex; gap:16px; flex-wrap:wrap; margin-top:12px;}
-  .tg{display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted); cursor:pointer;}
-  .tg input{width:16px;height:16px;accent-color:var(--accent);}
-  /* on-screen QWERTY keyboard (Apple-keyboard feel) */
-  .kb{display:flex; flex-direction:column; gap:7px; max-width:560px; margin:0 auto; position:relative;}
-  .kbrow{display:flex; gap:6px; justify-content:center;}
-  .kq{
-    flex:1 1 0; min-width:0; padding:11px 0 8px; background:var(--key); border:0;
-    border-radius:9px; box-shadow:0 1.5px 0 rgba(0,0,0,.45);
-    text-align:center; cursor:pointer; user-select:none; color:var(--txt);
-    font-size:17px; font-weight:600; line-height:1.1; -webkit-tap-highlight-color:transparent;
-    touch-action:manipulation;
-    transition:background-color .18s ease, transform .12s ease, box-shadow .12s ease;
-  }
-  .kq .sub{display:block; font-family:var(--font-khmer); font-size:10.5px; color:var(--muted);
-    margin-top:3px; font-weight:400; line-height:1.2; min-height:13px;}
-  .kq:hover{background:var(--keyhi);}
-  .kq.pressed{
-    background:var(--keyhi); transform:scale(.93) translateY(1px); box-shadow:0 0 0 rgba(0,0,0,.45);
-    transition:background-color .03s, transform .05s, box-shadow .05s;
-  }
-  .kq.fn{background:rgba(255,255,255,.04); color:var(--muted); font-size:13px;}
-  .kq.on{background:var(--accent); color:#fff;}
-  .kq.khlab{font-family:var(--font-khmer); font-weight:400; font-size:19px;}
-  /* iOS-style key preview bubble */
-  .keypop{
-    position:absolute; z-index:40; min-width:46px; padding:10px 8px 13px;
-    background:#2a3441; border-radius:14px; box-shadow:0 10px 26px rgba(0,0,0,.6);
-    text-align:center; font-size:27px; font-weight:600; color:var(--txt);
-    pointer-events:none; opacity:0; transform:translateY(6px) scale(.9);
-    transition:opacity .1s ease, transform .12s cubic-bezier(.2,1,.3,1.2);
-  }
-  .keypop.up{opacity:1; transform:translateY(0) scale(1);}
-  @media (prefers-reduced-motion: no-preference){
-    .kb.anim{animation:kbswap .14s ease;}
-    @keyframes kbswap{from{opacity:.35; transform:scale(.985);} to{opacity:1; transform:none;}}
-  }
-  /* cheat sheet */
-  details{background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:4px 18px; margin-bottom:16px;
-    box-shadow:0 14px 40px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.04);}
-  summary{cursor:pointer; padding:13px 0; font-weight:600; font-size:15px;}
-  summary:hover{color:#fff;}
-  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:8px; padding:6px 0 14px;}
-  .cell{background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:8px 6px; text-align:center;}
-  .cell .kh{font-family:var(--font-khmer); font-size:24px; color:var(--khmer);}
-  .cell .rn{font-family:ui-monospace,monospace; font-size:13px; color:var(--txt); margin-top:3px;}
-  .cell .note{font-size:10.5px; color:var(--muted);}
-  /* "My words" learned-dictionary panel */
-  .addbox{background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:14px; padding:12px 13px; margin:4px 0 14px;}
-  .addrow{display:flex; gap:8px; align-items:stretch;}
-  /* 16px minimum: below that, focusing an input makes iOS Safari zoom the page
-     in. Pinch-zoom stays available (the viewport no longer locks the scale). */
-  .addinput{flex:1 1 0; min-width:0; background:rgba(0,0,0,.28); color:var(--txt); border:1px solid var(--line);
-    border-radius:10px; padding:9px 12px; font-size:16px; outline:none;
-    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
-  .addinput.kh{font-family:var(--font-khmer); color:var(--khmer); font-size:19px;}
-  .addinput:focus{border-color:rgba(59,130,246,.65); box-shadow:0 0 0 3px rgba(59,130,246,.16);}
-  .addrow .btn{flex:0 0 auto; padding:9px 18px; font-size:18px; line-height:1;}
-  .mw{display:flex; flex-wrap:wrap; gap:8px; padding:4px 0 12px;}
-  .mw .w{
-    background:var(--panel2); border:1px solid var(--line); border-radius:999px;
-    padding:5px 14px 7px; font-family:var(--font-khmer); font-size:18px; color:var(--khmer);
-    line-height:1.6;
-  }
-  .mw .w b{font-family:-apple-system,system-ui,sans-serif; font-size:10.5px; color:var(--muted);
-    font-weight:600; margin-left:7px;}
-  .mw .w.mine{border-color:rgba(59,130,246,.5);}
-  .mw .w.mine b{color:var(--accent);}
-  .hint{color:var(--muted); font-size:12.5px; margin:2px 0 0;}
-  code{background:var(--panel2); border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-size:12.5px;}
-  .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
-    background:rgba(25,158,75,.92); color:#fff; padding:11px 20px; border-radius:999px; font-size:13.5px;
-    box-shadow:0 10px 26px rgba(0,0,0,.4); backdrop-filter:blur(8px);
-    opacity:0; pointer-events:none; transition:.25s; z-index:50;}
-  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
-  h3.sec{font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin:16px 0 8px;}
-</style>
+<link rel="manifest" href="manifest.webmanifest">
+<script>
+  /* Opened from a home-screen icon installed before the keyboard moved to
+     app.html: go straight to the keyboard, not the home page. */
+  try { if (matchMedia("(display-mode: standalone)").matches) location.replace("app.html"); } catch (e) {}
+  (function () {
+    var d = document.documentElement, l = null, t = null;
+    try { l = localStorage.getItem("khkb_lang"); t = localStorage.getItem("kk_theme"); } catch (e) {}
+    d.setAttribute("data-lang", l === "en" ? "en" : "km"); d.lang = d.getAttribute("data-lang");
+    if (t === "dark" || t === "light") d.setAttribute("data-theme", t);
+  })();
+</script>
+<link rel="stylesheet" href="site.css">
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="logo">ក</div>
-    <div style="flex:1">
-      <h1>Khmer Phonetic Keyboard <span style="color:var(--muted);font-size:11px;font-weight:400" id="ver">v0.15</span></h1>
-      <div class="sub" id="t-sub">វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer</div>
-    </div>
-    <button class="btn alt" id="langbtn" style="padding:8px 14px;font-size:13px">EN</button>
-  </header>
+<a class="skip" href="#main"><span data-l="en">Skip to content</span><span data-l="km">រំលងទៅខ្លឹមសារ</span></a>
 
-  <div class="card">
-    <label class="fld" for="in" id="t-instr">Type a word's sound — candidates pop up at the cursor (<code>Space</code>/<code>Enter</code> picks, <code>←→</code> moves, <code>1-9</code> or tap; <code>Esc</code> hides)</label>
-    <div class="sugwrap">
-      <textarea id="in" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="none"
-        placeholder="khnhom → ខ្ញុំ ...  suggestions pop up at your cursor, like Pinyin"></textarea>
-      <div class="sugbar" id="sug" role="listbox" aria-label="Khmer word candidates"></div>
-    </div>
-
-    <div class="toggles">
-      <label class="tg"><input type="checkbox" id="autostack" checked> <span id="t-autostack">Auto-stack clusters (coeng)</span></label>
-      <label class="tg"><input type="checkbox" id="khnum"> <span id="t-khnum">Khmer digits ០-៩</span></label>
-      <label class="tg"><input type="checkbox" id="live" checked> <span id="t-live">Live convert</span></label>
-      <label class="tg"><input type="checkbox" id="spacesel" checked> <span id="t-spacesel">Space picks 1st suggestion</span></label>
-      <label class="tg"><input type="checkbox" id="devkb"> <span id="t-devkb">Use device keyboard</span></label>
-    </div>
-
-    <div class="row">
-      <button class="btn green" id="conv">Convert ⟶</button>
-      <button class="btn" id="copy">Copy Khmer</button>
-      <button class="btn alt" id="clear">Clear</button>
-    </div>
-
-    <label class="fld" style="margin-top:16px" id="t-outlabel">Khmer output</label>
-    <div class="out" id="out" dir="auto"></div>
-  </div>
-
-  <div class="card">
-    <div class="sugstrip" id="sugstrip" role="listbox" aria-label="Khmer word candidates"></div>
-    <div class="kb" id="kb" role="group" aria-label="On-screen keyboard"></div>
-    <p class="hint" style="margin-top:10px" id="t-kbhint">Tap the sound — word suggestions appear above, like Pinyin.
-      <b>⇧</b> gives the scheme's capitals (<code>D</code>=ឌ <code>N</code>=ណ <code>L</code>=ឡ <code>M</code>=ំ <code>H</code>=ះ) ·
-      <b>?123</b> has digits, Khmer punctuation &amp; sign keys.</p>
-  </div>
-
-  <details id="mywords">
-    <summary id="t-mysummary">🧠 My words — what the keyboard has learned from you</summary>
-
-    <div class="addbox">
-      <div class="fld" id="t-addtitle" style="margin-bottom:8px">➕ Add a word</div>
-      <div class="addrow">
-        <input id="addkh" class="addinput kh" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="ខ្មែរ">
-        <input id="addsp" class="addinput" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="khmer khmae">
-        <button class="btn" id="addbtn">+</button>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="Khmer Keyboard">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="2" y="2" width="96" height="96" rx="24" style="fill:var(--ink)"/><path transform="translate(5 6)" style="fill:var(--paper)" d="M33.33 75V50Q33.33 40 50 40Q66.67 40 66.67 50V75H56.67V50Q56.67 43.33 50 43.33Q43.33 43.33 43.33 50V75ZM31.67 37.43V34.93Q31.67 33.2 33.8 31.17L35.97 29.13Q40.23 25 41.3 25Q42.5 25 46.03 28.73L47.8 30.6Q48.7 31.57 49.67 31.57Q50.5 31.57 51.33 30.6L52.97 28.73Q56.3 25 57.47 25Q58.6 25 60.47 27.07L64.33 31.23Q65.5 32.47 66.67 32.47Q67.5 32.47 68.33 31.87Q66.03 38.43 63.9 38.43Q61.7 38.43 59.17 36.08Q56.63 33.73 55.57 33.73Q54.17 33.73 52.25 36.08Q50.33 38.43 48.7 38.43Q46.33 38.43 43.5 36.08Q40.67 33.73 39.43 33.73Q38.03 33.73 37.3 34.47Q36.57 35.2 36.57 36.4Q36.57 37.4 41.07 39.73L36.83 42.77Q31.67 40.73 31.67 37.43Z"/><path style="fill:none;stroke:var(--accent);stroke-width:4.4;stroke-linecap:round;stroke-linejoin:round" d="M17 15v16M25 20.2l-7.2 5.6m2.9-2.3 4.7 7.7"/></svg>
+      <span data-l="en">Khmer Keyboard</span><span data-l="km">ក្ដារចុចខ្មែរ</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#how"><span data-l="en">How it works</span><span data-l="km">របៀបដំណើរការ</span></a>
+      <a href="#download"><span data-l="en">Download</span><span data-l="km">ទាញយក</span></a>
+      <a href="guide.html"><span data-l="en">Typing guide</span><span data-l="km">របៀបវាយ</span></a>
+      <a href="#faq"><span data-l="en">Questions</span><span data-l="km">សំណួរ</span></a>
+    </nav>
+    <div class="tools">
+      <div class="lang-switch" role="group" aria-label="Language · ភាសា">
+        <button type="button" data-set-lang="en" lang="en" aria-pressed="false">EN</button>
+        <button type="button" data-set-lang="km" lang="km" aria-pressed="true">ខ្មែរ</button>
       </div>
-      <p class="hint" id="t-addhint" style="margin-top:7px">Khmer word · then how you type its sound (one or more, space-separated).</p>
+      <button type="button" class="icon-btn theme-btn" aria-label="Switch theme">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6Z"/></svg>
+      </button>
+      <a class="btn btn-primary btn-sm" href="app.html"><span data-l="en">Open keyboard</span><span data-l="km">បើកក្ដារចុច</span></a>
+      <button type="button" class="icon-btn menu-btn" aria-controls="menu" aria-expanded="false" data-aria-en="Menu" data-aria-km="ម៉ឺនុយ" aria-label="ម៉ឺនុយ">
+        <svg class="bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+        <svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
     </div>
-
-    <div class="mw" id="mwlist"></div>
-    <p class="hint" style="padding-bottom:6px" id="t-myhint">
-      Words you pick are remembered and float to the top; spellings you invent become yours.
-      Everything stays on this device only.
-    </p>
-    <p style="padding:0 0 14px; display:flex; gap:8px; flex-wrap:wrap">
-      <button class="btn alt" id="mwexport">Backup ⤓</button>
-      <button class="btn alt" id="mwimport">Restore ⤒</button>
-      <button class="btn alt" id="mwreset" style="color:#f87171">Reset</button>
-      <input type="file" id="mwfile" accept=".json" style="display:none">
-    </p>
-  </details>
-
-  <details>
-    <summary>📖 Romanization cheat-sheet (how to type each sound)</summary>
-    <h3 class="sec">Consonants</h3>
-    <div class="grid" id="cs-cons"></div>
-    <h3 class="sec">Vowels (type after a consonant)</h3>
-    <div class="grid" id="cs-vow"></div>
-    <h3 class="sec">Signs &amp; punctuation</h3>
-    <div class="grid" id="cs-sign"></div>
-    <p class="hint" style="padding-bottom:12px">
-      <b>Clusters / subscript (coeng ្):</b> just type consonants together with no vowel between —
-      <code>skl</code>→ស្ក្ល, <code>knhom</code>→ក្ញុំ. To force a break instead of stacking, put a space or a <code>.</code> between them.<br>
-      <b>Inherent vowel:</b> a consonant alone carries the built-in “â/o” sound. <code>k</code>→ក, <code>ka</code>→ក (the <code>a</code> adds nothing).<br>
-      <b>Series shifters:</b> <code>*</code>=៉ (musikatoan: <code>m*aong</code>→ម៉ោង), <code>`</code>=៊ (treisap: <code>s`</code>→ស៊).<br>
-      Capitals matter: <code>d</code>=ដ but <code>D</code>=ឌ, <code>n</code>=ន but <code>N</code>=ណ, <code>l</code>=ល but <code>L</code>=ឡ.
-    </p>
-  </details>
-
-  <p style="text-align:center;margin:22px 0 8px">
-    <a href="install.html" style="display:inline-block;background:var(--grad);color:#fff;
-       text-decoration:none;padding:12px 22px;border-radius:11px;font-weight:600;font-size:15px"
-       id="t-install">Install as a real keyboard — Android, iPhone, Windows</a>
-  </p>
-  <p class="hint" style="text-align:center" id="t-installsub">
-    Type Khmer by sound in every app, not just this page
-  </p>
-
-  <p class="hint" style="text-align:center" id="t-footer">
-    Works offline · add to Home Screen to use like an app ·
-    <a href="https://github.com/merlynial/khmer-phonetic-keyboard" style="color:var(--accent)">open source on GitHub</a> ·
-    <a href="https://github.com/merlynial/khmer-phonetic-keyboard/issues" style="color:var(--accent)">report a problem</a>
-  </p>
-  <p class="hint" style="text-align:center; font-size:11px; opacity:.7">
-    Dictionary derived from the <a href="https://github.com/google/language-resources" style="color:var(--muted)">Google Khmer pronunciation lexicon</a> (CC-BY-4.0) · Frequencies from Khmer Wikipedia &amp; CC-100
-  </p>
+  </div>
+</header>
+<div class="sheet" id="menu">
+  <nav aria-label="Mobile">
+    <a href="#how"><span data-l="en">How it works</span><span data-l="km">របៀបដំណើរការ</span></a>
+    <a href="#download"><span data-l="en">Download</span><span data-l="km">ទាញយក</span></a>
+    <a href="guide.html"><span data-l="en">Typing guide</span><span data-l="km">របៀបវាយ</span></a>
+    <a href="#faq"><span data-l="en">Questions</span><span data-l="km">សំណួរ</span></a>
+  </nav>
+  <div class="sheet-tools">
+    <div class="lang-switch" role="group" aria-label="Language · ភាសា">
+      <button type="button" data-set-lang="en" lang="en" aria-pressed="false">EN</button>
+      <button type="button" data-set-lang="km" lang="km" aria-pressed="true">ខ្មែរ</button>
+    </div>
+    <button type="button" class="icon-btn theme-btn" aria-label="Switch theme">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6Z"/></svg>
+    </button>
+  </div>
 </div>
 
-<div class="toast" id="toast">Copied ✓</div>
+<main id="main">
 
-<script src="dict.js"></script>
-<script>
-/* =========================================================================
-   KHMER PHONETIC ENGINE
-   Longest-match, case-sensitive tokenizer. Each token maps to a Khmer glyph.
-   Consonants can auto-stack (insert coeng ្ / U+17D2) when adjacent.
-   ========================================================================= */
+  <!-- ===================================================== hero -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="hero-copy">
+        <p class="label"><span data-l="en">Phonetic keyboard for Khmer</span><span data-l="km">ក្ដារចុចខ្មែរតាមសំឡេង</span></p>
+        <h1 class="display" id="hero-title">
+          <span data-l="en">Type Khmer the way it sounds.</span><span data-l="km">វាយខ្មែរ<br>តាមសំឡេង។</span>
+          <span class="alt-line" aria-hidden="true"><span data-l="en" lang="km">វាយខ្មែរតាមសំឡេង</span><span data-l="km" lang="en">Type Khmer the way it sounds.</span></span>
+        </h1>
+        <p class="lead">
+          <span data-l="en">Spell a word in Latin letters, the way you already do in chat, and pick the Khmer word from the suggestions. There are no key positions to learn.</span>
+          <span data-l="km">សរសេរពាក្យជាអក្សរឡាតាំង ដូចដែលអ្នកធ្លាប់សរសេរពេលឆាត រួចជ្រើសរើសពាក្យខ្មែរពីការណែនាំ។ មិនចាំបាច់រៀនទីតាំងអក្សរលើក្ដារចុចទេ។</span>
+        </p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="app.html"><span data-l="en">Start typing</span><span data-l="km">ចាប់ផ្ដើមវាយ</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="link" href="#download"><span data-l="en">Install on your phone</span><span data-l="km">ដំឡើងលើទូរស័ព្ទ</span></a>
+        </div>
+        <p class="hero-meta">
+          <span data-l="en">Free and open source. Web, Android, iPhone, Windows, macOS and Linux.</span>
+          <span data-l="km">ឥតគិតថ្លៃ និងជាកូដចំហ។ វេប Android iPhone Windows macOS និង Linux។</span>
+        </p>
+      </div>
 
-const COENG = "្";
+      <div class="hero-stage">
+        <svg class="hero-glyph" viewBox="21 16 58 68" aria-hidden="true"><path fill="currentColor" d="M33.33 75V50Q33.33 40 50 40Q66.67 40 66.67 50V75H56.67V50Q56.67 43.33 50 43.33Q43.33 43.33 43.33 50V75ZM31.67 37.43V34.93Q31.67 33.2 33.8 31.17L35.97 29.13Q40.23 25 41.3 25Q42.5 25 46.03 28.73L47.8 30.6Q48.7 31.57 49.67 31.57Q50.5 31.57 51.33 30.6L52.97 28.73Q56.3 25 57.47 25Q58.6 25 60.47 27.07L64.33 31.23Q65.5 32.47 66.67 32.47Q67.5 32.47 68.33 31.87Q66.03 38.43 63.9 38.43Q61.7 38.43 59.17 36.08Q56.63 33.73 55.57 33.73Q54.17 33.73 52.25 36.08Q50.33 38.43 48.7 38.43Q46.33 38.43 43.5 36.08Q40.67 33.73 39.43 33.73Q38.03 33.73 37.3 34.47Q36.57 35.2 36.57 36.4Q36.57 37.4 41.07 39.73L36.83 42.77Q31.67 40.73 31.67 37.43Z"/></svg>
 
-// --- Consonants (33) --------------------------------------------------------
-const CONS = {
-  "k":"ក",  "kh":"ខ", "g":"គ",  "gh":"ឃ", "ng":"ង",
-  "ch":"ច", "chh":"ឆ","j":"ជ",  "jh":"ឈ", "ny":"ញ", "nh":"ញ",
-  "d":"ដ",  "TH":"ឋ", "D":"ឌ",  "DH":"ឍ", "N":"ណ",
-  "t":"ត",  "th":"ថ", "dd":"ទ", "dh":"ធ", "n":"ន",
-  "b":"ប",  "ph":"ផ", "p":"ព",  "bh":"ភ", "m":"ម",
-  "y":"យ",  "r":"រ",  "l":"ល",  "v":"វ",  "w":"វ",
-  "s":"ស",  "h":"ហ",  "L":"ឡ",  "q":"អ",
-};
+        <div class="phone" id="demo" tabindex="0" role="group"
+             data-aria-en="Typing demo. Click or focus here, type a word in Latin letters such as soksabay, then press Space to pick it and Enter to send."
+             data-aria-km="ការបង្ហាញការវាយ។ ចុចទីនេះ វាយពាក្យជាអក្សរឡាតាំង ដូចជា soksabay រួចចុច Space ដើម្បីជ្រើស និង Enter ដើម្បីផ្ញើ។"
+             aria-label="ការបង្ហាញការវាយ">
+          <div class="screen">
+            <div class="ph-status" aria-hidden="true">
+              <span>10:24</span>
+              <svg viewBox="0 0 52 12"><g fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></g><path d="M23.5 4.6a7.6 7.6 0 0 1 10 0M25.6 7a4.6 4.6 0 0 1 5.8 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="28.5" cy="10" r="1.3" fill="currentColor"/><rect x="38" y="1.5" width="12" height="9" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".6"/><rect x="39.6" y="3.1" width="7.6" height="5.8" rx="1.3" fill="currentColor"/></svg>
+            </div>
+            <div class="ph-cam" aria-hidden="true"></div>
+            <div class="ph-head">
+              <svg class="ph-back" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2 2 8l6 6"/></svg>
+              <span class="ph-avatar" aria-hidden="true">ម</span>
+              <div>
+                <div class="ph-name" lang="km">ម៉ាក់</div>
+                <div class="ph-presence"><span data-l="en">online</span><span data-l="km">កំពុងសកម្ម</span></div>
+              </div>
+            </div>
+            <div class="ph-thread" data-thread>
+              <div class="bubble in" lang="km">សុខសប្បាយទេកូន?</div>
+              <div class="bubble out" lang="km">សុខសប្បាយ អរគុណម៉ាក់</div>
+            </div>
+            <div class="ph-composer">
+              <div class="ph-field" data-field><span class="ph-placeholder"><span data-l="en">Message</span><span data-l="km">សារ</span></span></div>
+              <button type="button" class="ph-send" data-send tabindex="-1" disabled data-aria-en="Send" data-aria-km="ផ្ញើ" aria-label="ផ្ញើ">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg>
+              </button>
+            </div>
+            <div class="ph-cands" data-cands role="listbox" data-aria-en="Suggestions" data-aria-km="ពាក្យណែនាំ" aria-label="ពាក្យណែនាំ"></div>
+            <div class="ph-kb" data-kb aria-hidden="true"></div>
+          </div>
+        </div>
 
-// --- Independent vowels (typed with a leading ') -----------------------------
-const INDEP = {
-  "'e":"ឯ", "'ai":"ឰ", "'o":"ឱ", "'au":"ឳ",
-  "'ri":"ឫ", "'rii":"ឬ", "'li":"ឭ", "'lii":"ឮ",
-  "'q":"ឥ", "'qi":"ឦ", "'qu":"ឧ", "'quu":"ឩ",
-};
+        <p class="stage-note" data-note>
+          <span data-l="en">A live demo running the real keyboard engine. <button type="button" data-takeover>Type in it yourself</button>: try <code>soksabay</code>, then Space.</span>
+          <span data-l="km">ការបង្ហាញផ្ទាល់ ដោយប្រើម៉ាស៊ីនវាយពិតប្រាកដ។ <button type="button" data-takeover>សាកវាយដោយខ្លួនឯង</button>៖ វាយ <code>soksabay</code> រួចចុច Space។</span>
+        </p>
+      </div>
+    </div>
+  </section>
 
-// --- Dependent vowels (attach to a consonant) --------------------------------
-const VOW = {
-  "aa":"ា", "a":"",           // inherent vowel: 'a' emits nothing
-  "i":"ិ",  "ii":"ី", "ei":"ី",
-  "eu":"ឹ", "euu":"ឺ",
-  "u":"ុ",  "uu":"ូ", "ou":"ូ",
-  "ua":"ួ",
-  "oe":"ើ", "aeu":"ើ",
-  "oea":"ឿ",
-  "ie":"ៀ",
-  "e":"េ",
-  "ae":"ែ", "eae":"ែ",
-  "ai":"ៃ", "ey":"ៃ",
-  "ao":"ោ", "o":"ោ", "oa":"ោ",
-  "au":"ៅ", "ov":"ៅ",
-  // very common vowel+sign combos:
-  "am":"ាំ", "aM":"ាំ",
-  "um":"ុំ", "om":"ុំ",
-  "ah":"ះ", "eah":"េះ", "oh":"ោះ", "uh":"ុះ", "ih":"ិះ",
-};
+  <!-- ===================================================== how it works -->
+  <section class="section" id="how" aria-labelledby="how-title" style="border-top:1px solid var(--rule)">
+    <div class="wrap">
+      <p class="label"><span data-l="en">How it works</span><span data-l="km">របៀបដំណើរការ</span></p>
+      <div class="section-head">
+        <h2 class="h2" id="how-title">
+          <span data-l="en">You write the sound. The keyboard writes the Khmer.</span>
+          <span data-l="km">អ្នកសរសេរសំឡេង ក្ដារចុចសរសេរជាអក្សរខ្មែរ។</span>
+        </h2>
+        <p class="lead">
+          <span data-l="en">Each group of Latin letters stands for one Khmer letter or vowel. When two consonants meet with no vowel between them, the second drops below as a subscript, so clusters come out right without a special key.</span>
+          <span data-l="km">អក្សរឡាតាំងនីមួយៗ ឬមួយក្រុម តំណាងឲ្យព្យញ្ជនៈ ឬស្រៈខ្មែរមួយ។ ពេលព្យញ្ជនៈពីរនៅជាប់គ្នាដោយគ្មានស្រៈនៅចន្លោះ ព្យញ្ជនៈទីពីរនឹងក្លាយជាជើងដោយស្វ័យប្រវត្តិ ដូច្នេះអក្សរជើងចេញមកត្រឹមត្រូវ ដោយមិនចាំបាច់មានគ្រាប់ចុចពិសេស។</span>
+        </p>
+      </div>
 
-// --- Signs & punctuation -----------------------------------------------------
-const SIGN = {
-  "M":"ំ",            // nikahit (am/om nasal)
-  "H":"ះ",            // reahmuk
-  "'":"់",            // bantoc (shortener)
-  "^":"័",            // samyok sannya
-  "~":"៍",            // toandakhiat (silent)
-  "*":"៉",            // musikatoan (o→a series, e.g. m* = ម៉)
-  "`":"៊",            // treisap (a→o series, e.g. s` = ស៊)
-  ".":"",             // syllable break (emits nothing, stops auto-stacking)
-  "//":"។",           // khan (Khmer full stop)
-  "///":"៕",          // bariyoosan (end of text/verse)
-  "**":"ៗ",           // leikto (repetition)
-  "<<":"«", ">>":"»",
-  "::":"៖",           // camnuc pii kuuh (colon)
-  " ":"​ ",       // keep visible space but with ZWSP hint (rendered as space)
-};
+      <div class="xray reveal" data-xray>
+        <div class="xray-field">
+          <label for="xray-in"><span data-l="en">Type a spelling</span><span data-l="km">វាយអក្ខរាវិរុទ្ធមួយ</span></label>
+          <input id="xray-in" class="xray-input" value="suastei" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="40">
+          <p class="xray-try"><span data-l="en">Try</span><span data-l="km">សាកល្បង</span>
+            <button type="button" data-try>khnhom</button> ·
+            <button type="button" data-try>suastei</button> ·
+            <button type="button" data-try>chhnam</button> ·
+            <button type="button" data-try>thngai</button> ·
+            <button type="button" data-try>ka.mpujaa</button> ·
+            <button type="button" data-try>m*aong</button>
+          </p>
+          <p class="muted" style="margin-top:22px;font-size:15.5px">
+            <span data-l="en">This letter-by-letter reading is exact, and it is what makes any word typeable. In everyday typing you rarely need it: the suggestion bar looks the sound up in a list of 62,000 words and offers the whole word after a few letters.</span>
+            <span data-l="km">ការអានតាមអក្សរនីមួយៗនេះមានភាពច្បាស់លាស់ ហើយធ្វើឲ្យអាចវាយពាក្យណាក៏បាន។ ក្នុងការវាយប្រចាំថ្ងៃ អ្នកកម្រត្រូវការវាណាស់៖ របារណែនាំស្វែងរកសំឡេងនោះក្នុងបញ្ជីពាក្យ ៦២.០០០ ហើយផ្ដល់ពាក្យពេញ ក្រោយពេលអ្នកវាយបានតែប៉ុន្មានអក្សរ។</span>
+          </p>
+        </div>
+        <div class="xray-out" aria-live="polite">
+          <div class="tokens" data-tokens>
+            <div class="tok"><span class="tok-l">s</span><span class="tok-line"></span><span class="tok-k">ស</span><span class="tok-t">consonant</span></div>
+            <div class="tok"><span class="tok-l">ua</span><span class="tok-line"></span><span class="tok-k is-mark">◌ួ</span><span class="tok-t">vowel</span></div>
+            <div class="tok"><span class="tok-l">s</span><span class="tok-line"></span><span class="tok-k">ស</span><span class="tok-t">consonant</span></div>
+            <div class="tok sub"><span class="tok-l">t</span><span class="tok-line"></span><span class="tok-k is-mark">◌្ត</span><span class="tok-t">subscript</span></div>
+            <div class="tok"><span class="tok-l">ei</span><span class="tok-line"></span><span class="tok-k is-mark">◌ី</span><span class="tok-t">vowel</span></div>
+          </div>
+          <div class="result">
+            <span class="result-eq"><span data-l="en">reads as</span><span data-l="km">អានជា</span></span>
+            <span class="result-word" lang="km" data-result>សួស្តី</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-// Khmer digits
-const DIGITS = {"0":"០","1":"១","2":"២","3":"៣","4":"៤","5":"៥","6":"៦","7":"៧","8":"៨","9":"៩"};
+  <!-- ===================================================== spell it your way -->
+  <section class="section" id="spelling" aria-labelledby="spell-title" style="background:var(--paper-2)">
+    <div class="wrap spell">
+      <div>
+        <p class="label"><span data-l="en">Spelling</span><span data-l="km">អក្ខរាវិរុទ្ធ</span></p>
+        <h2 class="h2" id="spell-title"><span data-l="en">Spell it your way.</span><span data-l="km">សរសេរតាមរបៀបរបស់អ្នក។</span></h2>
+        <p class="lead">
+          <span data-l="en">There is no single correct way to write Khmer in Latin letters, and the keyboard doesn't insist on one. Suggestions are matched on how a word sounds, so the spellings people really use in chat lead to the same word.</span>
+          <span data-l="km">គ្មានវិធីតែមួយគត់ក្នុងការសរសេរខ្មែរជាអក្សរឡាតាំងទេ ហើយក្ដារចុចនេះក៏មិនបង្ខំឲ្យប្រើវិធីណាមួយដែរ។ ការណែនាំផ្អែកលើសំឡេងនៃពាក្យ ដូច្នេះអក្ខរាវិរុទ្ធដែលមនុស្សប្រើពេលឆាត នាំទៅរកពាក្យតែមួយ។</span>
+        </p>
+        <div class="word-tabs" role="group" data-aria-en="Show spellings for" data-aria-km="បង្ហាញអក្ខរាវិរុទ្ធសម្រាប់" aria-label="បង្ហាញអក្ខរាវិរុទ្ធសម្រាប់" data-tabs></div>
+      </div>
+      <figure class="converge" data-converge style="margin:0">
+        <svg class="lines" aria-hidden="true" data-lines></svg>
+        <ul class="variants" data-variants>
+          <li>sousdey</li><li>suosdei</li><li>suastei</li><li>sosdey</li><li>susdey</li>
+        </ul>
+        <div class="target">
+          <span class="target-kh" lang="km" data-target>សួស្តី</span>
+          <span class="target-gl" data-l="en" data-gloss>hello</span>
+        </div>
+        <figcaption class="visually-hidden">
+          <span data-l="en">Every spelling on the left gives the word on the right as the first suggestion.</span>
+          <span data-l="km">អក្ខរាវិរុទ្ធនីមួយៗខាងឆ្វេង ផ្ដល់ពាក្យខាងស្ដាំជាជម្រើសទីមួយ។</span>
+        </figcaption>
+      </figure>
+    </div>
+    <div class="wrap">
+      <p class="muted" style="margin:28px 0 0;font-size:14.5px">
+        <span data-l="en">Every spelling on the left gives the word on the right as the first suggestion, checked live against the keyboard's dictionary.</span>
+        <span data-l="km">អក្ខរាវិរុទ្ធនីមួយៗខាងឆ្វេង ផ្ដល់ពាក្យខាងស្ដាំជាជម្រើសទីមួយ ដោយផ្ទៀងផ្ទាត់ផ្ទាល់ជាមួយវចនានុក្រមរបស់ក្ដារចុច។</span>
+      </p>
+    </div>
+  </section>
 
-// Build a master map + a set marking which keys are consonants
-const MAP = {};
-const IS_CONS = new Set();
-for (const k in CONS){ MAP[k]=CONS[k]; IS_CONS.add(k); }
-for (const k in INDEP) MAP[k]=INDEP[k];
-for (const k in VOW)   MAP[k]=VOW[k];
-for (const k in SIGN)  MAP[k]=SIGN[k];
+  <!-- ===================================================== features -->
+  <section class="section" id="features" aria-labelledby="feat-title">
+    <div class="wrap">
+      <p class="label"><span data-l="en">Features</span><span data-l="km">មុខងារ</span></p>
+      <h2 class="h2" id="feat-title" style="max-width:15em"><span data-l="en">Made for everyday typing.</span><span data-l="km">រចនាឡើងសម្រាប់ការវាយប្រចាំថ្ងៃ។</span></h2>
+      <div class="features">
+        <div class="feature reveal">
+          <h3 class="h3"><span data-l="en">Suggestions where you type</span><span data-l="km">ពាក្យលេចឡើងត្រង់កន្លែងដែលអ្នកវាយ</span></h3>
+          <p><span data-l="en">Candidates appear at the cursor, the way a Chinese Pinyin keyboard works. <kbd>Space</kbd> takes the first one; a number or a tap takes any other.</span>
+             <span data-l="km">ពាក្យជម្រើសបង្ហាញនៅត្រង់ទស្សន៍ទ្រនិច ដូចក្ដារចុច Pinyin របស់ភាសាចិន។ ចុច <kbd>Space</kbd> ដើម្បីយកពាក្យទីមួយ ឬចុចលេខ ឬប៉ះលើពាក្យផ្សេងទៀត។</span></p>
+        </div>
+        <div class="feature reveal">
+          <h3 class="h3"><span data-l="en">62,000 words, ranked by real use</span><span data-l="km">ពាក្យ ៦២.០០០ តម្រៀបតាមការប្រើប្រាស់ពិត</span></h3>
+          <p><span data-l="en">The word list comes from Google's open Khmer pronunciation lexicon, ordered by how often each word appears in Khmer Wikipedia and web text.</span>
+             <span data-l="km">បញ្ជីពាក្យមកពីវចនានុក្រមបញ្ចេញសំឡេងខ្មែរបើកចំហរបស់ Google ហើយតម្រៀបតាមភាពញឹកញាប់នៃពាក្យនីមួយៗ នៅក្នុងវិគីភីឌាខ្មែរ និងអត្ថបទលើអ៊ីនធឺណិត។</span></p>
+        </div>
+        <div class="feature reveal">
+          <h3 class="h3"><span data-l="en">Next-word prediction</span><span data-l="km">ទាយពាក្យបន្ទាប់</span></h3>
+          <p><span data-l="en">After each word, the bar offers the words that usually come next, drawn from real Khmer text and from the phrases you type.</span>
+             <span data-l="km">ក្រោយពាក្យនីមួយៗ របារណែនាំផ្ដល់ពាក្យដែលច្រើនតែមកបន្ទាប់ ផ្អែកលើអត្ថបទខ្មែរពិតៗ និងឃ្លាដែលអ្នកធ្លាប់វាយ។</span></p>
+        </div>
+        <div class="feature reveal">
+          <h3 class="h3"><span data-l="en">It learns your words</span><span data-l="km">រៀនពីពាក្យរបស់អ្នក</span></h3>
+          <p><span data-l="en">Words you choose often move up the list. Spellings it doesn't know yet are saved as your own. All of it stays on your device.</span>
+             <span data-l="km">ពាក្យដែលអ្នកជ្រើសរើសញឹកញាប់នឹងឡើងមកមុន។ អក្ខរាវិរុទ្ធដែលវាមិនទាន់ស្គាល់ ត្រូវបានរក្សាទុកជាពាក្យរបស់អ្នក។ ទិន្នន័យទាំងអស់នៅលើឧបករណ៍របស់អ្នកប៉ុណ្ណោះ។</span></p>
+        </div>
+        <div class="feature reveal">
+          <h3 class="h3"><span data-l="en">Any word, not only common ones</span><span data-l="km">វាយបានគ្រប់ពាក្យ</span></h3>
+          <p><span data-l="en">Words that aren't in the dictionary still convert letter by letter, with subscripts stacked for you. Names, slang and technical terms all work.</span>
+             <span data-l="km">ពាក្យដែលមិនមានក្នុងវចនានុក្រម នៅតែបម្លែងតាមអក្សរនីមួយៗ ដោយដាក់ជើងអក្សរឲ្យស្វ័យប្រវត្តិ។ ឈ្មោះ ពាក្យស្លែង និងពាក្យបច្ចេកទេស អាចវាយបានទាំងអស់។</span></p>
+        </div>
+        <div class="feature reveal">
+          <h3 class="h3"><span data-l="en">Offline and private</span><span data-l="km">ក្រៅបណ្ដាញ និងឯកជន</span></h3>
+          <p><span data-l="en">Once opened, it keeps working without a connection. There is no account, no tracking, and no server receiving what you type.</span>
+             <span data-l="km">បើកម្ដងរួច វានៅតែដំណើរការទោះគ្មានអ៊ីនធឺណិត។ មិនត្រូវការគណនី មិនមានការតាមដាន ហើយគ្មានម៉ាស៊ីនមេណាមួយទទួលអ្វីដែលអ្នកវាយឡើយ។</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-// keys sorted longest-first for greedy matching
-const KEYS = Object.keys(MAP).sort((a,b)=>b.length-a.length);
-// ...and grouped by first character, still longest-first, so each position
-// only tries the few keys that can start there (space is handled as text)
-const KEYS_AT = new Map();
-for (const k of KEYS){
-  if (k === " ") continue;
-  if (!KEYS_AT.has(k[0])) KEYS_AT.set(k[0], []);
-  KEYS_AT.get(k[0]).push(k);
-}
+  <!-- ===================================================== download -->
+  <section class="section band" id="download" aria-labelledby="dl-title">
+    <div class="wrap">
+      <p class="label"><span data-l="en">Download</span><span data-l="km">ទាញយក</span></p>
+      <div class="section-head">
+        <h2 class="h2" id="dl-title"><span data-l="en">On every device you type on.</span><span data-l="km">នៅលើគ្រប់ឧបករណ៍ដែលអ្នកវាយ។</span></h2>
+        <p class="lead">
+          <span data-l="en">The web version runs in any browser. To type Khmer by sound in Telegram, Messenger, Word or anywhere else, install it as a system keyboard.</span>
+          <span data-l="km">កំណែវេបដំណើរការលើកម្មវិធីរុករកណាក៏បាន។ ដើម្បីវាយខ្មែរតាមសំឡេងក្នុង Telegram Messenger Word ឬកន្លែងផ្សេងទៀត សូមដំឡើងវាជាក្ដារចុចរបស់ប្រព័ន្ធ។</span>
+        </p>
+      </div>
 
-function convert(text, opts){
-  opts = opts||{};
-  let out = "";
-  let prevCons = false;          // was the previous emitted unit a consonant?
-  let i = 0;
-  const n = text.length;
-  while (i < n){
-    // Khmer digits toggle
-    if (opts.khnum && DIGITS[text[i]] !== undefined){
-      out += DIGITS[text[i]]; prevCons = false; i++; continue;
-    }
-    // longest matching phonetic key
-    let matched = null;
-    for (const key of KEYS_AT.get(text[i]) || []){
-      if (text.startsWith(key, i)){ matched = key; break; }
-    }
-    if (matched){
-      const glyph = MAP[matched];
-      if (IS_CONS.has(matched)){
-        if (prevCons && opts.autostack && glyph){ out += COENG + glyph; }
-        else { out += glyph; }
-        prevCons = true;
-      } else {
-        out += glyph;
-        // a vowel/sign closes the current consonant; '.' break also clears it
-        prevCons = false;
-      }
-      i += matched.length;
-    } else {
-      // passthrough (spaces, latin we don't map, newlines, other punct)
-      out += text[i];
-      prevCons = false;
-      i++;
-    }
-  }
-  return out;
-}
+      <div class="platforms">
+        <div class="platform reveal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4" width="19" height="16" rx="2.6"/><path d="M2.5 8.6h19"/><circle cx="5.6" cy="6.3" r=".5" fill="currentColor"/><circle cx="7.6" cy="6.3" r=".5" fill="currentColor"/><path d="M8 14.2h8" stroke-linecap="round"/></svg>
+          <h3 class="h3"><span data-l="en">Web</span><span data-l="km">វេប</span>
+            <span class="meta"><span data-l="en">Any browser</span><span data-l="km">កម្មវិធីរុករកណាក៏បាន</span></span></h3>
+          <p><span data-l="en">Nothing to install. Add it to your home screen and it opens like an app, even offline.</span>
+             <span data-l="km">មិនចាំបាច់ដំឡើង។ បន្ថែមវាទៅអេក្រង់ដើម នោះវានឹងបើកដូចកម្មវិធីមួយ ទោះគ្មានអ៊ីនធឺណិតក៏ដោយ។</span></p>
+          <a class="btn btn-accent" href="app.html"><span data-l="en">Open keyboard</span><span data-l="km">បើកក្ដារចុច</span></a>
+        </div>
+        <div class="platform reveal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 18.6h3" stroke-linecap="round"/></svg>
+          <h3 class="h3">Android
+            <span class="meta"><span data-l="en">App · 3.3 MB</span><span data-l="km">កម្មវិធី · ៣,៣ MB</span></span></h3>
+          <p><span data-l="en">A full keyboard with the same sound-matched suggestions, learning from what you pick. It isn't on Google Play yet, so it installs from the file.</span>
+             <span data-l="km">ក្ដារចុចពេញលេញ ដែលណែនាំពាក្យតាមសំឡេងដូចកំណែវេប ហើយរៀនពីពាក្យដែលអ្នកជ្រើសរើស។ មិនទាន់មាននៅលើ Google Play ទេ ដូច្នេះត្រូវដំឡើងពីឯកសារ។</span></p>
+          <a class="btn btn-line" href="dist/khmer-phonetic.apk" download><span data-l="en">Download APK</span><span data-l="km">ទាញយក APK</span></a>
+        </div>
+        <div class="platform reveal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="2.5" width="13" height="18" rx="2.2"/><rect x="13.5" y="9" width="8" height="12.5" rx="2" style="fill:var(--band)"/><path d="M16.3 19.3h2.4" stroke-linecap="round"/></svg>
+          <h3 class="h3"><span data-l="en">iPhone and iPad</span><span data-l="km">iPhone និង iPad</span>
+            <span class="meta"><span data-l="en">Keyboard extension · beta</span><span data-l="km">ក្ដារចុចបន្ថែម · កំណែសាកល្បង</span></span></h3>
+          <p><span data-l="en">A native keyboard you install with SideStore, signed with your own Apple ID. Built and checked against the web engine, but not yet tested on a physical device.</span>
+             <span data-l="km">ក្ដារចុចដើមសម្រាប់ iOS ដំឡើងតាមរយៈ SideStore និងចុះហត្ថលេខាដោយ Apple ID របស់អ្នកផ្ទាល់។ បានសាងសង់ និងផ្ទៀងផ្ទាត់ជាមួយម៉ាស៊ីនវេបរួចហើយ ប៉ុន្តែមិនទាន់សាកល្បងលើឧបករណ៍ពិតទេ។</span></p>
+          <a class="btn btn-line" href="install.html#ios"><span data-l="en">How to install</span><span data-l="km">របៀបដំឡើង</span></a>
+        </div>
+        <div class="platform reveal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="13" rx="2"/><path d="M8.5 20.5h7M12 16.5v4" stroke-linecap="round"/></svg>
+          <h3 class="h3">Windows · macOS · Linux
+            <span class="meta"><span data-l="en">Keyman package · 150 KB</span><span data-l="km">កញ្ចប់ Keyman · ១៥០ KB</span></span></h3>
+          <p><span data-l="en">Runs inside Keyman, the free keyboard platform from SIL. Spelling converts exactly as typed, without sound matching.</span>
+             <span data-l="km">ដំណើរការក្នុង Keyman ដែលជាវេទិកាក្ដារចុចឥតគិតថ្លៃរបស់ SIL។ អក្សរបម្លែងតាមអ្វីដែលវាយពិតប្រាកដ ដោយគ្មានការផ្គូផ្គងសំឡេង។</span></p>
+          <a class="btn btn-line" href="dist/khmer_phonetic.kmp" download><span data-l="en">Download .kmp</span><span data-l="km">ទាញយក .kmp</span></a>
+        </div>
+      </div>
+      <p class="band-foot"><a class="link arrow" href="install.html"><span data-l="en">Step-by-step instructions for every platform</span><span data-l="km">ការណែនាំមួយជំហានម្ដងៗ សម្រាប់គ្រប់ប្រព័ន្ធ</span></a></p>
+    </div>
+  </section>
 
-/* =========================== UI WIRING =================================== */
-const $ = s => document.querySelector(s);
-// escape any learned/imported value before it touches innerHTML (XSS guard)
-const esc = s => String(s).replace(/[&<>"']/g, c =>
-  ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
-const inEl = $("#in"), outEl = $("#out");
-const autostack = $("#autostack"), khnum = $("#khnum"), live = $("#live");
-const spacesel = $("#spacesel"), sugEl = $("#sug");
+  <!-- ===================================================== alphabet -->
+  <section class="section" id="letters" aria-labelledby="alpha-title">
+    <div class="wrap alpha">
+      <div class="alpha-copy">
+        <p class="label"><span data-l="en">Typing guide</span><span data-l="km">របៀបវាយ</span></p>
+        <h2 class="h2" id="alpha-title"><span data-l="en">Each consonant has a key you can guess.</span><span data-l="km">ព្យញ្ជនៈនីមួយៗ មានគ្រាប់ចុចដែលអ្នកអាចទាយបាន។</span></h2>
+        <p class="lead">
+          <span data-l="en">Most letters are typed the way they sound. A capital reaches the second letter that shares a sound: <code>d</code> is <span class="kh" lang="km">ដ</span> and <code>D</code> is <span class="kh" lang="km">ឌ</span>, <code>n</code> is <span class="kh" lang="km">ន</span> and <code>N</code> is <span class="kh" lang="km">ណ</span>. The full guide adds vowels, signs, punctuation and clusters.</span>
+          <span data-l="km">អក្សរភាគច្រើនវាយតាមសំឡេងរបស់វា។ អក្សរធំប្រើសម្រាប់អក្សរទីពីរដែលមានសំឡេងដូចគ្នា៖ <code>d</code> គឺ ដ ហើយ <code>D</code> គឺ ឌ, <code>n</code> គឺ ន ហើយ <code>N</code> គឺ ណ។ មេរៀនពេញលេញមានស្រៈ សញ្ញា វណ្ណយុត្តិ និងជើងអក្សរ។</span>
+        </p>
+        <p style="margin-top:30px"><a class="link arrow" href="guide.html"><span data-l="en">Open the full typing guide</span><span data-l="km">បើកមេរៀនវាយពេញលេញ</span></a></p>
+      </div>
+      <div class="letter-grid reveal" data-letters role="list"
+           data-aria-en="The 33 Khmer consonants and the keys that type them" data-aria-km="ព្យញ្ជនៈខ្មែរ ៣៣ និងគ្រាប់ចុចសម្រាប់វាយ" aria-label="ព្យញ្ជនៈខ្មែរ ៣៣ និងគ្រាប់ចុចសម្រាប់វាយ"></div>
+    </div>
+  </section>
 
-function run(){
-  const opts = { autostack: autostack.checked, khnum: khnum.checked };
-  setText(outEl, convert(inEl.value, opts));
-}
-// Edit the existing text node in place, touching only the span that changed:
-// replacing the node would make the browser re-shape all of the Khmer on
-// every keystroke, which gets slow as the text grows.
-function setText(el, s){
-  const node = el.firstChild;
-  if (!node || node.nodeType !== Node.TEXT_NODE || node.nextSibling){ el.textContent = s; return; }
-  const old = node.data;
-  if (old === s) return;
-  const max = Math.min(old.length, s.length);
-  let head = 0, tail = 0;
-  while (head < max && old.charCodeAt(head) === s.charCodeAt(head)) head++;
-  while (tail < max - head &&
-         old.charCodeAt(old.length - 1 - tail) === s.charCodeAt(s.length - 1 - tail)) tail++;
-  node.replaceData(head, old.length - head - tail, s.slice(head, s.length - tail));
-}
-inEl.addEventListener("input", ()=>{ if (live.checked) run(); updateSug(); });
-[autostack, khnum].forEach(el=>el.addEventListener("change", run));
+  <!-- ===================================================== FAQ -->
+  <section class="section" id="faq" aria-labelledby="faq-title" style="border-top:1px solid var(--rule)">
+    <div class="wrap faq">
+      <div>
+        <p class="label"><span data-l="en">Questions</span><span data-l="km">សំណួរ</span></p>
+        <h2 class="h2" id="faq-title"><span data-l="en">Before you start.</span><span data-l="km">មុនពេលចាប់ផ្ដើម។</span></h2>
+      </div>
+      <div class="faq-list">
+        <details>
+          <summary><span><span data-l="en">Is it free?</span><span data-l="km">តើវាឥតគិតថ្លៃទេ?</span></span><span class="pm" aria-hidden="true"></span></summary>
+          <div class="answer"><p>
+            <span data-l="en">Yes. It is open source under the MIT licence, with no ads and no account. The code is on <a class="link" href="https://github.com/merlynial/khmer-phonetic-keyboard">GitHub</a>.</span>
+            <span data-l="km">ឥតគិតថ្លៃ។ វាជាកូដចំហក្រោមអាជ្ញាប័ណ្ណ MIT គ្មានការផ្សាយពាណិជ្ជកម្ម ហើយមិនត្រូវការគណនី។ កូដប្រភពមាននៅលើ <a class="link" href="https://github.com/merlynial/khmer-phonetic-keyboard">GitHub</a>។</span>
+          </p></div>
+        </details>
+        <details>
+          <summary><span><span data-l="en">Do I need an internet connection?</span><span data-l="km">តើត្រូវការអ៊ីនធឺណិតទេ?</span></span><span class="pm" aria-hidden="true"></span></summary>
+          <div class="answer"><p>
+            <span data-l="en">Only the first time. After your first visit the web version is stored on your device, and the Android and iPhone apps never need a connection.</span>
+            <span data-l="km">ត្រូវការតែលើកដំបូងប៉ុណ្ណោះ។ ក្រោយពេលបើកលើកដំបូង កំណែវេបត្រូវបានរក្សាទុកនៅលើឧបករណ៍របស់អ្នក ហើយកម្មវិធី Android និង iPhone មិនដែលត្រូវការអ៊ីនធឺណិតទេ។</span>
+          </p></div>
+        </details>
+        <details>
+          <summary><span><span data-l="en">Does anything I type leave my device?</span><span data-l="km">តើអ្វីដែលខ្ញុំវាយ ត្រូវបានបញ្ជូនចេញពីឧបករណ៍ទេ?</span></span><span class="pm" aria-hidden="true"></span></summary>
+          <div class="answer"><p>
+            <span data-l="en">No. Conversion, suggestions and learning all run on your device. The page downloads its word list from this site and sends nothing back.</span>
+            <span data-l="km">ទេ។ ការបម្លែង ការណែនាំពាក្យ និងការរៀន ដំណើរការនៅលើឧបករណ៍របស់អ្នកទាំងអស់។ ទំព័រនេះគ្រាន់តែទាញយកបញ្ជីពាក្យពីគេហទំព័រនេះ ហើយមិនបញ្ជូនអ្វីត្រឡប់ទៅវិញទេ។</span>
+          </p></div>
+        </details>
+        <details>
+          <summary><span><span data-l="en">How is it different from the standard Khmer keyboard?</span><span data-l="km">តើវាខុសពីក្ដារចុចខ្មែរស្តង់ដារយ៉ាងដូចម្ដេច?</span></span><span class="pm" aria-hidden="true"></span></summary>
+          <div class="answer"><p>
+            <span data-l="en">The standard layout puts each Khmer letter on a fixed key, and many letters need Shift or a second layer, so you have to memorise where everything is. Here you spell the sound with Latin letters you already know and choose the word.</span>
+            <span data-l="km">ក្ដារចុចស្តង់ដារដាក់អក្សរខ្មែរនីមួយៗនៅលើគ្រាប់ចុចថេរ ហើយអក្សរជាច្រើនត្រូវប្រើ Shift ឬប្ដូរទៅទំព័រទីពីរ ដូច្នេះអ្នកត្រូវទន្ទេញទីតាំងរបស់វាទាំងអស់។ នៅទីនេះ អ្នកសរសេរសំឡេងដោយអក្សរឡាតាំងដែលអ្នកស្គាល់រួចហើយ រួចជ្រើសរើសពាក្យ។</span>
+          </p></div>
+        </details>
+        <details>
+          <summary><span><span data-l="en">A word I need doesn't appear.</span><span data-l="km">ពាក្យដែលខ្ញុំត្រូវការ មិនលេចឡើង។</span></span><span class="pm" aria-hidden="true"></span></summary>
+          <div class="answer"><p>
+            <span data-l="en">Keep typing it letter by letter. Any Khmer syllable can be written that way, subscripts included, and the keyboard remembers the word for next time. In the web version you can also add a word with your own spelling under My words. If a common word is missing, <a class="link" href="https://github.com/merlynial/khmer-phonetic-keyboard/issues">report it on GitHub</a> so it can be added for everyone.</span>
+            <span data-l="km">បន្តវាយវាតាមអក្សរនីមួយៗ។ ព្យាង្គខ្មែរណាក៏អាចសរសេរតាមវិធីនេះបាន រួមទាំងជើងអក្សរ ហើយក្ដារចុចនឹងចងចាំពាក្យនោះសម្រាប់លើកក្រោយ។ ក្នុងកំណែវេប អ្នកក៏អាចបន្ថែមពាក្យជាមួយអក្ខរាវិរុទ្ធរបស់អ្នកផ្ទាល់ នៅក្នុងផ្នែក «ពាក្យរបស់ខ្ញុំ»។ ប្រសិនបើពាក្យទូទៅណាមួយបាត់ សូម<a class="link" href="https://github.com/merlynial/khmer-phonetic-keyboard/issues">រាយការណ៍នៅលើ GitHub</a> ដើម្បីបន្ថែមវាសម្រាប់អ្នកទាំងអស់គ្នា។</span>
+          </p></div>
+        </details>
+        <details>
+          <summary><span><span data-l="en">Why isn't it on Google Play or the App Store?</span><span data-l="km">ហេតុអ្វីមិនមាននៅលើ Google Play ឬ App Store?</span></span><span class="pm" aria-hidden="true"></span></summary>
+          <div class="answer"><p>
+            <span data-l="en">It hasn't been published to either store yet. The Android app installs directly from its APK file. On iPhone it is sideloaded with SideStore: a free Apple ID signs apps for seven days at a time, and SideStore renews the signature on the phone by itself.</span>
+            <span data-l="km">វាមិនទាន់បានដាក់ឲ្យប្រើនៅលើហាងទាំងពីរនៅឡើយទេ។ កម្មវិធី Android ដំឡើងដោយផ្ទាល់ពីឯកសារ APK។ នៅលើ iPhone វាត្រូវបានដំឡើងតាម SideStore៖ Apple ID ឥតគិតថ្លៃចុះហត្ថលេខាលើកម្មវិធីបានរយៈពេលប្រាំពីរថ្ងៃម្ដង ហើយ SideStore បន្តហត្ថលេខានោះនៅលើទូរស័ព្ទដោយស្វ័យប្រវត្តិ។</span>
+          </p></div>
+        </details>
+        <details>
+          <summary><span><span data-l="en">Can I use it in Telegram, Messenger or Word?</span><span data-l="km">តើខ្ញុំអាចប្រើវាក្នុង Telegram Messenger ឬ Word បានទេ?</span></span><span class="pm" aria-hidden="true"></span></summary>
+          <div class="answer"><p>
+            <span data-l="en">Yes, through the Android app, the iPhone app or the Keyman package, which all work as system keyboards. The web version types into its own page: copy the result and paste it wherever you need it.</span>
+            <span data-l="km">បាន តាមរយៈកម្មវិធី Android កម្មវិធី iPhone ឬកញ្ចប់ Keyman ដែលទាំងអស់ដំណើរការជាក្ដារចុចរបស់ប្រព័ន្ធ។ កំណែវេបវាយក្នុងទំព័ររបស់វាផ្ទាល់៖ ចម្លងលទ្ធផល ហើយបិទភ្ជាប់ទៅកន្លែងដែលអ្នកត្រូវការ។</span>
+          </p></div>
+        </details>
+        <details>
+          <summary><span><span data-l="en">Which romanization does it follow?</span><span data-l="km">តើវាប្រើប្រព័ន្ធសរសេរឡាតាំងមួយណា?</span></span><span class="pm" aria-hidden="true"></span></summary>
+          <div class="answer"><p>
+            <span data-l="en">None strictly. Suggestions accept the loose spellings people use in chat. Underneath there is one exact scheme for typing letter by letter, close to common chat spelling, and the <a class="link" href="guide.html">typing guide</a> lays it out.</span>
+            <span data-l="km">មិនតឹងរ៉ឹងទៅលើប្រព័ន្ធណាមួយទេ។ ការណែនាំទទួលយកអក្ខរាវិរុទ្ធធូររលុងដែលមនុស្សប្រើពេលឆាត។ នៅពីក្រោយនោះ មានប្រព័ន្ធច្បាស់លាស់មួយសម្រាប់វាយតាមអក្សរនីមួយៗ ដែលស្រដៀងនឹងការសរសេរពេលឆាត ហើយត្រូវបានពន្យល់នៅក្នុង<a class="link" href="guide.html">មេរៀនវាយ</a>។</span>
+          </p></div>
+        </details>
+      </div>
+    </div>
+  </section>
 
-/* -------- pinyin-style word suggestions --------------------------------
-   Modeled on the macOS Pinyin IME: the token = the run of letters just
-   before the caret; a candidate bar FLOATS right under it, the selected
-   candidate sits in a blue pill, arrows move it, Space/Enter/1-9/tap
-   commit. The chosen Khmer replaces the Latin token inline (Khmer chars
-   pass through convert() untouched, so output stays correct). */
-const TOKEN_CH = /[a-zA-Z'*`^~]/;
-let sugState = { token:"", start:0, end:0, items:[] };
-let sugSel = 0, sugNav = false;
-let dismissed = "";
+  <!-- ===================================================== closing -->
+  <section class="closing" aria-labelledby="end-title">
+    <div class="wrap closing-inner">
+      <h2 class="display" id="end-title"><span data-l="en">Open it and type your first word.</span><span data-l="km">បើកវា ហើយវាយពាក្យដំបូងរបស់អ្នក។</span></h2>
+      <div class="closing-ctas">
+        <a class="btn btn-primary" href="app.html"><span data-l="en">Open keyboard</span><span data-l="km">បើកក្ដារចុច</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="link" href="install.html"><span data-l="en">Install on your phone</span><span data-l="km">ដំឡើងលើទូរស័ព្ទ</span></a>
+      </div>
+    </div>
+  </section>
+</main>
 
-const MAX_TOKEN_UI = 64;   // bound token scan so huge inputs can't stall the UI
-function currentToken(){
-  const p = inEl.selectionStart;
-  if (p == null || p !== inEl.selectionEnd) return { token:"", start:p||0, end:p||0 };
-  const v = inEl.value;
-  let s = p;
-  while (s > 0 && s > p - MAX_TOKEN_UI && TOKEN_CH.test(v[s-1])) s--;
-  return { token: v.slice(s, p), start: s, end: p };
-}
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="./">
+          <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="2" y="2" width="96" height="96" rx="24" style="fill:var(--ink)"/><path transform="translate(5 6)" style="fill:var(--paper)" d="M33.33 75V50Q33.33 40 50 40Q66.67 40 66.67 50V75H56.67V50Q56.67 43.33 50 43.33Q43.33 43.33 43.33 50V75ZM31.67 37.43V34.93Q31.67 33.2 33.8 31.17L35.97 29.13Q40.23 25 41.3 25Q42.5 25 46.03 28.73L47.8 30.6Q48.7 31.57 49.67 31.57Q50.5 31.57 51.33 30.6L52.97 28.73Q56.3 25 57.47 25Q58.6 25 60.47 27.07L64.33 31.23Q65.5 32.47 66.67 32.47Q67.5 32.47 68.33 31.87Q66.03 38.43 63.9 38.43Q61.7 38.43 59.17 36.08Q56.63 33.73 55.57 33.73Q54.17 33.73 52.25 36.08Q50.33 38.43 48.7 38.43Q46.33 38.43 43.5 36.08Q40.67 33.73 39.43 33.73Q38.03 33.73 37.3 34.47Q36.57 35.2 36.57 36.4Q36.57 37.4 41.07 39.73L36.83 42.77Q31.67 40.73 31.67 37.43Z"/><path style="fill:none;stroke:var(--accent);stroke-width:4.4;stroke-linecap:round;stroke-linejoin:round" d="M17 15v16M25 20.2l-7.2 5.6m2.9-2.3 4.7 7.7"/></svg>
+          <span data-l="en">Khmer Keyboard</span><span data-l="km">ក្ដារចុចខ្មែរ</span>
+        </a>
+        <p><span data-l="en">A free phonetic keyboard for Khmer. Open source, works offline, no tracking.</span>
+           <span data-l="km">ក្ដារចុចខ្មែរតាមសំឡេង ឥតគិតថ្លៃ។ កូដចំហ ដំណើរការក្រៅបណ្ដាញ គ្មានការតាមដាន។</span></p>
+      </div>
+      <div>
+        <h2><span data-l="en">Keyboard</span><span data-l="km">ក្ដារចុច</span></h2>
+        <ul>
+          <li><a href="app.html"><span data-l="en">Open keyboard</span><span data-l="km">បើកក្ដារចុច</span></a></li>
+          <li><a href="install.html"><span data-l="en">Install</span><span data-l="km">ដំឡើង</span></a></li>
+          <li><a href="guide.html"><span data-l="en">Typing guide</span><span data-l="km">របៀបវាយ</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h2><span data-l="en">Project</span><span data-l="km">គម្រោង</span></h2>
+        <ul>
+          <li><a href="https://github.com/merlynial/khmer-phonetic-keyboard"><span data-l="en">Source code</span><span data-l="km">កូដប្រភព</span></a></li>
+          <li><a href="https://github.com/merlynial/khmer-phonetic-keyboard/issues"><span data-l="en">Report a problem</span><span data-l="km">រាយការណ៍បញ្ហា</span></a></li>
+          <li><a href="https://github.com/merlynial/khmer-phonetic-keyboard/blob/main/LICENSE"><span data-l="en">MIT licence</span><span data-l="km">អាជ្ញាប័ណ្ណ MIT</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h2><span data-l="en">Credits</span><span data-l="km">ប្រភព</span></h2>
+        <p class="footer-credits">
+          <span data-l="en">Word list from the Google Khmer pronunciation lexicon (CC BY 4.0), ranked with Khmer Wikipedia and CC-100. Fonts: Kantumruy by Sovichet Tep and Siemreap by Danh Hong, under the SIL Open Font License.</span>
+          <span data-l="km">បញ្ជីពាក្យពីវចនានុក្រមបញ្ចេញសំឡេងខ្មែររបស់ Google (CC BY 4.0) តម្រៀបតាមវិគីភីឌាខ្មែរ និង CC-100។ ពុម្ពអក្សរ Kantumruy ដោយ Sovichet Tep និង Siemreap ដោយ Danh Hong ក្រោមអាជ្ញាប័ណ្ណ SIL Open Font License។</span>
+        </p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Keang Pakrinha</span>
+    </div>
+  </div>
+</footer>
 
-/* caret pixel position via a hidden mirror of the textarea. The bar sits at
-   the start of the word being typed, which stays put while the word grows, so
-   the answer is remembered: laying the mirror out again is the costly part. */
-let mirror = null, caretMemo = null;
-function caretXY(pos){
-  const before = inEl.value.slice(0, pos), width = inEl.clientWidth;
-  if (caretMemo && caretMemo.before === before && caretMemo.width === width) return caretMemo.xy;
-  if (!mirror){
-    mirror = document.createElement("div");
-    mirror.style.cssText = "position:absolute;visibility:hidden;top:0;left:-9999px;";
-    document.body.appendChild(mirror);
-  }
-  const cs = getComputedStyle(inEl);
-  for (const p of ["fontFamily","fontSize","fontWeight","lineHeight","letterSpacing",
-    "paddingTop","paddingRight","paddingBottom","paddingLeft","borderTopWidth",
-    "borderRightWidth","borderBottomWidth","borderLeftWidth","boxSizing"])
-    mirror.style[p] = cs[p];
-  mirror.style.whiteSpace = "pre-wrap";
-  mirror.style.wordBreak = "break-word";
-  mirror.style.width = width + "px";
-  mirror.textContent = before;
-  const m = document.createElement("span");
-  m.textContent = "​";
-  mirror.appendChild(m);
-  const xy = { x: m.offsetLeft, y: m.offsetTop,
-               h: m.offsetHeight || parseFloat(cs.lineHeight) || 24 };
-  caretMemo = { before, width, xy };
-  return xy;
-}
-
-const stripEl = $("#sugstrip");
-
-function renderSel(){
-  // all class changes first, then the scrolls: scrollIntoView forces a style
-  // and layout pass, and interleaving the two would force one per box
-  for (const box of [sugEl, stripEl])
-    [...box.children].forEach((c, i) => {
-      const on = i === sugSel;
-      c.classList.toggle("sel", on);
-      c.setAttribute("aria-selected", on ? "true" : "false");
-    });
-  for (const box of [sugEl, stripEl]){
-    const el = box.children[sugSel];
-    if (el) el.scrollIntoView({ inline:"nearest", block:"nearest" });
-  }
-}
-
-function buildCands(box){
-  box.innerHTML = "";
-  sugState.items.forEach((it, i) => {
-    const c = document.createElement("div");
-    c.className = "cand" + (it.raw ? " raw" : "");
-    c.innerHTML = `<span class="num">${i+1}</span><span class="kh">${esc(it.kh)}</span>`
-      + (it.gloss ? `<span class="gl">${esc(it.gloss)}</span>` : "");
-    c.setAttribute("role", "option");
-    c.setAttribute("aria-label", `${i+1} ${it.kh}${it.gloss ? ", " + it.gloss : ""}`);
-    c.addEventListener("pointerdown", e => { e.preventDefault(); commitSug(i); });
-    box.appendChild(c);
-  });
-}
-
-function hideSug(){
-  sugEl.classList.remove("show");
-  sugEl.innerHTML = "";
-  stripEl.innerHTML = "";
-}
-
-/* next-word prediction: right after a commit, the strip offers the words
-   that usually follow (corpus bigrams + phrases you have typed before) */
-let lastCommit = null;            // {kh, end} of the most recent committed word
-
-/* one-tap words in the strip: next-word predictions, or your frequent words */
-function showWordStrip(words){
-  if (!words.length){ hideSug(); return; }
-  stripEl.innerHTML = "";
-  words.forEach((kh, i) => {
-    const c = document.createElement("div");
-    c.className = "cand pin";
-    c.style.setProperty("--i", i);
-    c.innerHTML = `<span class="kh">${esc(kh)}</span>`;
-    c.setAttribute("role", "option");
-    c.setAttribute("aria-label", kh);
-    c.addEventListener("pointerdown", e => { e.preventDefault(); commitPred(kh); });
-    stripEl.appendChild(c);
-  });
-  sugEl.classList.remove("show"); sugEl.innerHTML = "";
-}
-
-function commitPred(kh){
-  ensureCaret();
-  const pos = inEl.selectionStart;
-  if (lastCommit && lastCommit.end === pos) KHDICT.learnNext(lastCommit.kh, kh);
-  KHDICT.learn(kh, "", false);
-  inEl.setRangeText(kh, pos, inEl.selectionEnd, "end");
-  lastCommit = { kh, end: inEl.selectionStart };
-  inEl.focus();
-  run(); updateSug();
-}
-
-/* idle: offer YOUR most frequent words, ready to tap (Apple QuickType style) */
-function showIdleWords(){ showWordStrip(KHDICT.topUsed(8)); }
-
-let sugFor = null;             // [value, selectionStart, selectionEnd] last shown for
-function updateSug(){
-  sugFor = [inEl.value, inEl.selectionStart, inEl.selectionEnd];
-  const { token, start, end } = currentToken();
-  if (token !== dismissed) dismissed = "";   // Esc only mutes the current token
-  sugState = { token, start, end, items: [] };
-  sugSel = 0; sugNav = false;
-  if (!token || token === dismissed){
-    if (!token && lastCommit && end === lastCommit.end){
-      showWordStrip(KHDICT.predictNext(lastCommit.kh)); return;
-    }
-    if (!token){ showIdleWords(); return; }
-    hideSug(); return;
-  }
-
-  const dict = KHDICT.suggest(token).map(it => ({ ...it, raw:false }));
-  const rawKh = convert(token, { autostack: autostack.checked });
-  if (rawKh && rawKh !== token && !(dict[0] && dict[0].kh === rawKh)){
-    dict.push({ kh: rawKh, gloss: "as typed", raw:true });
-  }
-  if (!dict.length){ hideSug(); return; }
-
-  sugState.items = dict;
-  buildCands(sugEl);
-  buildCands(stripEl);
-
-  const wasShown = sugEl.classList.contains("show");
-  placeSug();
-  if (!wasShown){    // spring in on first appearance, stay still while typing
-    sugEl.classList.remove("in"); void sugEl.offsetWidth; sugEl.classList.add("in");
-  }
-  renderSel();
-}
-
-// place the bar just under the start of the composed word (Apple-style)
-function placeSug(){
-  const c = caretXY(sugState.start);
-  sugEl.style.visibility = "hidden";
-  sugEl.classList.add("show");
-  const wrapW = sugEl.parentElement.clientWidth;
-  let left = inEl.offsetLeft + c.x - inEl.scrollLeft;
-  left = Math.max(2, Math.min(left, wrapW - sugEl.offsetWidth - 2));
-  const top = inEl.offsetTop + c.y + c.h - inEl.scrollTop + 4;
-  sugEl.style.left = left + "px";
-  sugEl.style.top  = top + "px";
-  sugEl.style.visibility = "";
-}
-
-function commitSug(i){
-  const it = sugState.items[i];
-  if (!it) return;
-  if (it.segs){                                    // phrase: learn each word + pairs
-    it.segs.forEach((w, k) => {
-      KHDICT.learn(w, "", false);
-      if (k > 0) KHDICT.learnNext(it.segs[k-1], w);
-    });
-  } else {
-    KHDICT.learn(it.kh, sugState.token, !!it.raw); // remember what you really use
-  }
-  if (lastCommit && lastCommit.end === sugState.start){
-    KHDICT.learnNext(lastCommit.kh, it.segs ? it.segs[0] : it.kh);
-  }
-  inEl.setRangeText(it.kh, sugState.start, sugState.end, "end");
-  lastCommit = { kh: it.segs ? it.segs[it.segs.length-1] : it.kh, end: inEl.selectionStart };
-  inEl.focus();
-  run(); updateSug();
-}
-
-inEl.addEventListener("keydown", e => {
-  if (!sugState.items.length) return;
-  const n = sugState.items.length;
-  if (e.key >= "1" && e.key <= "9"){
-    const i = +e.key - 1;
-    if (i < n){ e.preventDefault(); commitSug(i); }
-  } else if (e.key === "ArrowRight" || e.key === "ArrowDown"){
-    e.preventDefault(); sugSel = (sugSel + 1) % n; sugNav = true; renderSel();
-  } else if (e.key === "ArrowLeft" || e.key === "ArrowUp"){
-    e.preventDefault(); sugSel = (sugSel - 1 + n) % n; sugNav = true; renderSel();
-  } else if (e.key === "Enter"){
-    e.preventDefault(); commitSug(sugSel);
-  } else if (e.key === " "){
-    if (trySpaceCommit()) e.preventDefault();
-  } else if (e.key === "Escape"){
-    dismissed = sugState.token;
-    hideSug(); sugState.items = [];
-  }
-});
-/* Moving the caret changes which word is being composed, so suggestions have
-   to follow it. */
-document.addEventListener("selectionchange", ()=>{
-  if (document.activeElement !== inEl) return;
-  // Every keystroke also moves the caret, but its input event has already
-  // refreshed the bar. All that can have changed since is the box's scroll —
-  // it scrolls to keep the caret in view after the input event — so the bar
-  // only needs placing again, not rebuilding.
-  if (sugFor && sugFor[0] === inEl.value && sugFor[1] === inEl.selectionStart
-      && sugFor[2] === inEl.selectionEnd){
-    if (sugEl.classList.contains("show")){ placeSug(); renderSel(); }
-    return;
-  }
-  updateSug();
-});
-$("#conv").addEventListener("click", run);
-$("#clear").addEventListener("click", ()=>{
-  inEl.value=""; outEl.textContent=""; inEl.focus();
-  lastCommit = null; dismissed = "";
-  sugState = { token:"", start:0, end:0, items:[] };
-  hideSug();                       // else the old candidates stay up, and
-});                                // picking one types into the cleared box
-
-function toast(msg){
-  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
-  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1300);
-}
-$("#copy").addEventListener("click", async ()=>{
-  const txt = outEl.textContent;
-  if(!txt){ toast("Nothing to copy"); return; }
-  try{ await navigator.clipboard.writeText(txt); toast("Copied ✓"); }
-  catch(e){
-    const r=document.createRange(); r.selectNodeContents(outEl);
-    const s=getSelection(); s.removeAllRanges(); s.addRange(r);
-    try{ document.execCommand("copy"); toast("Copied ✓"); }catch(_){ toast("Select & copy manually"); }
-  }
-});
-
-/* -------- On-screen QWERTY keyboard (pinyin-style IME) -------------------
-   Letters type the SOUND into the text box at the caret; the suggestion bar
-   does the Khmer. Shift is one-shot (like a phone). ?123 = digits, Khmer
-   punctuation (inserted directly) and sign keys (inserted as scheme chars). */
-const devkb = $("#devkb");
-devkb.addEventListener("change", ()=> inEl.setAttribute("inputmode", devkb.checked ? "text" : "none"));
-
-/* Remember the switches. Someone who types on their phone's own keyboard, or
-   wants Khmer digits, should not have to say so again on every visit. */
-for (const el of [autostack, khnum, live, spacesel, devkb]){
-  const key = "khkb_opt_" + el.id;
-  let saved = null;
-  try { saved = localStorage.getItem(key); } catch(e){}
-  if (saved !== null && (saved === "1") !== el.checked){
-    el.checked = saved === "1";
-    el.dispatchEvent(new Event("change"));
-  }
-  el.addEventListener("change", ()=>{
-    try { localStorage.setItem(key, el.checked ? "1" : "0"); } catch(e){}
-  });
-}
-
-const SUB = {  // tiny Khmer hint under each letter key
-  q:"អ", w:"វ", e:"េ", r:"រ", t:"ត", y:"យ", u:"ុ", i:"ិ", o:"ោ", p:"ព",
-  s:"ស", d:"ដ", g:"គ", h:"ហ", j:"ជ", k:"ក", l:"ល",
-  v:"វ", b:"ប", n:"ន", m:"ម",
-  D:"ឌ", N:"ណ", L:"ឡ", M:"ំ", H:"ះ", E:"ែ",
-};
-const ROW_NUM = "1234567890".split("");
-const ROWS_ABC = [
-  "qwertyuiop".split(""),
-  "asdfghjkl".split(""),
-  [{a:"SHIFT",l:"⇧",w:1.5}, ..."zxcvbnm".split(""), {a:"BKSP",l:"⌫",w:1.5}],
-  [{a:"SYM",l:"?123",w:1.8}, {t:"'",l:"់",kh:1}, {a:"SPACE",l:"space",w:4},
-   {t:".",l:"."}, {a:"ENTER",l:"⏎",w:1.3}],
-];
-const ROWS_SYM = [
-  ROW_NUM,
-  [{t:"'",l:"់",kh:1},{t:"*",l:"៉",kh:1},{t:"`",l:"៊",kh:1},{t:"^",l:"័",kh:1},
-   {t:"~",l:"៍",kh:1},{t:"។",l:"។",kh:1},{t:"៕",l:"៕",kh:1},{t:"ៗ",l:"ៗ",kh:1}],
-  [{t:"៖",l:"៖",kh:1},{t:"«",l:"«"},{t:"»",l:"»"},{t:"!",l:"!"},{t:"?",l:"?"},
-   {t:",",l:","},{t:"-",l:"-"},{a:"BKSP",l:"⌫",w:1.5}],
-  [{a:"SYM",l:"ABC",w:1.8}, {a:"SPACE",l:"space",w:5}, {t:"។",l:"។",kh:1}, {a:"ENTER",l:"⏎",w:1.3}],
-];
-const KEY_NAMES = { SHIFT:"shift", BKSP:"backspace", SYM:"symbols", SPACE:"space", ENTER:"enter" };
-let kbLayer = "abc", kbShift = false;
-
-function ensureCaret(){
-  if (document.activeElement !== inEl){
-    inEl.focus();
-    const L = inEl.value.length;
-    inEl.setSelectionRange(L, L);
-  }
-}
-function insertText(t){
-  ensureCaret();
-  inEl.setRangeText(t, inEl.selectionStart, inEl.selectionEnd, "end");
-  inEl.dispatchEvent(new Event("input"));
-}
-function backspace(){
-  ensureCaret();
-  const s = inEl.selectionStart, e = inEl.selectionEnd;
-  if (s !== e) inEl.setRangeText("", s, e, "end");
-  else if (s > 0) inEl.setRangeText("", s-1, s, "end");
-  inEl.dispatchEvent(new Event("input"));
-}
-function trySpaceCommit(){
-  if (!sugState.items.length || !spacesel.checked) return false;
-  if (sugState.items[sugSel].raw) return false;
-  if (!sugNav && sugState.token.length < 2) return false;
-  commitSug(sugSel);              // commit, no space — Khmer joins words
-  return true;
-}
-const COARSE = matchMedia("(pointer: coarse)").matches;
-function haptic(){ if (COARSE && navigator.vibrate) try{ navigator.vibrate(8); }catch(e){} }
-
-/* iOS-style preview bubble above the pressed key */
-let keypop = null;
-function popKey(el, label){
-  if (!COARSE) return;
-  // measure the key before changing anything, so the tap does not force a
-  // layout; call this before marking the key pressed for the same reason
-  const w = Math.max(el.offsetWidth + 14, 46);
-  const left = el.offsetLeft + el.offsetWidth/2 - w/2, top = el.offsetTop - 52;
-  const kb = $("#kb");
-  if (!keypop){ keypop = document.createElement("div"); keypop.className = "keypop"; kb.appendChild(keypop); }
-  keypop.textContent = label;
-  keypop.style.minWidth = w + "px";
-  keypop.style.left = left + "px";
-  keypop.style.top  = top + "px";
-  keypop.classList.add("up");
-}
-function unpopKey(){ if (keypop) keypop.classList.remove("up"); }
-
-function keyPress(it){
-  if (typeof it === "string"){
-    insertText(kbShift ? it.toUpperCase() : it);
-    if (kbShift){ kbShift = false; drawKB(); }
-    return;
-  }
-  if (it.t !== undefined){ insertText(it.t); return; }
-  switch (it.a){
-    case "SHIFT": kbShift = !kbShift; drawKB(true); break;
-    case "SYM":   kbLayer = kbLayer === "sym" ? "abc" : "sym"; kbShift = false; drawKB(true); break;
-    case "BKSP":  backspace(); break;
-    case "ENTER":
-      if (sugState.items.length) commitSug(sugSel);
-      else insertText("\n");
-      break;
-    case "SPACE": if (!trySpaceCommit()) insertText(" "); break;
-  }
-}
-
-let bkspTimer = null;
-function stopBksp(){ clearTimeout(bkspTimer); bkspTimer = null; }
-document.addEventListener("pointerup", ()=>{ stopBksp(); unpopKey(); });
-document.addEventListener("pointercancel", ()=>{ stopBksp(); unpopKey(); });
-
-function drawKB(animate){
-  const kb = $("#kb"); kb.innerHTML = ""; keypop = null;
-  const rows = kbLayer === "sym" ? ROWS_SYM : ROWS_ABC;
-  rows.forEach(row => {
-    const r = document.createElement("div"); r.className = "kbrow";
-    row.forEach(it => {
-      const b = document.createElement("div");
-      const isStr = typeof it === "string";
-      const ch = isStr ? (kbShift ? it.toUpperCase() : it) : null;
-      b.className = "kq" + (!isStr && it.a ? " fn" : "") + (!isStr && it.kh ? " khlab" : "")
-        + (!isStr && it.a === "SHIFT" && kbShift ? " on" : "");
-      const label = isStr ? ch : it.l;
-      // letters: tiny Khmer hint; sign keys: show what you'd type (e.g. ់ ← ')
-      const sub = isStr ? (SUB[ch] || "") : (it.kh && it.t !== it.l ? it.t : "");
-      b.innerHTML = `<span>${label}</span><span class="sub">${sub || "&nbsp;"}</span>`;
-      // the glyph labels ("⇧", "⌫") say nothing out loud on their own
-      b.setAttribute("role", "button");
-      b.setAttribute("aria-label", isStr ? ch : (KEY_NAMES[it.a] || it.t || it.l));
-      if (!isStr && it.w) b.style.flexGrow = it.w;
-      b.addEventListener("pointerdown", e => {
-        e.preventDefault();
-        haptic();
-        if (isStr || (it.t !== undefined && !it.a)) popKey(b, label);
-        b.classList.add("pressed");
-        keyPress(it);
-        if (!isStr && it.a === "BKSP"){          // hold to repeat, like Apple
-          stopBksp();
-          bkspTimer = setTimeout(function rep(){ backspace(); bkspTimer = setTimeout(rep, 55); }, 420);
-        }
-      });
-      for (const ev of ["pointerup","pointerleave","pointercancel"])
-        b.addEventListener(ev, ()=> b.classList.remove("pressed"));
-      r.appendChild(b);
-    });
-    kb.appendChild(r);
-  });
-  if (animate){ kb.classList.remove("anim"); void kb.offsetWidth; kb.classList.add("anim"); }
-}
-drawKB();
-
-/* -------- "My words" learned-dictionary panel -------- */
-const mywordsEl = $("#mywords");
-function renderMyWords(){
-  const box = $("#mwlist");
-  const st = KHDICT.stats();
-  box.innerHTML = "";
-  if (!st.top.length && !st.personal.length){
-    box.innerHTML = `<span class="hint">${STRINGS[LANG].myempty}</span>`;
-    return;
-  }
-  st.top.forEach(([w, c]) => {
-    const d = document.createElement("div");
-    d.className = "w";
-    d.innerHTML = `${esc(w)}<b>×${esc(c)}</b>`;
-    box.appendChild(d);
-  });
-  st.personal.forEach(([spelling, w]) => {
-    const d = document.createElement("div");
-    d.className = "w mine";
-    d.innerHTML = `${esc(w)}<b>${esc(spelling)}</b>`;
-    box.appendChild(d);
-  });
-}
-mywordsEl.addEventListener("toggle", ()=>{ if (mywordsEl.open) renderMyWords(); });
-$("#mwreset").addEventListener("click", ()=>{
-  if (confirm(STRINGS[LANG].resetq)){
-    KHDICT.resetLearning();
-    renderMyWords(); updateSug(); toast(STRINGS[LANG].resetdone);
-  }
-});
-
-/* add a word to the dictionary */
-function doAddWord(){
-  const kh = $("#addkh").value, sp = $("#addsp").value;
-  const saved = KHDICT.addWord(kh, sp);
-  if (!saved){ toast(STRINGS[LANG].addbad); return; }
-  $("#addkh").value = ""; $("#addsp").value = "";
-  renderMyWords(); updateSug();
-  toast(STRINGS[LANG].added.replace("%", kh.trim()));
-  $("#addkh").focus();
-}
-$("#addbtn").addEventListener("click", doAddWord);
-$("#addsp").addEventListener("keydown", e => { if (e.key === "Enter") doAddWord(); });
-
-/* -------- Khmer/English interface -------- */
-const STRINGS = {
-  en: {
-    sub: "វាយខ្មែរតាមសំឡេង · Type the sound in English letters → get Khmer",
-    instr: 'Type a word\'s sound — candidates pop up at the cursor (<code>Space</code>/<code>Enter</code> picks, <code>←→</code> moves, <code>1-9</code> or tap; <code>Esc</code> hides)',
-    autostack: "Auto-stack clusters (coeng)", khnum: "Khmer digits ០-៩",
-    live: "Live convert", spacesel: "Space picks 1st suggestion", devkb: "Use device keyboard",
-    conv: "Convert ⟶", copy: "Copy Khmer", clear: "Clear", outlabel: "Khmer output",
-    kbhint: 'Tap the sound — word suggestions appear above, like Pinyin. <b>⇧</b> gives the scheme\'s capitals (<code>D</code>=ឌ <code>N</code>=ណ <code>L</code>=ឡ <code>M</code>=ំ <code>H</code>=ះ) · <b>?123</b> has digits, Khmer punctuation &amp; sign keys.',
-    mysummary: "🧠 My words — what the keyboard has learned from you",
-    myhint: "Words you pick are remembered and float to the top; spellings you invent become yours. Everything stays on this device only.",
-    myempty: "Nothing yet — words you pick while typing are remembered here.",
-    mwexport: "Backup ⤓", mwimport: "Restore ⤒", mwreset: "Reset",
-    resetq: "Forget all learned words, spellings and phrases?", resetdone: "Learning reset",
-    imported: "Words restored ✓", importbad: "Could not read that file",
-    addtitle: "➕ Add a word", addhint: "Khmer word · then how you type its sound (one or more, space-separated).",
-    added: "Added “%” ✓", addbad: "Enter a Khmer word and its spelling",
-    placeholder: "khnhom → ខ្ញុំ ...  suggestions pop up at your cursor, like Pinyin",
-    tut1: "Type the <b>sound</b> of a Khmer word with English letters — try <code>khnhom</code>",
-    tut2: "Pick the Khmer word from the bar: tap it, or press <b>Space</b> for the first one",
-    tut3: "After each word, the strip on the keyboard <b>predicts your next word</b> — and it learns the words you use",
-    gotit: "Got it — let me type!",
-    install: "Install as a real keyboard — Android, iPhone, Windows",
-    installsub: "Type Khmer by sound in every app, not just this page",
-    langbtn: "ខ្មែរ",
-  },
-  km: {
-    sub: "វាយខ្មែរតាមសំឡេង · Type Khmer by its sound",
-    instr: 'វាយសំឡេងពាក្យ — ពាក្យខ្មែរលេចឡើងត្រង់ទីតាំងសរសេរ (<code>Space</code>/<code>Enter</code> ជ្រើស, <code>←→</code> ផ្លាស់ទី, <code>1-9</code> ឬចុច; <code>Esc</code> បិទ)',
-    autostack: "ជើងអក្សរស្វ័យប្រវត្តិ (coeng)", khnum: "លេខខ្មែរ ០-៩",
-    live: "បម្លែងភ្លាមៗ", spacesel: "Space ជ្រើសពាក្យទី១", devkb: "ប្រើក្ដារចុចឧបករណ៍",
-    conv: "បម្លែង ⟶", copy: "ចម្លងអក្សរខ្មែរ", clear: "លុប", outlabel: "លទ្ធផលខ្មែរ",
-    kbhint: 'ចុចតាមសំឡេង — ពាក្យលេចឡើងខាងលើដូច Pinyin។ <b>⇧</b> សម្រាប់អក្សរធំ (<code>D</code>=ឌ <code>N</code>=ណ <code>L</code>=ឡ <code>M</code>=ំ <code>H</code>=ះ) · <b>?123</b> មានលេខ និងសញ្ញាខ្មែរ',
-    mysummary: "🧠 ពាក្យរបស់ខ្ញុំ — អ្វីដែលក្ដារចុចបានរៀនពីអ្នក",
-    myhint: "ពាក្យដែលអ្នកជ្រើសត្រូវបានចងចាំ ហើយឡើងមកមុនគេ។ ទិន្នន័យទាំងអស់នៅក្នុងឧបករណ៍នេះប៉ុណ្ណោះ។",
-    myempty: "មិនទាន់មានទេ — ពាក្យដែលអ្នកជ្រើសពេលវាយ នឹងបង្ហាញនៅទីនេះ។",
-    mwexport: "រក្សាទុក ⤓", mwimport: "នាំចូល ⤒", mwreset: "លុបចោល",
-    resetq: "លុបពាក្យ អក្ខរាវិរុទ្ធ និងឃ្លាដែលបានរៀនទាំងអស់?", resetdone: "បានលុបហើយ",
-    imported: "បាននាំចូលពាក្យ ✓", importbad: "អានឯកសារមិនបាន",
-    addtitle: "➕ បន្ថែមពាក្យ", addhint: "ពាក្យខ្មែរ · បន្ទាប់មកវិធីវាយសំឡេង (មួយ ឬច្រើន គាំដោយដកឃ្លា)។",
-    added: "បានបន្ថែម «%» ✓", addbad: "សូមបញ្ចូលពាក្យខ្មែរ និងវិធីវាយ",
-    placeholder: "khnhom → ខ្ញុំ ... វាយសំឡេង ពាក្យលេចឡើងដូច Pinyin",
-    tut1: "វាយ<b>សំឡេង</b>ពាក្យខ្មែរដោយអក្សរឡាតាំង — សាកល្បង <code>khnhom</code>",
-    tut2: "ជ្រើសពាក្យខ្មែរពីរបារ៖ ចុចលើវា ឬចុច <b>Space</b> សម្រាប់ពាក្យទី១",
-    tut3: "បន្ទាប់ពីពាក្យនីមួយៗ របារលើក្ដារចុច<b>ទាយពាក្យបន្ទាប់</b> — ហើយវារៀនពាក្យដែលអ្នកប្រើ",
-    gotit: "យល់ហើយ!",
-    install: "ដំឡើងជាក្ដារចុចប្រព័ន្ធ — Android, iPhone, Windows",
-    installsub: "វាយខ្មែរតាមសំឡេងក្នុងគ្រប់កម្មវិធី មិនត្រឹមតែទំព័រនេះ",
-    langbtn: "EN",
-  },
-};
-let LANG = localStorage.getItem("khkb_lang") || "km";
-function setLang(l){
-  LANG = l; localStorage.setItem("khkb_lang", l);
-  // screen readers and font fallback both read this; it was stuck on "en"
-  document.documentElement.lang = l === "km" ? "km" : "en";
-  const s = STRINGS[l];
-  $("#t-sub").textContent = s.sub;
-  $("#t-instr").innerHTML = s.instr;
-  for (const k of ["autostack","khnum","live","spacesel","devkb"])
-    $("#t-"+k).textContent = s[k];
-  $("#conv").textContent = s.conv; $("#copy").textContent = s.copy; $("#clear").textContent = s.clear;
-  $("#t-outlabel").textContent = s.outlabel;
-  $("#t-kbhint").innerHTML = s.kbhint;
-  $("#t-mysummary").textContent = s.mysummary;
-  $("#t-myhint").textContent = s.myhint;
-  $("#t-addtitle").textContent = s.addtitle;
-  $("#t-addhint").textContent = s.addhint;
-  $("#mwexport").textContent = s.mwexport;
-  $("#mwimport").textContent = s.mwimport;
-  $("#mwreset").textContent = s.mwreset;
-  $("#t-install").textContent = s.install;
-  $("#t-installsub").textContent = s.installsub;
-  $("#langbtn").textContent = s.langbtn;
-  inEl.placeholder = s.placeholder;
-}
-$("#langbtn").addEventListener("click", ()=> setLang(LANG === "km" ? "en" : "km"));
-setLang(LANG);
-
-/* -------- backup / restore -------- */
-$("#mwexport").addEventListener("click", ()=>{
-  const blob = new Blob([JSON.stringify(KHDICT.exportData(), null, 1)], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "khmer-keyboard-words.json";
-  a.click(); URL.revokeObjectURL(a.href);
-});
-$("#mwimport").addEventListener("click", ()=> $("#mwfile").click());
-$("#mwfile").addEventListener("change", e => {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = ()=>{
-    try {
-      if (KHDICT.importData(JSON.parse(r.result))){ renderMyWords(); toast(STRINGS[LANG].imported); }
-      else toast(STRINGS[LANG].importbad);
-    } catch(_) { toast(STRINGS[LANG].importbad); }
-    e.target.value = "";
-  };
-  r.readAsText(f);
-});
-
-/* -------- Cheat-sheet generation -------- */
-function fillSheet(id, entries, notes){
-  const box=$(id);
-  entries.forEach(([r,g])=>{
-    if(!g && r!=="a") return;
-    const c=document.createElement("div"); c.className="cell";
-    c.innerHTML = `<div class="kh">${g||"–"}</div><div class="rn">${r||"·"}</div>`
-      + (notes&&notes[r]?`<div class="note">${notes[r]}</div>`:"");
-    box.appendChild(c);
-  });
-}
-fillSheet("#cs-cons", Object.entries(CONS), {
-  d:"a-series", D:"retroflex", N:"retroflex", L:"la", q:"a / glottal", nh:"= ny", w:"= v"
-});
-fillSheet("#cs-vow", Object.entries(VOW), { a:"inherent (nothing)" });
-fillSheet("#cs-sign", Object.entries(SIGN).filter(([r,g])=>g && r!==" "), {
-  "'":"bantoc", M:"nikahit", H:"reahmuk", "//":"khan .", "**":"repeat", "::":"colon"
-});
-
-/* initial demo */
-inEl.value = "suastei";
-run();
-
-/* offline: register a tiny service worker if available */
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js").catch(()=>{});
-}
-</script>
+<script src="site.js"></script>
+<script src="engine.js"></script>
+<script src="xray.js"></script>
+<script src="home.js"></script>
 </body>
 </html>

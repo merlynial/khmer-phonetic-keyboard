@@ -38,7 +38,7 @@ writing a native IME for each of them.
 - `keyman/khmer_phonetic/` — the keyboard: the romanization compiled into a
   72-state Keyman rule machine, a touch layout, a bundled Khmer font
 - `keyman/pakrinha.km.khmerphonetic/` — 20,000-word dictionary package
-- Both are generated from `index.html` and `words.txt`, and CI fails if they
+- Both are generated from `engine.js` and `words.txt`, and CI fails if they
   drift. `tests/compiled.mjs` types tens of thousands of strings through the
   compiled keyboard that ships in the package.
 - Install page: `install.html`
@@ -56,7 +56,7 @@ nothing was removed from the build — but nothing points them there.
 A standalone `InputMethodService` app, so Android needs nothing but the APK, and
 the fuzzy sound matching the Keyman route drops is back.
 
-- `PhoneticScheme.kt` generated from `index.html`; `curated.tsv` is dict.js's own
+- `PhoneticScheme.kt` generated from `engine.js`; `curated.tsv` is dict.js's own
   index precomputed, so `romVariants` never had to be ported
 - `Suggestions.kt` ports the qskel matcher and the tiering over both lexicons
 - Learning: usage counts and personal spellings in app storage
@@ -70,7 +70,7 @@ ship in the APK but nothing reads them), backup/restore, long-press capitals.
 A keyboard extension plus a host app, with the same engine, the same 62k lexicon
 and the same fuzzy matching as the web and Android builds.
 
-- `PhoneticScheme.swift` generated from `index.html`, verified against the web
+- `PhoneticScheme.swift` generated from `engine.js`, verified against the web
   engine by `npm run ios:verify` in CI
 - CI builds an unsigned `.ipa` on GitHub's macOS runners; signing happens on the
   device with the user's own Apple ID via SideStore, so the repo needs no Apple

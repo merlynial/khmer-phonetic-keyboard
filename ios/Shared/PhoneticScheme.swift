@@ -1,7 +1,7 @@
 //
 //  GENERATED FILE - do not edit by hand.
 //    regenerate with:  npm run build:ios
-//    source of truth:  the romanization maps in index.html
+//    source of truth:  the romanization maps in engine.js
 //
 //  Lifted verbatim from the web app so the phone types what the browser types.
 //  PhoneticEngine is the port of the loop that walks these; EngineTests checks

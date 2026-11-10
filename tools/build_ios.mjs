@@ -1,6 +1,6 @@
 /* Generate the iOS app's engine data from the web app.
  *
- * Same contract as tools/build_android.mjs: index.html and dict.js are the
+ * Same contract as tools/build_android.mjs: engine.js and dict.js are the
  * source of truth, and anything Swift needs is generated rather than retyped.
  *
  *   PhoneticScheme.swift  the romanization maps, as Swift
@@ -33,7 +33,7 @@ function schemeSwift(scheme) {
   return `//
 //  GENERATED FILE - do not edit by hand.
 //    regenerate with:  npm run build:ios
-//    source of truth:  the romanization maps in index.html
+//    source of truth:  the romanization maps in engine.js
 //
 //  Lifted verbatim from the web app so the phone types what the browser types.
 //  PhoneticEngine is the port of the loop that walks these; EngineTests checks

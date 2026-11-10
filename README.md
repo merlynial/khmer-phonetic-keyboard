@@ -4,7 +4,7 @@
 the Khmer word from live suggestions — exactly like a Chinese Pinyin keyboard,
 but for Khmer.
 
-**➡️ Use it in your browser: <https://khmerkeyboard.com/>**
+**➡️ Website: <https://khmerkeyboard.com/> · the keyboard itself: <https://khmerkeyboard.com/app.html>**
 
 **➡️ Install it as a real keyboard on Android, iPhone or Windows:
 <https://khmerkeyboard.com/install.html>**
@@ -19,7 +19,7 @@ khnhom  ⎵   srolanh  ⎵   kampuchea  ⎵     →     ខ្ញុំស្រ
   in a floating bar right at your cursor (modeled on the macOS Pinyin IME):
   `Space`/`Enter` picks the highlighted word, `←`/`→` moves the highlight,
   `1-9` or a tap picks directly. Spelling is very forgiving — `sousdey`,
-  `suosdei`, and `susadey` all find សួស្តី; `orkun`/`arkun`/`awkun` find អរគុណ.
+  `suosdei`, and `suastei` all find សួស្តី; `orkun`/`arkun`/`awkun` find អរគុណ.
 - **On-screen QWERTY keyboard** — phone-style layout with one-shot Shift,
   a `?123` layer for Khmer punctuation (។ ៕ ៗ ៖ « ») and sign keys
   (់ ៉ ៊ ័ ៍), and tiny Khmer hints under each letter.
@@ -49,7 +49,7 @@ this page. Three builds, because no single one reaches every platform:
 
 See [install.html](install.html) for per-platform steps.
 
-All three are generated from the maps in `index.html` and checked against the web
+All three are generated from the maps in `engine.js` and checked against the web
 app on every build: the Keyman build types tens of thousands of strings through
 the *compiled* keyboard that ships in the package, the Android build replays
 29,142 conversions through the Kotlin port, and the iOS build runs the same
@@ -75,7 +75,7 @@ keyboard has been built and verified but **not yet run on a physical device**.
 | `'` `*` `` ` `` `^` `~` | ់ ៉ ៊ ័ ៍ | signs |
 | `//` `**` `::` | ។ ៗ ៖ | punctuation |
 
-The full cheat-sheet is built into the page.
+The full chart is in the [typing guide](https://khmerkeyboard.com/guide.html), and built into the keyboard page.
 
 ## Development
 
@@ -86,12 +86,22 @@ python3 -m http.server 4599
 # open http://localhost:4599
 ```
 
-- `index.html` — UI + phonetic conversion engine (the source of truth for the
-  romanization: the Keyman keyboard is generated from the maps in this file)
+- `engine.js` — the phonetic conversion engine and its maps: the source of
+  truth for the romanization. The Keyman keyboard and the Android and iOS
+  schemes are generated from this file, and the web pages load it as is
 - `dict.js` — word dictionary + reverse-romanizer that auto-generates the
   fuzzy lookup keys (add a word: one line in `DICT`)
-- `sw.js` — offline cache
-- `install.html` — download and install page for the system keyboard
+- `app.html` + `app.css` — the keyboard itself
+- `index.html` + `home.js` — the home page and its live demo
+- `guide.html` + `guide.js` — the typing guide, generated from `engine.js`
+- `install.html` — download and install page for the system keyboards
+- `site.css` + `site.js` — the shared design: header, footer, light and dark
+  themes, and the Khmer / English switch (remembered as `khkb_lang`, the
+  same setting the keyboard uses)
+- `xray.js` — the "how a spelling is read" widget on the home page and guide
+- `sw.js` — offline cache; bump `CACHE` on every release
+- `fonts/` — Kantumruy (site text) and Siemreap (typed Khmer), both OFL
+- `CNAME` — the custom domain for GitHub Pages
 
 - `android/` — the Android keyboard app (Kotlin)
 - `keyman/` — the Keyman keyboard and dictionary packages
@@ -112,11 +122,16 @@ npm run android:apk      # debug APK into dist/
 
 MIT for the keyboard itself.
 
-Two bundled works keep their own licences:
+Bundled works keep their own licences:
 
 - **Siemreap** (`fonts/`, and inside the Android, iOS and Keyman builds) —
   © 2010 Danh Hong, [khmertype.blogspot.com](https://khmertype.blogspot.com),
   under the SIL Open Font License 1.1. Full text in [OFL.txt](OFL.txt).
   Reserved Font Name: Siemreap.
+- **Kantumruy** (`fonts/`) — © 2013 Sovichet Tep, with Latin from Lato
+  © 2010-2011 Łukasz Dziedzic, under the SIL Open Font License 1.1 (same
+  [OFL.txt](OFL.txt)). Reserved Font Name: Kantumruy.
+- **The logo's ក** is drawn from the Battambang Bold outline by Danh Hong,
+  Apache License 2.0.
 - **Khmer pronunciation lexicon** (`words.txt`) — from the Google Khmer
   pronunciation lexicon, CC-BY-4.0.

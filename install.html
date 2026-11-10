@@ -1,169 +1,278 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="km" data-lang="km"
+  data-title-en="Install · Khmer Keyboard"
+  data-title-km="ដំឡើង · ក្ដារចុចខ្មែរ"
+  data-desc-en="Install the Khmer phonetic keyboard as a real system keyboard on Android, iPhone, iPad, Windows, macOS and Linux."
+  data-desc-km="ដំឡើងក្ដារចុចខ្មែរតាមសំឡេង ជាក្ដារចុចប្រព័ន្ធលើ Android iPhone iPad Windows macOS និង Linux។">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Install the Khmer Phonetic keyboard on your phone or computer</title>
-<meta name="description" content="Install the Khmer Phonetic keyboard as a real system keyboard on Android, iPhone, iPad and Windows.">
+<meta name="theme-color" content="#F5F1E8">
+<title>Install · Khmer Keyboard</title>
+<meta name="description" content="Install the Khmer phonetic keyboard as a real system keyboard on Android, iPhone, iPad, Windows, macOS and Linux.">
+<link rel="canonical" href="https://khmerkeyboard.com/install.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://khmerkeyboard.com/install.html">
+<meta property="og:title" content="Install · Khmer Keyboard">
+<meta property="og:description" content="Install the Khmer phonetic keyboard as a real system keyboard on Android, iPhone, iPad, Windows, macOS and Linux.">
+<meta property="og:image" content="https://khmerkeyboard.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<style>
-  :root{
-    --bg:#0a0e15; --panel:rgba(255,255,255,.035); --panel2:rgba(255,255,255,.055);
-    --line:rgba(255,255,255,.09); --txt:#e8edf4; --muted:#93a0b0;
-    --accent:#3b82f6; --grad:linear-gradient(135deg,#3b82f6 0%,#8b5cf6 100%);
-    --khmer:#ffd27f;
-    --font-khmer:"Khmer OS Siemreap","Khmer OS Siemreab","Siemreap","Noto Sans Khmer",serif;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; background:var(--bg); color:var(--txt); line-height:1.6;
-    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    background-image:radial-gradient(900px 500px at 15% -5%,rgba(59,130,246,.14),transparent 60%),
-                     radial-gradient(700px 400px at 90% 0%,rgba(139,92,246,.12),transparent 60%);
-  }
-  .wrap{max-width:760px;margin:0 auto;padding:32px 20px 72px}
-  header{display:flex;align-items:center;gap:14px;margin-bottom:28px}
-  .logo{width:44px;height:44px;border-radius:12px;background:var(--grad);
-        display:grid;place-items:center;font-family:var(--font-khmer);font-size:24px;color:#fff}
-  h1{font-size:22px;margin:0;font-weight:650;letter-spacing:-.01em}
-  .sub{color:var(--muted);font-size:14px}
-  h2{font-size:15px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);
-     font-weight:600;margin:40px 0 12px}
-  p{margin:.7em 0}
-  a{color:#8ab4ff}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;
-        padding:22px 24px;margin:16px 0}
-  ol{padding-left:22px;margin:.6em 0}
-  li{margin:.45em 0}
-  code{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--panel2);
-       padding:2px 6px;border-radius:5px;font-size:.9em}
-  .kh{font-family:var(--font-khmer);color:var(--khmer);font-size:1.15em}
-  .dl{display:inline-flex;align-items:center;gap:9px;background:var(--grad);color:#fff;
-      text-decoration:none;padding:12px 20px;border-radius:11px;font-weight:600;font-size:15px;
-      margin:6px 10px 6px 0}
-  .dl.alt{background:var(--panel2);border:1px solid var(--line)}
-  .meta{color:var(--muted);font-size:13px}
-  .note{border-left:2px solid var(--line);padding-left:16px;color:var(--muted);font-size:14.5px}
-  footer{margin-top:52px;border-top:1px solid var(--line);padding-top:20px;
-         color:var(--muted);font-size:13.5px}
-</style>
+<script>
+  (function () {
+    var d = document.documentElement, l = null, t = null;
+    try { l = localStorage.getItem("khkb_lang"); t = localStorage.getItem("kk_theme"); } catch (e) {}
+    d.setAttribute("data-lang", l === "en" ? "en" : "km"); d.lang = d.getAttribute("data-lang");
+    if (t === "dark" || t === "light") d.setAttribute("data-theme", t);
+  })();
+</script>
+<link rel="stylesheet" href="site.css">
 </head>
 <body>
-<div class="wrap">
+<a class="skip" href="#main"><span data-l="en">Skip to content</span><span data-l="km">រំលងទៅខ្លឹមសារ</span></a>
 
-<header>
-  <div class="logo">ក</div>
-  <div>
-    <h1>Install on your phone or computer</h1>
-    <div class="sub">Type Khmer by sound in any app — Telegram, Messenger, Word, your browser</div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="Khmer Keyboard">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="2" y="2" width="96" height="96" rx="24" style="fill:var(--ink)"/><path transform="translate(5 6)" style="fill:var(--paper)" d="M33.33 75V50Q33.33 40 50 40Q66.67 40 66.67 50V75H56.67V50Q56.67 43.33 50 43.33Q43.33 43.33 43.33 50V75ZM31.67 37.43V34.93Q31.67 33.2 33.8 31.17L35.97 29.13Q40.23 25 41.3 25Q42.5 25 46.03 28.73L47.8 30.6Q48.7 31.57 49.67 31.57Q50.5 31.57 51.33 30.6L52.97 28.73Q56.3 25 57.47 25Q58.6 25 60.47 27.07L64.33 31.23Q65.5 32.47 66.67 32.47Q67.5 32.47 68.33 31.87Q66.03 38.43 63.9 38.43Q61.7 38.43 59.17 36.08Q56.63 33.73 55.57 33.73Q54.17 33.73 52.25 36.08Q50.33 38.43 48.7 38.43Q46.33 38.43 43.5 36.08Q40.67 33.73 39.43 33.73Q38.03 33.73 37.3 34.47Q36.57 35.2 36.57 36.4Q36.57 37.4 41.07 39.73L36.83 42.77Q31.67 40.73 31.67 37.43Z"/><path style="fill:none;stroke:var(--accent);stroke-width:4.4;stroke-linecap:round;stroke-linejoin:round" d="M17 15v16M25 20.2l-7.2 5.6m2.9-2.3 4.7 7.7"/></svg>
+      <span data-l="en">Khmer Keyboard</span><span data-l="km">ក្ដារចុចខ្មែរ</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="index.html#how"><span data-l="en">How it works</span><span data-l="km">របៀបដំណើរការ</span></a>
+      <a href="install.html" aria-current="page"><span data-l="en">Download</span><span data-l="km">ទាញយក</span></a>
+      <a href="guide.html"><span data-l="en">Typing guide</span><span data-l="km">របៀបវាយ</span></a>
+      <a href="index.html#faq"><span data-l="en">Questions</span><span data-l="km">សំណួរ</span></a>
+    </nav>
+    <div class="tools">
+      <div class="lang-switch" role="group" aria-label="Language · ភាសា">
+        <button type="button" data-set-lang="en" lang="en" aria-pressed="false">EN</button>
+        <button type="button" data-set-lang="km" lang="km" aria-pressed="true">ខ្មែរ</button>
+      </div>
+      <button type="button" class="icon-btn theme-btn" aria-label="Switch theme">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6Z"/></svg>
+      </button>
+      <a class="btn btn-primary btn-sm" href="app.html"><span data-l="en">Open keyboard</span><span data-l="km">បើកក្ដារចុច</span></a>
+      <button type="button" class="icon-btn menu-btn" aria-controls="menu" aria-expanded="false" data-aria-en="Menu" data-aria-km="ម៉ឺនុយ" aria-label="ម៉ឺនុយ">
+        <svg class="bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+        <svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
   </div>
 </header>
-
-<p>The <a href="./">web version</a> converts text you type into a box. This page installs the
-same romanization as a <strong>real system keyboard</strong>, so it works everywhere your
-phone or computer accepts typing.</p>
-
-<p>Android and iPhone each have an app of their own, with the sound matching the web
-version has — nothing else to install. Windows, macOS and Linux go through
-<a href="https://keyman.com">Keyman</a>, a free and open-source keyboarding app from SIL:
-you install Keyman once, then add this keyboard to it.</p>
-
-<h2>Android — the app</h2>
-<div class="card">
-  <a class="dl" href="dist/khmer-phonetic.apk" download>Download Khmer Phonetic (3.3 MB)</a>
-  <ol>
-    <li>Open this page on your phone and tap the button above.</li>
-    <li>Tap the downloaded file to install. Android will ask you to allow installing
-        apps from your browser — this app is not on Google Play, so that step is
-        expected.</li>
-    <li>Open <strong>Khmer Phonetic</strong> from your app list. It walks you through
-        turning the keyboard on and choosing it.</li>
-    <li>Anywhere you type, tap the globe key to switch to it.</li>
-  </ol>
-  <p class="note">This one has the sound-matching suggestion bar from the web version:
-  type <code>sousdey</code>, <code>suosdei</code> or <code>suastei</code> and it still
-  finds <span class="kh">សួស្តី</span>. It learns the words and spellings you use, and
-  keeps them on the phone.</p>
+<div class="sheet" id="menu">
+  <nav aria-label="Mobile">
+    <a href="index.html#how"><span data-l="en">How it works</span><span data-l="km">របៀបដំណើរការ</span></a>
+    <a href="install.html" aria-current="page"><span data-l="en">Download</span><span data-l="km">ទាញយក</span></a>
+    <a href="guide.html"><span data-l="en">Typing guide</span><span data-l="km">របៀបវាយ</span></a>
+    <a href="index.html#faq"><span data-l="en">Questions</span><span data-l="km">សំណួរ</span></a>
+  </nav>
+  <div class="sheet-tools">
+    <div class="lang-switch" role="group" aria-label="Language · ភាសា">
+      <button type="button" data-set-lang="en" lang="en" aria-pressed="false">EN</button>
+      <button type="button" data-set-lang="km" lang="km" aria-pressed="true">ខ្មែរ</button>
+    </div>
+    <button type="button" class="icon-btn theme-btn" aria-label="Switch theme">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6Z"/></svg>
+    </button>
+  </div>
 </div>
 
-<h2>iPhone and iPad — the app</h2>
-<div class="card">
-  <ol>
-    <li>Download <code>KhmerPhonetic.ipa</code> from the latest green run of the
-        <a href="https://github.com/merlynial/khmer-phonetic-keyboard/actions/workflows/ios.yml">iOS build</a>.</li>
-    <li>Install <a href="https://sidestore.io">SideStore</a> on the iPhone, then open the
-        <code>.ipa</code> in it. SideStore signs it with your own Apple ID — no developer
-        account needed.</li>
-    <li>Settings → General → Keyboard → Keyboards → Add New Keyboard →
-        <strong>Khmer Phonetic</strong>.</li>
-    <li>Hold the globe key in any app to switch to it. It never asks for
-        &ldquo;Allow Full Access&rdquo;.</li>
-  </ol>
-  <p class="note">A free Apple ID signs apps for <strong>7 days</strong> — that is Apple's
-  rule, not this app's, and only the EU, Japan and Brazil have a way around it. SideStore
-  re-signs on the phone over Wi-Fi, so the renewal happens by itself rather than needing a
-  computer.</p>
-  <p class="note">Built but <strong>not yet tested on a device</strong> — it compiles and
-  packages correctly, and the typing engine is verified against the web version, but the
-  keyboard itself has never been run. Tell me what breaks.</p>
-</div>
+<main id="main">
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="label"><span data-l="en">Install</span><span data-l="km">ដំឡើង</span></p>
+      <h1 class="display"><span data-l="en">Install it as a real keyboard.</span><span data-l="km">ដំឡើងវាជាក្ដារចុចពិតប្រាកដ។</span></h1>
+      <p class="lead">
+        <span data-l="en">The web version types into its own page. Installed, the same romanization works everywhere your phone or computer accepts typing: Telegram, Messenger, Word, your browser.</span>
+        <span data-l="km">កំណែវេបវាយក្នុងទំព័ររបស់វាផ្ទាល់។ ពេលដំឡើងរួច ប្រព័ន្ធសរសេរដដែលនេះដំណើរការគ្រប់កន្លែងដែលទូរស័ព្ទ ឬកុំព្យូទ័ររបស់អ្នកអាចវាយបាន៖ Telegram Messenger Word និងកម្មវិធីរុករក។</span>
+      </p>
+    </div>
+  </section>
 
-<h2>Windows, macOS and Linux — the Keyman package</h2>
-<div class="card">
-  <a class="dl alt" href="dist/khmer_phonetic.kmp" download>Khmer Phonetic keyboard</a>
-  <a class="dl alt" href="dist/pakrinha.km.khmerphonetic.model.kmp" download>Khmer dictionary (optional)</a>
-  <ol>
-    <li>Install <a href="https://keyman.com/windows/">Keyman</a> for your system —
-        it also has macOS and Linux builds.</li>
-    <li>Download the keyboard package and double-click the <code>.kmp</code> file.</li>
-    <li>Switch to it from the Keyman icon in the system tray or menu bar, or with your
-        system's language switcher.</li>
-  </ol>
-  <p class="meta">These are the platforms with no app of their own — a Windows input
-  method has to be compiled on Windows, and a desktop keyboard is not where this project
-  spends its effort. Keyman covers all three with one package.</p>
-  <p class="note">The Keyman keyboard converts spelling exactly, with no sound
-  matching — <code>sousdey</code> will not find <span class="kh">សួស្តី</span> there
-  the way it does in the apps and on the web.</p>
-  <p class="note">The dictionary package is optional and only does something on a phone:
-  Keyman draws its suggestion bar on mobile, and on a computer there is no bar to fill.
-  On a phone, use the Android or iPhone app instead — they suggest by sound, which this
-  does not.</p>
-</div>
+  <div class="wrap doc">
+    <nav class="toc" aria-label="On this page">
+      <p><span data-l="en">On this page</span><span data-l="km">ក្នុងទំព័រនេះ</span></p>
+      <a href="#android">Android</a>
+      <a href="#ios"><span data-l="en">iPhone and iPad</span><span data-l="km">iPhone និង iPad</span></a>
+      <a href="#desktop">Windows · macOS · Linux</a>
+      <a href="#typing"><span data-l="en">How to type</span><span data-l="km">របៀបវាយ</span></a>
+      <a href="#compare"><span data-l="en">Which to choose</span><span data-l="km">គួរជ្រើសមួយណា</span></a>
+    </nav>
 
-<h2>How to type</h2>
-<div class="card">
-  <p>Write the word the way it sounds. <code>suastei</code> gives <span class="kh">សួស្តី</span>,
-  <code>arkun</code> gives <span class="kh">អរគុណ</span>, <code>khnhom</code> gives
-  <span class="kh">ខ្ញុំ</span>.</p>
-  <p>Consonants typed together with no vowel between them stack with coeng automatically.
-  Type <code>.</code> to break a cluster: <code>ka.mpujaa</code> gives <span class="kh">កម្ពុជា</span>.</p>
-  <p>Capitals reach the second-series consonants — <code>d</code> <span class="kh">ដ</span> against
-  <code>D</code> <span class="kh">ឌ</span>, <code>n</code> <span class="kh">ន</span> against
-  <code>N</code> <span class="kh">ណ</span>. On a phone, hold the key instead of using Shift.</p>
-  <p>The full table is built into the <a href="./">web version</a> — and, if you went the
-  Keyman route, into the welcome page it shows after installing.</p>
-</div>
+    <div class="doc-body">
+      <p class="lead" style="margin-bottom:clamp(48px,6vw,72px)">
+        <span data-l="en">Android and iPhone each have an app of their own, with the same sound matching as the web version and nothing else to install. Windows, macOS and Linux go through <a class="link" href="https://keyman.com">Keyman</a>, a free and open-source keyboard app from SIL: install Keyman once, then add this keyboard to it.</span>
+        <span data-l="km">Android និង iPhone មានកម្មវិធីផ្ទាល់ខ្លួនរៀងៗខ្លួន ដែលផ្គូផ្គងសំឡេងដូចកំណែវេប ហើយមិនចាំបាច់ដំឡើងអ្វីផ្សេងទៀតទេ។ Windows macOS និង Linux ប្រើ <a class="link" href="https://keyman.com">Keyman</a> ដែលជាកម្មវិធីក្ដារចុចឥតគិតថ្លៃ និងកូដចំហរបស់ SIL៖ ដំឡើង Keyman ម្ដង រួចបន្ថែមក្ដារចុចនេះចូលក្នុងវា។</span>
+      </p>
 
-<h2>Which one behaves like the web version</h2>
-<div class="card">
-  <p>The <strong>Android and iPhone apps</strong> do. Both carry the same sound-matching
-  suggestions as this site — loose spellings still find the right word — and both learn
-  from what you pick.</p>
-  <p>The <strong>Keyman package</strong> converts letters exactly as typed, with no
-  guessing. That is the trade for covering Windows, macOS and Linux without writing a
-  native input method for each of them.</p>
-  <p>All three use the same romanization, so what you already know carries over. Every
-  build is checked against the web version automatically — tens of thousands of spellings
-  each time, and any disagreement fails the build.</p>
-</div>
+      <section class="doc-section" id="android" aria-labelledby="and-title">
+        <h2 id="and-title">Android</h2>
+        <div class="platform-line">
+          <a class="btn btn-primary" href="dist/khmer-phonetic.apk" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg>
+            <span data-l="en">Download Khmer Phonetic</span><span data-l="km">ទាញយក Khmer Phonetic</span></a>
+          <span class="meta"><span data-l="en">APK · 3.3 MB</span><span data-l="km">APK · ៣,៣ MB</span></span>
+        </div>
+        <ol class="steps">
+          <li><span data-l="en">Open this page on your phone and tap the download button.</span>
+              <span data-l="km">បើកទំព័រនេះនៅលើទូរស័ព្ទរបស់អ្នក ហើយចុចប៊ូតុងទាញយក។</span></li>
+          <li><span data-l="en">Tap the downloaded file to install it. Android will ask you to allow installs from your browser. The app is not on Google Play, so that step is expected.</span>
+              <span data-l="km">ចុចលើឯកសារដែលបានទាញយក ដើម្បីដំឡើង។ Android នឹងសុំឲ្យអ្នកអនុញ្ញាតការដំឡើងពីកម្មវិធីរុករក។ កម្មវិធីនេះមិនមាននៅលើ Google Play ទេ ដូច្នេះជំហាននេះជារឿងធម្មតា។</span></li>
+          <li><span data-l="en">Open <strong>Khmer Phonetic</strong> from your app list. It walks you through turning the keyboard on and choosing it.</span>
+              <span data-l="km">បើក <strong>Khmer Phonetic</strong> ពីបញ្ជីកម្មវិធី។ វានឹងណែនាំអ្នកឲ្យបើក និងជ្រើសរើសក្ដារចុចនេះ។</span></li>
+          <li><span data-l="en">Anywhere you type, tap the globe key to switch to it.</span>
+              <span data-l="km">នៅកន្លែងណាដែលអ្នកវាយ ចុចគ្រាប់ចុចរូបផែនដី ដើម្បីប្ដូរមកក្ដារចុចនេះ។</span></li>
+        </ol>
+        <p class="note">
+          <span data-l="en">The app has the sound-matching suggestion bar from the web version: type <code>sousdey</code>, <code>suosdei</code> or <code>suastei</code> and it still finds <span class="kh" lang="km">សួស្តី</span>. It learns the words and spellings you use, and keeps them on the phone.</span>
+          <span data-l="km">កម្មវិធីនេះមានរបារណែនាំពាក្យតាមសំឡេងដូចកំណែវេប៖ វាយ <code>sousdey</code> <code>suosdei</code> ឬ <code>suastei</code> វានៅតែរកឃើញ សួស្តី។ វារៀនពាក្យ និងអក្ខរាវិរុទ្ធដែលអ្នកប្រើ ហើយរក្សាទុកវានៅលើទូរស័ព្ទ។</span>
+        </p>
+      </section>
 
-<footer>
-  <a href="./">← Back to the web keyboard</a> ·
-  <a href="https://github.com/merlynial/khmer-phonetic-keyboard">Source on GitHub</a> ·
-  MIT licence. Word frequencies from the Google Khmer pronunciation lexicon (CC-BY-4.0).
+      <section class="doc-section" id="ios" aria-labelledby="ios-title">
+        <h2 id="ios-title"><span data-l="en">iPhone and iPad</span><span data-l="km">iPhone និង iPad</span></h2>
+        <ol class="steps">
+          <li><span data-l="en">Download <code>KhmerPhonetic.ipa</code> from the latest green run of the <a class="link" href="https://github.com/merlynial/khmer-phonetic-keyboard/actions/workflows/ios.yml">iOS build</a>.</span>
+              <span data-l="km">ទាញយក <code>KhmerPhonetic.ipa</code> ពីការសាងសង់ចុងក្រោយដែលជោគជ័យ (សញ្ញាពណ៌បៃតង) នៃ <a class="link" href="https://github.com/merlynial/khmer-phonetic-keyboard/actions/workflows/ios.yml">iOS build</a>។</span></li>
+          <li><span data-l="en">Install <a class="link" href="https://sidestore.io">SideStore</a> on the iPhone, then open the <code>.ipa</code> in it. SideStore signs it with your own Apple ID; no developer account is needed.</span>
+              <span data-l="km">ដំឡើង <a class="link" href="https://sidestore.io">SideStore</a> នៅលើ iPhone រួចបើកឯកសារ <code>.ipa</code> នៅក្នុងវា។ SideStore ចុះហត្ថលេខាលើវាដោយ Apple ID របស់អ្នកផ្ទាល់ ដោយមិនត្រូវការគណនីអ្នកអភិវឌ្ឍន៍ទេ។</span></li>
+          <li><span data-l="en">Go to Settings → General → Keyboard → Keyboards → Add New Keyboard → <strong>Khmer Phonetic</strong>.</span>
+              <span data-l="km">ចូលទៅ Settings → General → Keyboard → Keyboards → Add New Keyboard → <strong>Khmer Phonetic</strong>។</span></li>
+          <li><span data-l="en">Hold the globe key in any app to switch to it. It never asks for Allow Full Access.</span>
+              <span data-l="km">ចុចសង្កត់គ្រាប់ចុចរូបផែនដីក្នុងកម្មវិធីណាមួយ ដើម្បីប្ដូរមកក្ដារចុចនេះ។ វាមិនដែលសុំ «Allow Full Access» ទេ។</span></li>
+        </ol>
+        <p class="note">
+          <span data-l="en">A free Apple ID signs apps for <strong>7 days</strong>. That is Apple's rule, not this app's, and only the EU, Japan and Brazil have a way around it. SideStore re-signs on the phone over Wi-Fi, so the renewal happens by itself rather than needing a computer.</span>
+          <span data-l="km">Apple ID ឥតគិតថ្លៃចុះហត្ថលេខាលើកម្មវិធីបានរយៈពេល <strong>៧ ថ្ងៃ</strong>។ នេះជាច្បាប់របស់ Apple មិនមែនរបស់កម្មវិធីនេះទេ ហើយមានតែសហភាពអឺរ៉ុប ជប៉ុន និងប្រេស៊ីលប៉ុណ្ណោះដែលមានវិធីផ្សេង។ SideStore ចុះហត្ថលេខាឡើងវិញនៅលើទូរស័ព្ទតាម Wi-Fi ដូច្នេះការបន្តកើតឡើងដោយខ្លួនឯង ដោយមិនត្រូវការកុំព្យូទ័រ។</span>
+        </p>
+        <p class="note quiet">
+          <span data-l="en"><strong>Built, not yet tested on a device.</strong> It compiles and packages correctly, and the typing engine is verified against the web version, but the keyboard itself has not been run on an iPhone yet. Please <a class="link" href="https://github.com/merlynial/khmer-phonetic-keyboard/issues">report</a> anything that breaks.</span>
+          <span data-l="km"><strong>បានសាងសង់ ប៉ុន្តែមិនទាន់សាកល្បងលើឧបករណ៍ពិត។</strong> វាចងក្រង និងវេចខ្ចប់បានត្រឹមត្រូវ ហើយម៉ាស៊ីនវាយត្រូវបានផ្ទៀងផ្ទាត់ជាមួយកំណែវេប ប៉ុន្តែក្ដារចុចនេះមិនទាន់បានដំណើរការលើ iPhone ពិតនៅឡើយទេ។ សូម<a class="link" href="https://github.com/merlynial/khmer-phonetic-keyboard/issues">រាយការណ៍</a>ប្រសិនបើមានបញ្ហា។</span>
+        </p>
+      </section>
+
+      <section class="doc-section" id="desktop" aria-labelledby="desk-title">
+        <h2 id="desk-title">Windows · macOS · Linux</h2>
+        <div class="platform-line">
+          <a class="btn btn-primary" href="dist/khmer_phonetic.kmp" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg>
+            <span data-l="en">Khmer Phonetic keyboard</span><span data-l="km">ក្ដារចុច Khmer Phonetic</span></a>
+          <span class="meta">.kmp · <span data-l="en">150 KB</span><span data-l="km">១៥០ KB</span></span>
+        </div>
+        <div class="platform-line" style="margin-top:12px">
+          <a class="btn btn-line btn-sm" href="dist/pakrinha.km.khmerphonetic.model.kmp" download><span data-l="en">Khmer dictionary, optional</span><span data-l="km">វចនានុក្រមខ្មែរ (មិនចាំបាច់)</span></a>
+          <span class="meta">.kmp · <span data-l="en">410 KB</span><span data-l="km">៤១០ KB</span></span>
+        </div>
+        <ol class="steps">
+          <li><span data-l="en">Install <a class="link" href="https://keyman.com">Keyman</a> for your system. It has Windows, macOS and Linux versions.</span>
+              <span data-l="km">ដំឡើង <a class="link" href="https://keyman.com">Keyman</a> សម្រាប់ប្រព័ន្ធរបស់អ្នក។ វាមានកំណែសម្រាប់ Windows macOS និង Linux។</span></li>
+          <li><span data-l="en">Download the keyboard package and double-click the <code>.kmp</code> file.</span>
+              <span data-l="km">ទាញយកកញ្ចប់ក្ដារចុច ហើយចុចពីរដងលើឯកសារ <code>.kmp</code>។</span></li>
+          <li><span data-l="en">Switch to it from the Keyman icon in the system tray or menu bar, or with your system's language switcher.</span>
+              <span data-l="km">ប្ដូរមកក្ដារចុចនេះពីរូបតំណាង Keyman នៅរបារប្រព័ន្ធ ឬរបារម៉ឺនុយ ឬតាមរយៈកម្មវិធីប្ដូរភាសារបស់ប្រព័ន្ធ។</span></li>
+        </ol>
+        <p>
+          <span data-l="en">These are the platforms without an app of their own. A Windows input method has to be compiled on Windows, and Keyman covers all three desktops with one package.</span>
+          <span data-l="km">ទាំងនេះជាប្រព័ន្ធដែលមិនមានកម្មវិធីផ្ទាល់ខ្លួន។ កម្មវិធីបញ្ចូលអក្សរសម្រាប់ Windows ត្រូវចងក្រងនៅលើ Windows ហើយ Keyman គ្របដណ្ដប់កុំព្យូទ័រទាំងបីដោយកញ្ចប់តែមួយ។</span>
+        </p>
+        <p class="note">
+          <span data-l="en">The Keyman keyboard converts spelling exactly, with no sound matching: <code>sousdey</code> will not find <span class="kh" lang="km">សួស្តី</span> there the way it does in the apps and on the web.</span>
+          <span data-l="km">ក្ដារចុច Keyman បម្លែងអក្សរតាមអ្វីដែលវាយពិតប្រាកដ ដោយគ្មានការផ្គូផ្គងសំឡេង៖ <code>sousdey</code> នឹងមិនរកឃើញ សួស្តី ដូចនៅក្នុងកម្មវិធី និងវេបទេ។</span>
+        </p>
+        <p class="note quiet">
+          <span data-l="en">The dictionary package is optional and only does something on a phone: Keyman draws its suggestion bar on mobile, and on a computer there is no bar to fill. On a phone, use the Android or iPhone app instead; they suggest by sound, which this package does not.</span>
+          <span data-l="km">កញ្ចប់វចនានុក្រមមិនចាំបាច់ទេ ហើយមានប្រយោជន៍តែលើទូរស័ព្ទប៉ុណ្ណោះ៖ Keyman បង្ហាញរបារណែនាំនៅលើទូរស័ព្ទ ប៉ុន្តែនៅលើកុំព្យូទ័រគ្មានរបារសម្រាប់បំពេញទេ។ នៅលើទូរស័ព្ទ សូមប្រើកម្មវិធី Android ឬ iPhone ជំនួសវិញ ព្រោះវាណែនាំតាមសំឡេង ដែលកញ្ចប់នេះមិនអាចធ្វើបាន។</span>
+        </p>
+      </section>
+
+      <section class="doc-section" id="typing" aria-labelledby="type-title">
+        <h2 id="type-title"><span data-l="en">How to type</span><span data-l="km">របៀបវាយ</span></h2>
+        <p><span data-l="en">Write the word the way it sounds. <code>suastei</code> gives <span class="kh" lang="km">សួស្តី</span>, <code>arkun</code> gives <span class="kh" lang="km">អរគុណ</span>, <code>khnhom</code> gives <span class="kh" lang="km">ខ្ញុំ</span>.</span>
+           <span data-l="km">សរសេរពាក្យតាមសំឡេងរបស់វា។ <code>suastei</code> ផ្ដល់ សួស្តី, <code>arkun</code> ផ្ដល់ អរគុណ, <code>khnhom</code> ផ្ដល់ ខ្ញុំ។</span></p>
+        <p><span data-l="en">Consonants typed together with no vowel between them stack automatically. Type <code>.</code> to break a cluster: <code>ka.mpujaa</code> gives <span class="kh" lang="km">កម្ពុជា</span>.</span>
+           <span data-l="km">ព្យញ្ជនៈដែលវាយជាប់គ្នាដោយគ្មានស្រៈនៅចន្លោះ នឹងក្លាយជាជើងដោយស្វ័យប្រវត្តិ។ វាយ <code>.</code> ដើម្បីបំបែក៖ <code>ka.mpujaa</code> ផ្ដល់ កម្ពុជា។</span></p>
+        <p><span data-l="en">Capitals reach the second-series consonants: <code>d</code> <span class="kh" lang="km">ដ</span> against <code>D</code> <span class="kh" lang="km">ឌ</span>, <code>n</code> <span class="kh" lang="km">ន</span> against <code>N</code> <span class="kh" lang="km">ណ</span>. In the phone apps, hold the key instead of using Shift.</span>
+           <span data-l="km">អក្សរធំប្រើសម្រាប់ព្យញ្ជនៈមួយចំនួនទៀត៖ <code>d</code> ដ និង <code>D</code> ឌ, <code>n</code> ន និង <code>N</code> ណ។ ក្នុងកម្មវិធីទូរស័ព្ទ ចុចសង្កត់គ្រាប់ចុចជំនួសការប្រើ Shift។</span></p>
+        <p><span data-l="en">The full table is in the <a class="link" href="guide.html">typing guide</a>, and in the welcome page Keyman shows after installing.</span>
+           <span data-l="km">តារាងពេញលេញមាននៅក្នុង<a class="link" href="guide.html">មេរៀនវាយ</a> និងនៅក្នុងទំព័រស្វាគមន៍ដែល Keyman បង្ហាញក្រោយពេលដំឡើង។</span></p>
+      </section>
+
+      <section class="doc-section" id="compare" aria-labelledby="cmp-title">
+        <h2 id="cmp-title"><span data-l="en">Which to choose</span><span data-l="km">គួរជ្រើសមួយណា</span></h2>
+        <div style="overflow-x:auto">
+          <table class="compare">
+            <thead>
+              <tr>
+                <th scope="col"><span data-l="en">Build</span><span data-l="km">កំណែ</span></th>
+                <th scope="col"><span data-l="en">Runs on</span><span data-l="km">ដំណើរការលើ</span></th>
+                <th scope="col"><span data-l="en">Sound matching</span><span data-l="km">ផ្គូផ្គងសំឡេង</span></th>
+                <th scope="col"><span data-l="en">Learns from you</span><span data-l="km">រៀនពីអ្នក</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><span data-l="en">Web</span><span data-l="km">វេប</span></td><td><span data-l="en">Any browser</span><span data-l="km">កម្មវិធីរុករកណាក៏បាន</span></td><td><span data-l="en">Yes</span><span data-l="km">មាន</span></td><td><span data-l="en">Yes</span><span data-l="km">មាន</span></td></tr>
+              <tr><td><span data-l="en">Android app</span><span data-l="km">កម្មវិធី Android</span></td><td>Android</td><td><span data-l="en">Yes</span><span data-l="km">មាន</span></td><td><span data-l="en">Yes</span><span data-l="km">មាន</span></td></tr>
+              <tr><td><span data-l="en">iPhone app</span><span data-l="km">កម្មវិធី iPhone</span></td><td>iPhone · iPad</td><td><span data-l="en">Yes</span><span data-l="km">មាន</span></td><td><span data-l="en">Yes</span><span data-l="km">មាន</span></td></tr>
+              <tr><td>Keyman</td><td>Windows · macOS · Linux</td><td><span data-l="en">No, exact spelling</span><span data-l="km">គ្មាន វាយតាមអក្សរពិត</span></td><td><span data-l="en">No</span><span data-l="km">គ្មាន</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:22px">
+          <span data-l="en">All of them use the same romanization, so what you know carries over. Every build is checked against the web version automatically, tens of thousands of spellings each time, and any disagreement fails the build.</span>
+          <span data-l="km">ទាំងអស់ប្រើប្រព័ន្ធសរសេរដូចគ្នា ដូច្នេះអ្វីដែលអ្នកស្គាល់អាចប្រើបានគ្រប់កន្លែង។ ការសាងសង់នីមួយៗត្រូវបានផ្ទៀងផ្ទាត់ជាមួយកំណែវេបដោយស្វ័យប្រវត្តិ ជាមួយអក្ខរាវិរុទ្ធរាប់ម៉ឺនរាល់ពេល ហើយប្រសិនបើមានភាពខុសគ្នា ការសាងសង់នឹងបរាជ័យ។</span>
+        </p>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="./">
+          <svg viewBox="0 0 100 100" aria-hidden="true"><rect x="2" y="2" width="96" height="96" rx="24" style="fill:var(--ink)"/><path transform="translate(5 6)" style="fill:var(--paper)" d="M33.33 75V50Q33.33 40 50 40Q66.67 40 66.67 50V75H56.67V50Q56.67 43.33 50 43.33Q43.33 43.33 43.33 50V75ZM31.67 37.43V34.93Q31.67 33.2 33.8 31.17L35.97 29.13Q40.23 25 41.3 25Q42.5 25 46.03 28.73L47.8 30.6Q48.7 31.57 49.67 31.57Q50.5 31.57 51.33 30.6L52.97 28.73Q56.3 25 57.47 25Q58.6 25 60.47 27.07L64.33 31.23Q65.5 32.47 66.67 32.47Q67.5 32.47 68.33 31.87Q66.03 38.43 63.9 38.43Q61.7 38.43 59.17 36.08Q56.63 33.73 55.57 33.73Q54.17 33.73 52.25 36.08Q50.33 38.43 48.7 38.43Q46.33 38.43 43.5 36.08Q40.67 33.73 39.43 33.73Q38.03 33.73 37.3 34.47Q36.57 35.2 36.57 36.4Q36.57 37.4 41.07 39.73L36.83 42.77Q31.67 40.73 31.67 37.43Z"/><path style="fill:none;stroke:var(--accent);stroke-width:4.4;stroke-linecap:round;stroke-linejoin:round" d="M17 15v16M25 20.2l-7.2 5.6m2.9-2.3 4.7 7.7"/></svg>
+          <span data-l="en">Khmer Keyboard</span><span data-l="km">ក្ដារចុចខ្មែរ</span>
+        </a>
+        <p><span data-l="en">A free phonetic keyboard for Khmer. Open source, works offline, no tracking.</span>
+           <span data-l="km">ក្ដារចុចខ្មែរតាមសំឡេង ឥតគិតថ្លៃ។ កូដចំហ ដំណើរការក្រៅបណ្ដាញ គ្មានការតាមដាន។</span></p>
+      </div>
+      <div>
+        <h2><span data-l="en">Keyboard</span><span data-l="km">ក្ដារចុច</span></h2>
+        <ul>
+          <li><a href="app.html"><span data-l="en">Open keyboard</span><span data-l="km">បើកក្ដារចុច</span></a></li>
+          <li><a href="install.html"><span data-l="en">Install</span><span data-l="km">ដំឡើង</span></a></li>
+          <li><a href="guide.html"><span data-l="en">Typing guide</span><span data-l="km">របៀបវាយ</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h2><span data-l="en">Project</span><span data-l="km">គម្រោង</span></h2>
+        <ul>
+          <li><a href="https://github.com/merlynial/khmer-phonetic-keyboard"><span data-l="en">Source code</span><span data-l="km">កូដប្រភព</span></a></li>
+          <li><a href="https://github.com/merlynial/khmer-phonetic-keyboard/issues"><span data-l="en">Report a problem</span><span data-l="km">រាយការណ៍បញ្ហា</span></a></li>
+          <li><a href="https://github.com/merlynial/khmer-phonetic-keyboard/blob/main/LICENSE"><span data-l="en">MIT licence</span><span data-l="km">អាជ្ញាប័ណ្ណ MIT</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h2><span data-l="en">Credits</span><span data-l="km">ប្រភព</span></h2>
+        <p class="footer-credits">
+          <span data-l="en">Word list from the Google Khmer pronunciation lexicon (CC BY 4.0), ranked with Khmer Wikipedia and CC-100. Fonts: Kantumruy by Sovichet Tep and Siemreap by Danh Hong, under the SIL Open Font License.</span>
+          <span data-l="km">បញ្ជីពាក្យពីវចនានុក្រមបញ្ចេញសំឡេងខ្មែររបស់ Google (CC BY 4.0) តម្រៀបតាមវិគីភីឌាខ្មែរ និង CC-100។ ពុម្ពអក្សរ Kantumruy ដោយ Sovichet Tep និង Siemreap ដោយ Danh Hong ក្រោមអាជ្ញាប័ណ្ណ SIL Open Font License។</span>
+        </p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Keang Pakrinha</span>
+    </div>
+  </div>
 </footer>
 
-</div>
+<script src="site.js"></script>
 </body>
 </html>

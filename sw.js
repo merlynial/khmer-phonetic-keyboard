@@ -6,10 +6,12 @@
 // The big files that rarely change (the lexicon, the bigrams, the font, the
 // icons) come straight from the cache and are refreshed in the background for
 // next time. Fetching them first made every launch wait on ~3 MB of network.
-const CACHE = "khmer-kbd-0.15";
-const ASSETS = ["./", "./index.html", "./install.html", "./dict.js", "./words.txt",
-                "./bigrams.txt", "./fonts/Siemreap-Regular.ttf", "./icons/icon-192.png",
-                "./manifest.webmanifest"];
+const CACHE = "khmer-kbd-0.16";
+const ASSETS = ["./", "./index.html", "./app.html", "./install.html", "./guide.html",
+                "./site.css", "./app.css", "./site.js", "./engine.js", "./dict.js",
+                "./home.js", "./xray.js", "./guide.js", "./words.txt", "./bigrams.txt",
+                "./fonts/Siemreap-Regular.ttf", "./fonts/Kantumruy-Regular.ttf", "./fonts/Kantumruy-Bold.ttf",
+                "./favicon.svg", "./icons/icon-192.png", "./manifest.webmanifest"];
 const STATIC = /\/(words\.txt|bigrams\.txt|fonts\/[^/]+|icons\/[^/]+)$/;
 
 self.addEventListener("install", e => {
@@ -47,7 +49,7 @@ self.addEventListener("fetch", e => {
     e.waitUntil(keep(req, res.clone()).catch(() => {}));
     return res;
   });
-  const offline = () => caches.match(req).then(r => r || caches.match("./index.html"));
+  const offline = () => caches.match(req).then(r => r || caches.match("./app.html"));
 
   if (!STATIC.test(url.pathname)) {
     e.respondWith(fresh.catch(offline));

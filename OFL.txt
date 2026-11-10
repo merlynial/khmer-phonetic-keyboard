@@ -1,3 +1,6 @@
+Copyright (c) 2013 by Sovichet Tep, with Reserved Font Name "Kantumruy".
+Copyright (c) 2010-2011 by tyPoland Lukasz Dziedzic, with Reserved Font Name "Lato".
+
 Copyright (c) 2010, Danh Hong (khmertype.blogspot.com),
 with Reserved Font Name Siemreap.
 

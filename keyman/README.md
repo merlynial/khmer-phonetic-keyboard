@@ -34,7 +34,7 @@ npm run build
 
 | Generated file | From | By |
 | --- | --- | --- |
-| `khmer_phonetic/source/khmer_phonetic.kmn` | the `CONS`/`VOW`/`SIGN`/`INDEP` maps in `../index.html` | `tools/build_keyman.mjs` |
+| `khmer_phonetic/source/khmer_phonetic.kmn` | the `CONS`/`VOW`/`SIGN`/`INDEP` maps in `../engine.js` | `tools/build_keyman.mjs` |
 | `khmer_phonetic/source/khmer_phonetic.keyman-touch-layout` | the same maps | `tools/build_touch_layout.mjs` |
 | `khmer_phonetic/source/welcome.htm`, `readme.htm` | the same maps | `tools/build_docs.mjs` |
 | `pakrinha.km.khmerphonetic/source/wordlist.tsv` | `../words.txt` | `tools/build_wordlist.mjs` |

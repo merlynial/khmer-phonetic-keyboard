@@ -2,7 +2,7 @@ c Khmer Phonetic — type Khmer by sound
 c
 c GENERATED FILE — do not edit by hand.
 c   regenerate with:  npm run build:keyman
-c   source of truth:  the romanization maps in ../index.html
+c   source of truth:  the romanization maps in ../engine.js
 c
 c 72 states, 2808 transitions,
 c compiled from 95 romanization keys.

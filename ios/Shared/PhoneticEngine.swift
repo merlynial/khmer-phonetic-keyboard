@@ -1,7 +1,7 @@
 //
 //  Romanized Latin in, Khmer Unicode out.
 //
-//  The port of convert() from index.html: a greedy longest-match walk over the
+//  The port of convert() from engine.js: a greedy longest-match walk over the
 //  romanization keys carrying one bit of state — whether the last unit emitted
 //  was a consonant — which is what decides auto-stacking. Two consonants with no
 //  vowel between them join with coeng (U+17D2), so "khnhom" becomes ខ្ញុំ.

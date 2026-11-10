@@ -1,6 +1,6 @@
 /* Generate the Android app's engine data from the web app.
  *
- * Same principle as the Keyman build: index.html and dict.js are the source of
+ * Same principle as the Keyman build: engine.js and dict.js are the source of
  * truth, and anything the Kotlin side needs is generated from them rather than
  * retyped. Three outputs:
  *
@@ -51,7 +51,7 @@ function schemeKt(scheme) {
 /**
  * GENERATED FILE - do not edit by hand.
  *   regenerate with:  npm run build:android
- *   source of truth:  the romanization maps in index.html
+ *   source of truth:  the romanization maps in engine.js
  *
  * The maps below are lifted verbatim from the web app, so the phone types what
  * the browser types. PhoneticEngine.convert() is the port of the loop that

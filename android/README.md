@@ -27,10 +27,10 @@ install page at
 | `KhmerPhoneticService.kt` | The `InputMethodService` — composing text, commit rules, backspace |
 | `KeyboardView.kt` | The keys and suggestion strip, built in code |
 | `KeyboardLayout.kt` | Which keys exist, and their Khmer hints |
-| `PhoneticEngine.kt` | The romanization, ported from `index.html` |
+| `PhoneticEngine.kt` | The romanization, ported from `engine.js` |
 | `Suggestions.kt` | Tiered lookup over the curated and 62k-word lexicons |
 | `SharedPreferencesLearning.kt` | Usage counts and personal spellings |
-| `PhoneticScheme.kt` | **Generated** — the maps, from `index.html` |
+| `PhoneticScheme.kt` | **Generated** — the maps, from `engine.js` |
 
 Assets (`curated.tsv`, `words.txt`, `bigrams.txt`, the font) are generated or
 copied by `tools/build_android.mjs`. Do not edit them by hand.
@@ -55,7 +55,7 @@ sdk.dir=/Users/you/Library/Android/sdk
 ## Why the engine is generated
 
 `PhoneticScheme.kt` is written by `tools/build_android.mjs` from the maps in
-`index.html`, and `curated.tsv` is dict.js's own index, precomputed. That means
+`engine.js`, and `curated.tsv` is dict.js's own index, precomputed. That means
 the reverse-transliterator that derives romanization keys never had to be ported
 to Kotlin — so its output cannot come out different from the browser's.
 
