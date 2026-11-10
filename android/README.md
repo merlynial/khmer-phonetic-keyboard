@@ -5,7 +5,7 @@ type Khmer by sound in any app — no other software involved.
 
 Download: [`dist/khmer-phonetic.apk`](../dist/khmer-phonetic.apk), or the
 install page at
-<https://merlynial.github.io/khmer-phonetic-keyboard/install.html>.
+<https://khmerkeyboard.com/install.html>.
 
 ## What it does
 

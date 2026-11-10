@@ -11,7 +11,7 @@ nothing here is built to exclude them, but the install page no longer sends
 anyone that way.
 
 Install instructions: [install.html](../install.html), live at
-<https://merlynial.github.io/khmer-phonetic-keyboard/install.html>.
+<https://khmerkeyboard.com/install.html>.
 
 | Package | What it is |
 | --- | --- |

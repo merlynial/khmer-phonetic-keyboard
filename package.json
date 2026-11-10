@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/merlynial/khmer-phonetic-keyboard/issues"
   },
-  "homepage": "https://merlynial.github.io/khmer-phonetic-keyboard/",
+  "homepage": "https://khmerkeyboard.com/",
   "devDependencies": {
     "@keymanapp/kmc": "^18.0.249"
   }

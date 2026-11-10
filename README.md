@@ -4,10 +4,10 @@
 the Khmer word from live suggestions — exactly like a Chinese Pinyin keyboard,
 but for Khmer.
 
-**➡️ Use it in your browser: <https://merlynial.github.io/khmer-phonetic-keyboard/>**
+**➡️ Use it in your browser: <https://khmerkeyboard.com/>**
 
 **➡️ Install it as a real keyboard on Android, iPhone or Windows:
-<https://merlynial.github.io/khmer-phonetic-keyboard/install.html>**
+<https://khmerkeyboard.com/install.html>**
 
 ```
 khnhom  ⎵   srolanh  ⎵   kampuchea  ⎵     →     ខ្ញុំស្រឡាញ់កម្ពុជា

@@ -122,7 +122,7 @@ well to get a suggestion bar above the keyboard, drawn from a 20,000 word
 frequency list.</p>
 
 <p>Full documentation and the web version:
-<a href="https://merlynial.github.io/khmer-phonetic-keyboard/">merlynial.github.io/khmer-phonetic-keyboard</a></p>`
+<a href="https://khmerkeyboard.com/">khmerkeyboard.com</a></p>`
   );
 
   const readme = page(
@@ -137,7 +137,7 @@ capital letters reach the second-series consonants (<code>D</code>
 <code>L</code> <span class="ex">ឡ</span>).</p>
 <p>The full romanization table is in the welcome page shown after installation,
 and at
-<a href="https://merlynial.github.io/khmer-phonetic-keyboard/">merlynial.github.io/khmer-phonetic-keyboard</a>.</p>
+<a href="https://khmerkeyboard.com/">khmerkeyboard.com</a>.</p>
 <p>Source: <a href="https://github.com/merlynial/khmer-phonetic-keyboard">github.com/merlynial/khmer-phonetic-keyboard</a> — MIT licence.
 Word frequencies derive from the Google Khmer pronunciation lexicon (CC-BY-4.0).</p>`
   );

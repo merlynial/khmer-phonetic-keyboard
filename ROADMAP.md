@@ -12,7 +12,7 @@ Where the project stands (v5) and what comes next, in priority order.
   personal phrase pairs — all localStorage-only
 - Next-word prediction: 10.4k-word bigram model from Khmer Wikipedia,
   blended with the user's own phrases
-- PWA, offline, public at https://merlynial.github.io/khmer-phonetic-keyboard/
+- PWA, offline, public at https://khmerkeyboard.com/
 
 ## Next session A — social-media romanized Khmer ("Khmerlish")
 Goal: match the way people actually romanize on Facebook/Telegram, and add
