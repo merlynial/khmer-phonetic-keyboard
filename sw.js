@@ -6,7 +6,7 @@
 // The big files that rarely change (the lexicon, the bigrams, the font, the
 // icons) come straight from the cache and are refreshed in the background for
 // next time. Fetching them first made every launch wait on ~3 MB of network.
-const CACHE = "khmer-kbd-0.17";
+const CACHE = "khmer-kbd-0.18";
 const ASSETS = ["./", "./index.html", "./app.html", "./install.html", "./guide.html",
                 "./site.css", "./app.css", "./site.js", "./engine.js", "./dict.js",
                 "./home.js", "./xray.js", "./guide.js", "./words.txt", "./bigrams.txt",

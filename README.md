@@ -131,7 +131,7 @@ Bundled works keep their own licences:
 - **Kantumruy** (`fonts/`) — © 2013 Sovichet Tep, with Latin from Lato
   © 2010-2011 Łukasz Dziedzic, under the SIL Open Font License 1.1 (same
   [OFL.txt](OFL.txt)). Reserved Font Name: Kantumruy.
-- **The logo's ក** is drawn from the Battambang Bold outline by Danh Hong,
+- **The logo's ក** is drawn from the Suwannaphum outline by Danh Hong,
   Apache License 2.0.
 - **Khmer pronunciation lexicon** (`words.txt`) — from the Google Khmer
   pronunciation lexicon, CC-BY-4.0.

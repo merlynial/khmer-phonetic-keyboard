@@ -1,7 +1,7 @@
 /* =========================================================================
    khmerkeyboard.com · shared site styles
    Used by index.html, guide.html, install.html, 404.html and the chrome of
-   app.html. Warm paper and ink, one saffron accent, Khmer set in Kantumruy.
+   app.html. Sandstone paper and dark-brown ink (Laterite) with one blue accent, the logo's blue; Khmer set in Kantumruy.
    ========================================================================= */
 
 /* ---- Fonts (bundled, so the site works offline and calls no third party) */
@@ -24,14 +24,14 @@
 /* ---- Tokens ------------------------------------------------------------ */
 :root{
   color-scheme:light;
-  --paper:#F5F1E8; --paper-2:#ECE6DA; --paper-3:#E1D9C9; --surface:#FFFDF8;
-  --ink:#1C1915; --ink-2:#4D463E; --ink-3:#6F675C;
-  --rule:rgba(28,25,21,.12); --rule-2:rgba(28,25,21,.22);
-  --accent:#E5A03A; --accent-soft:rgba(229,160,58,.22); --on-accent:#1C1915; --accent-text:#93560B;
-  --band:#1C1915; --on-band:#F3EEE5; --on-band-2:#B3AA9D; --band-rule:rgba(243,238,229,.14);
-  --glyph:#EBE4D6; --key:#FFFDF8; --key-fn:#D9D0C0; --kb-bg:#E8E1D4; --key-shadow:rgba(28,25,21,.28);
-  --shadow-sm:0 1px 2px rgba(28,25,21,.06), 0 3px 10px rgba(28,25,21,.05);
-  --shadow-lg:0 2px 6px rgba(28,25,21,.06), 0 40px 80px -30px rgba(28,25,21,.35);
+  --paper:#F3EDE4; --paper-2:#EAE2D6; --paper-3:#DED3C4; --surface:#FFFCF7;
+  --ink:#2A1E17; --ink-2:#594A3F; --ink-3:#7C6C60;
+  --rule:rgba(42,30,23,.12); --rule-2:rgba(42,30,23,.22);
+  --accent:#2B5CD6; --accent-soft:rgba(43,92,214,.16); --on-accent:#FFFFFF; --accent-text:#2149B8;
+  --band:#2A1E17; --on-band:#F4EAE1; --on-band-2:#B9A99B; --band-rule:rgba(244,234,225,.14);
+  --glyph:#E9E0D3; --key:#FFFCF7; --key-fn:#D8CCBC; --kb-bg:#E7DED2; --key-shadow:rgba(42,30,23,.28);
+  --shadow-sm:0 1px 2px rgba(42,30,23,.06), 0 3px 10px rgba(42,30,23,.05);
+  --shadow-lg:0 2px 6px rgba(42,30,23,.06), 0 40px 80px -30px rgba(42,30,23,.35);
 
   --font-sans:"Kantumruy", -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI",
               Roboto, "Helvetica Neue", Arial, "Siemreap Web", "Noto Sans Khmer", sans-serif;
@@ -45,24 +45,24 @@
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     color-scheme:dark;
-    --paper:#12100D; --paper-2:#1A1814; --paper-3:#26231E; --surface:#1D1A16;
-    --ink:#F1ECE3; --ink-2:#C4BCAF; --ink-3:#8C8478;
-    --rule:rgba(241,236,227,.12); --rule-2:rgba(241,236,227,.22);
-    --accent:#ECAA45; --accent-soft:rgba(236,170,69,.2); --on-accent:#1C1915; --accent-text:#F0BC69;
-    --band:#1D1A16; --on-band:#F1ECE3; --on-band-2:#ACA397; --band-rule:rgba(241,236,227,.12);
-    --glyph:#1B1915; --key:#3B3731; --key-fn:#2A2722; --kb-bg:#201D19; --key-shadow:rgba(0,0,0,.55);
+    --paper:#15100D; --paper-2:#1C1612; --paper-3:#2A211B; --surface:#211914;
+    --ink:#F4EAE1; --ink-2:#CDBDB0; --ink-3:#968579;
+    --rule:rgba(244,234,225,.12); --rule-2:rgba(244,234,225,.22);
+    --accent:#7398F2; --accent-soft:rgba(115,152,242,.2); --on-accent:#0E1630; --accent-text:#93B2F7;
+    --band:#211914; --on-band:#F4EAE1; --on-band-2:#AE9D90; --band-rule:rgba(244,234,225,.12);
+    --glyph:#1E1712; --key:#3C312A; --key-fn:#2C231D; --kb-bg:#1F1712; --key-shadow:rgba(0,0,0,.55);
     --shadow-sm:0 1px 2px rgba(0,0,0,.4);
     --shadow-lg:0 2px 6px rgba(0,0,0,.35), 0 40px 80px -30px rgba(0,0,0,.8);
   }
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
-  --paper:#12100D; --paper-2:#1A1814; --paper-3:#26231E; --surface:#1D1A16;
-  --ink:#F1ECE3; --ink-2:#C4BCAF; --ink-3:#8C8478;
-  --rule:rgba(241,236,227,.12); --rule-2:rgba(241,236,227,.22);
-  --accent:#ECAA45; --accent-soft:rgba(236,170,69,.2); --on-accent:#1C1915; --accent-text:#F0BC69;
-  --band:#1D1A16; --on-band:#F1ECE3; --on-band-2:#ACA397; --band-rule:rgba(241,236,227,.12);
-  --glyph:#1B1915; --key:#3B3731; --key-fn:#2A2722; --kb-bg:#201D19; --key-shadow:rgba(0,0,0,.55);
+  --paper:#15100D; --paper-2:#1C1612; --paper-3:#2A211B; --surface:#211914;
+  --ink:#F4EAE1; --ink-2:#CDBDB0; --ink-3:#968579;
+  --rule:rgba(244,234,225,.12); --rule-2:rgba(244,234,225,.22);
+  --accent:#7398F2; --accent-soft:rgba(115,152,242,.2); --on-accent:#0E1630; --accent-text:#93B2F7;
+  --band:#211914; --on-band:#F4EAE1; --on-band-2:#AE9D90; --band-rule:rgba(244,234,225,.12);
+  --glyph:#1E1712; --key:#3C312A; --key-fn:#2C231D; --kb-bg:#1F1712; --key-shadow:rgba(0,0,0,.55);
   --shadow-sm:0 1px 2px rgba(0,0,0,.4);
   --shadow-lg:0 2px 6px rgba(0,0,0,.35), 0 40px 80px -30px rgba(0,0,0,.8);
 }
@@ -269,10 +269,10 @@ html[data-lang="km"] .hero .alt-line{ font-size:clamp(20px,2vw,26px); letter-spa
   --pw:352px;
   position:relative; width:min(var(--pw), calc(100vw - 2 * var(--gutter)));
   aspect-ratio:352 / 724; padding:11px; border-radius:50px;
-  background:#16130F; box-shadow:var(--shadow-lg), inset 0 0 0 1.5px #3B352D;
+  background:#1A120E; box-shadow:var(--shadow-lg), inset 0 0 0 1.5px #3F3129;
   outline:none; touch-action:manipulation; -webkit-tap-highlight-color:transparent;
 }
-.phone::before, .phone::after{ content:""; position:absolute; right:-3px; width:3px; border-radius:0 3px 3px 0; background:#2B2620; }
+.phone::before, .phone::after{ content:""; position:absolute; right:-3px; width:3px; border-radius:0 3px 3px 0; background:#2F241D; }
 .phone::before{ top:136px; height:56px; }
 .phone::after{ top:206px; height:92px; }
 .phone:focus-visible{ outline:2px solid var(--accent); outline-offset:6px; border-radius:54px; }
@@ -285,7 +285,7 @@ html[data-lang="km"] .hero .alt-line{ font-size:clamp(20px,2vw,26px); letter-spa
   padding:4px 28px 0 30px; font:600 14px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 .ph-status svg{ height:12px; width:auto; }
-.ph-cam{ position:absolute; top:13px; left:50%; width:13px; height:13px; margin-left:-6.5px; border-radius:50%; background:#16130F; }
+.ph-cam{ position:absolute; top:13px; left:50%; width:13px; height:13px; margin-left:-6.5px; border-radius:50%; background:#1A120E; }
 .ph-head{ position:relative; z-index:3; flex:none; display:flex; align-items:center; gap:11px; padding:4px 16px 12px; border-bottom:1px solid var(--rule); background:var(--surface); }
 .ph-back{ width:10px; height:16px; color:var(--ink-2); }
 .ph-avatar{
