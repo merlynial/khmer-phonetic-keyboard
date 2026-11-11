@@ -15,7 +15,7 @@
   const TYPE = {
     cons: ["consonant", "ព្យញ្ជនៈ"], sub: ["subscript", "ជើង"], vowel: ["vowel", "ស្រៈ"],
     inherent: ["no vowel added", "គ្មានស្រៈបន្ថែម"], indep: ["independent vowel", "ស្រៈពេញតួ"],
-    sign: ["sign", "សញ្ញា"], brk: ["break", "បំបែក"], space: ["space", "ដកឃ្លា"], other: ["kept as is", "រក្សាដដែល"],
+    sign: ["sign", "សញ្ញា"], brk: ["break", "បំបែក"], space: ["space", "ដកឃ្លា"], other: ["kept as is", "ទុកដដែល"],
   };
 
   // Mirrors convert() in engine.js (with auto-stacking on), keeping each step.

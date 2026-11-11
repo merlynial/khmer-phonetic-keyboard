@@ -68,8 +68,8 @@
     var dark = isDark();
     each(".theme-btn", function (b) {
       b.setAttribute("aria-label", dark
-        ? window.Site.t("Switch to light theme", "ប្ដូរទៅផ្ទៃភ្លឺ")
-        : window.Site.t("Switch to dark theme", "ប្ដូរទៅផ្ទៃងងឹត"));
+        ? window.Site.t("Switch to light theme", "ប្ដូរទៅពណ៌ភ្លឺ")
+        : window.Site.t("Switch to dark theme", "ប្ដូរទៅពណ៌ងងឹត"));
     });
     var tc = document.querySelector('meta[name="theme-color"]');
     if (tc) tc.setAttribute("content", dark ? "#12100D" : "#F5F1E8");

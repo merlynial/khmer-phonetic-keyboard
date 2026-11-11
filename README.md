@@ -1,4 +1,4 @@
-# Khmer Phonetic Keyboard · ក្តារចុចផ្លាស់សំឡេង
+# Khmer Phonetic Keyboard · ក្ដារចុចខ្មែរ វាយតាមសូរ
 
 **Type Khmer by its sound.** Write the pronunciation in English letters and pick
 the Khmer word from live suggestions — exactly like a Chinese Pinyin keyboard,
