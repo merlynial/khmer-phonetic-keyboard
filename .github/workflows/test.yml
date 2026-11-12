@@ -11,3 +11,5 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: node tests/golden.mjs
+      - run: node tests/voice.mjs
+      - run: node tests/voice-core.mjs

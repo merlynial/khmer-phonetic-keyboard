@@ -6,10 +6,17 @@
 // The big files that rarely change (the lexicon, the bigrams, the font, the
 // icons) come straight from the cache and are refreshed in the background for
 // next time. Fetching them first made every launch wait on ~3 MB of network.
-const CACHE = "khmer-kbd-0.18";
+//
+// Voice typing's scripts are kept too, so that the on-device engine works with
+// no connection. Its 1.1 GB speech model is not kept here: voice-worker.mjs
+// stores it in the browser's private file system, and requests to other sites
+// pass straight through.
+const CACHE = "khmer-kbd-0.19";
 const ASSETS = ["./", "./index.html", "./app.html", "./install.html", "./guide.html",
                 "./site.css", "./app.css", "./site.js", "./engine.js", "./dict.js",
                 "./home.js", "./xray.js", "./guide.js", "./words.txt", "./bigrams.txt",
+                "./voice.js", "./voice-local.mjs", "./voice-core.mjs", "./voice-worker.mjs", "./voice-worklet.js",
+                "./vendor/onnxruntime-web-1.31.1/ort.webgpu.bundle.min.mjs",
                 "./fonts/Siemreap-Regular.ttf", "./fonts/Kantumruy-Regular.ttf", "./fonts/Kantumruy-Bold.ttf",
                 "./favicon.svg", "./icons/icon-192.png", "./manifest.webmanifest"];
 const STATIC = /\/(words\.txt|bigrams\.txt|fonts\/[^/]+|icons\/[^/]+)$/;

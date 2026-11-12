@@ -70,15 +70,83 @@ html[data-lang="km"] .fld{ font-size:14.5px; }
 }
 .row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
 
-/* suggestion strip docked above the keys (Gboard-style) */
+/* suggestion strip docked above the keys (Gboard-style), microphone at its end */
+.striprow{
+  display:flex; align-items:center; gap:8px; max-width:640px; margin:0 auto 12px; padding-bottom:8px;
+  border-bottom:1px solid var(--rule);
+}
 .sugstrip{
-  display:flex; align-items:center; gap:4px; overflow-x:auto; white-space:nowrap;
-  min-height:52px; max-width:640px; margin:0 auto 12px; padding:2px 2px 8px;
-  border-bottom:1px solid var(--rule); -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  flex:1 1 auto; min-width:0; display:flex; align-items:center; gap:4px; overflow-x:auto; white-space:nowrap;
+  min-height:44px; padding:2px; -webkit-overflow-scrolling:touch; scrollbar-width:none;
 }
 .sugstrip::-webkit-scrollbar{ display:none; }
 .sugstrip .cand{ padding:5px 13px 7px; }
 .sugstrip:empty::after{ content:"…"; margin:0 auto; color:var(--rule-2); font-size:14px; }
+/* while dictating, the strip says so in place of candidates */
+.sugstrip[data-voice]:empty::after{ content:attr(data-voice); margin:0 4px; color:var(--accent-text); font-size:14.5px; }
+
+/* voice typing: the microphone under the text box, and the one on the keyboard */
+.voice{ display:flex; align-items:center; gap:6px 12px; flex-wrap:wrap; margin-top:10px; }
+.mic{
+  flex:none; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:40px; padding:0 17px 0 13px; border:1px solid var(--rule-2); border-radius:999px;
+  background:transparent; color:var(--ink); font:600 14.5px/1 var(--font-sans); cursor:pointer;
+  user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent; touch-action:manipulation;
+  transition:background-color .18s, border-color .18s, color .18s;
+}
+.mic svg{ flex:none; width:18px; height:18px; }
+.mic:hover{ border-color:var(--ink); }
+.mic.on, .mic.on:hover{ background:var(--accent); border-color:var(--accent); color:var(--on-accent); }
+.mic-key{
+  width:44px; min-height:44px; padding:0; border-color:transparent; background:var(--key);
+  box-shadow:0 1px 0 var(--key-shadow);
+}
+.mic-key:hover{ border-color:transparent; background:color-mix(in oklab, var(--key) 88%, var(--ink)); }
+.mic-key.on{ box-shadow:none; }
+@media (prefers-reduced-motion:no-preference){
+  .mic.live{ animation:micpulse 1.5s ease-out infinite; }
+  @keyframes micpulse{
+    from{ box-shadow:0 0 0 0 color-mix(in oklab, var(--accent) 50%, transparent); }
+    to{ box-shadow:0 0 0 11px transparent; }
+  }
+}
+.vstat{ flex:1 1 180px; min-width:0; margin:0; color:var(--ink-2); font-size:14px; line-height:1.55; }
+html[data-lang="km"] .vstat{ font-size:14.5px; line-height:1.8; }
+.vstat:empty{ display:none; }
+.vstat.err{ color:#B42318; }
+.vset{
+  flex:none; margin-left:auto; padding:6px 0; border:0; background:none; color:var(--ink-3); cursor:pointer;
+  font:inherit; font-size:13.5px; text-decoration:underline; text-decoration-color:var(--rule-2); text-underline-offset:3px;
+}
+.vset:hover{ color:var(--ink); text-decoration-color:currentColor; }
+.vbar{ height:3px; margin-top:10px; border-radius:3px; background:var(--rule); overflow:hidden; }
+.vbar i{ display:block; width:0; height:100%; border-radius:3px; background:var(--accent); transition:width .4s linear; }
+
+/* the choice between the two engines */
+.vdlg{
+  width:min(460px, calc(100vw - 32px)); max-height:calc(100dvh - 32px); padding:24px 24px 22px; overflow:auto;
+  border:1px solid var(--rule); border-radius:22px; background:var(--surface); color:var(--ink); box-shadow:var(--shadow-lg);
+}
+.vdlg::backdrop{ background:rgba(20,14,10,.5); }
+.vdlg h2{ margin:0 0 6px; font-size:21px; line-height:1.4; letter-spacing:-.01em; }
+html[data-lang="km"] .vdlg h2{ letter-spacing:0; }
+.vlead{ margin:0 0 16px; color:var(--ink-2); font-size:15px; line-height:1.6; }
+html[data-lang="km"] .vlead{ line-height:1.85; }
+.vopt{ display:flex; align-items:flex-start; gap:12px; padding:14px 0; border-top:1px solid var(--rule); cursor:pointer; }
+.vopt input{ flex:none; width:18px; height:18px; margin:3px 0 0; accent-color:var(--accent); }
+.vopt b{ display:block; font-size:16px; font-weight:600; line-height:1.5; }
+.vopt span span{ display:block; margin-top:2px; color:var(--ink-2); font-size:14px; line-height:1.6; }
+html[data-lang="km"] .vopt span span{ font-size:14.5px; line-height:1.85; }
+.vopt .vwhy:empty{ display:none; }
+.vopt .vwhy{ color:var(--accent-text); }
+.vopt.off{ cursor:default; }
+.vopt.off b, .vopt.off span span{ color:var(--ink-3); }
+.vopt.off .vwhy{ color:#B42318; }
+.vdlg .row{ margin-top:6px; padding-top:18px; border-top:1px solid var(--rule); }
+:root[data-theme="dark"] .vstat.err, :root[data-theme="dark"] .vopt.off .vwhy{ color:#F2867A; }
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .vstat.err, :root:not([data-theme="light"]) .vopt.off .vwhy{ color:#F2867A; }
+}
 
 /* on-screen keyboard */
 .kb{ position:relative; display:flex; flex-direction:column; gap:8px; max-width:640px; margin:0 auto; }

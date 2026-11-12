@@ -87,7 +87,7 @@
 
 <main id="main" class="wrap app">
   <div class="app-head">
-    <h1><span data-l="en">Keyboard</span><span data-l="km">ក្ដារចុច</span> <span class="ver" id="ver">v0.18</span></h1>
+    <h1><span data-l="en">Keyboard</span><span data-l="km">ក្ដារចុច</span> <span class="ver" id="ver">v0.19</span></h1>
     <p class="sub" id="t-sub">Type the sound in Latin letters, then pick the Khmer word.</p>
   </div>
 
@@ -98,6 +98,16 @@
         placeholder="khnhom → ខ្ញុំ ...  suggestions pop up at your cursor, like Pinyin"></textarea>
       <div class="sugbar" id="sug" role="listbox" aria-label="Khmer word candidates"></div>
     </div>
+
+    <div class="voice">
+      <button type="button" class="mic" id="mic" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/></svg>
+        <span id="t-mic">Speak</span>
+      </button>
+      <p class="vstat" id="vstat" role="status" aria-live="polite"></p>
+      <button type="button" class="vset" id="vset" hidden></button>
+    </div>
+    <div class="vbar" id="vbar" hidden><i></i></div>
 
     <div class="toggles">
       <label class="tg"><input type="checkbox" id="autostack" checked> <span id="t-autostack">Auto-stack clusters (coeng)</span></label>
@@ -118,7 +128,12 @@
   </section>
 
   <section class="pane keys" aria-label="On-screen keyboard">
-    <div class="sugstrip" id="sugstrip" role="listbox" aria-label="Khmer word candidates"></div>
+    <div class="striprow">
+      <div class="sugstrip" id="sugstrip" role="listbox" aria-label="Khmer word candidates"></div>
+      <button type="button" class="mic mic-key" id="mic2" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/></svg>
+      </button>
+    </div>
     <div class="kb" id="kb" role="group" aria-label="On-screen keyboard"></div>
     <p class="hint" id="t-kbhint">Tap the sound; word suggestions appear above, like Pinyin.
       <b>⇧</b> gives the scheme's capitals (<code>D</code>=ឌ <code>N</code>=ណ <code>L</code>=ឡ <code>M</code>=ំ <code>H</code>=ះ) ·
@@ -210,8 +225,8 @@
       <div>
         <h2><span data-l="en">Credits</span><span data-l="km">ការទទួលស្គាល់</span></h2>
         <p class="footer-credits">
-          <span data-l="en">Word list from the Google Khmer pronunciation lexicon (CC BY 4.0), ranked with Khmer Wikipedia and CC-100. Fonts: Kantumruy by Sovichet Tep and Siemreap by Danh Hong, under the SIL Open Font License.</span>
-          <span data-l="km">បញ្ជីពាក្យយកពីវចនានុក្រមការបញ្ចេញសំឡេងខ្មែររបស់ Google (CC BY 4.0) ហើយរៀបតាមភាពញឹកញាប់ក្នុងវិគីភីឌាខ្មែរ និង CC-100។ ពុម្ពអក្សរ Kantumruy ដោយ Sovichet Tep និង Siemreap ដោយ Danh Hong ប្រើក្រោមអាជ្ញាប័ណ្ណ SIL Open Font License។</span>
+          <span data-l="en">Word list from the Google Khmer pronunciation lexicon (CC BY 4.0), ranked with Khmer Wikipedia and CC-100. Fonts: Kantumruy by Sovichet Tep and Siemreap by Danh Hong, under the SIL Open Font License. Voice typing on the device uses the Qwen3-ASR speech model as tuned for Khmer by Seanghay Yath on DDD-Cambodia's recordings (Apache 2.0, browser version by KamVox), run by ONNX Runtime (MIT).</span>
+          <span data-l="km">បញ្ជីពាក្យយកពីវចនានុក្រមការបញ្ចេញសំឡេងខ្មែររបស់ Google (CC BY 4.0) ហើយរៀបតាមភាពញឹកញាប់ក្នុងវិគីភីឌាខ្មែរ និង CC-100។ ពុម្ពអក្សរ Kantumruy ដោយ Sovichet Tep និង Siemreap ដោយ Danh Hong ប្រើក្រោមអាជ្ញាប័ណ្ណ SIL Open Font License។ ការវាយដោយសំឡេងលើឧបករណ៍ផ្ទាល់ ប្រើម៉ូដែលស្ដាប់សំឡេង Qwen3-ASR ដែល Seanghay Yath បានបង្វឹកសម្រាប់ភាសាខ្មែរ ដោយប្រើសំឡេងថតរបស់ DDD-Cambodia (Apache 2.0 កំណែសម្រាប់កម្មវិធីរុករកដោយ KamVox) ហើយដំណើរការដោយ ONNX Runtime (MIT)។</span>
         </p>
       </div>
     </div>
@@ -221,11 +236,29 @@
   </div>
 </footer>
 
+<dialog class="vdlg" id="vdlg" aria-labelledby="t-vtitle">
+  <h2 id="t-vtitle">Voice typing</h2>
+  <p class="vlead" id="t-vlead"></p>
+  <label class="vopt" id="vopt-local">
+    <input type="radio" name="veng" value="local">
+    <span><b id="t-vlocal"></b><span id="t-vlocaldesc"></span><span class="vwhy" id="vwhy-local"></span></span>
+  </label>
+  <label class="vopt" id="vopt-online">
+    <input type="radio" name="veng" value="online">
+    <span><b id="t-vonline"></b><span id="t-vonlinedesc"></span><span class="vwhy" id="vwhy-online"></span></span>
+  </label>
+  <div class="row">
+    <button type="button" class="btn btn-primary btn-sm" id="vgo" disabled>Start</button>
+    <button type="button" class="btn btn-line btn-sm" id="vcancel">Cancel</button>
+  </div>
+</dialog>
+
 <div class="toast" id="toast">Copied ✓</div>
 
 <script src="site.js"></script>
 <script src="dict.js"></script>
 <script src="engine.js"></script>
+<script src="voice.js"></script>
 <script>
 /* =========================== UI WIRING =================================== */
 const $ = s => document.querySelector(s);
@@ -236,9 +269,25 @@ const inEl = $("#in"), outEl = $("#out");
 const autostack = $("#autostack"), khnum = $("#khnum"), live = $("#live");
 const spacesel = $("#spacesel"), sugEl = $("#sug");
 
+/* Voice typing puts Khmer straight into the box, and convert() leaves Khmer
+   alone. But a name or a brand can come back in Latin letters, and those are
+   not spelled sounds: they stay as they were heard. */
+const heardLatin = new Set();
+const LATIN_WORD = /[A-Za-z][A-Za-z0-9]*/g;
+let vSession = null;              // the dictation in progress, if any
+let demoText = "";                // the sample word shown on arrival
+
 function run(){
   const opts = { autostack: autostack.checked, khnum: khnum.checked };
-  setText(outEl, convert(inEl.value, opts));
+  const text = inEl.value;
+  if (!heardLatin.size){ setText(outEl, convert(text, opts)); return; }
+  let out = "", from = 0;
+  for (const m of text.matchAll(LATIN_WORD)){
+    if (!heardLatin.has(m[0])) continue;
+    out += convert(text.slice(from, m.index), opts) + m[0];
+    from = m.index + m[0].length;
+  }
+  setText(outEl, out + convert(text.slice(from), opts));
 }
 // Edit the existing text node in place, touching only the span that changed:
 // replacing the node would make the browser re-shape all of the Khmer on
@@ -255,7 +304,7 @@ function setText(el, s){
          old.charCodeAt(old.length - 1 - tail) === s.charCodeAt(s.length - 1 - tail)) tail++;
   node.replaceData(head, old.length - head - tail, s.slice(head, s.length - tail));
 }
-inEl.addEventListener("input", ()=>{ if (live.checked) run(); updateSug(); });
+inEl.addEventListener("input", ()=>{ demoText = ""; if (live.checked) run(); updateSug(); });
 [autostack, khnum].forEach(el=>el.addEventListener("change", run));
 
 /* -------- pinyin-style word suggestions --------------------------------
@@ -383,6 +432,7 @@ function showIdleWords(){ showWordStrip(KHDICT.topUsed(8)); }
 
 let sugFor = null;             // [value, selectionStart, selectionEnd] last shown for
 function updateSug(){
+  if (vSession){ hideSug(); return; }      // dictating: the strip shows that instead
   sugFor = [inEl.value, inEl.selectionStart, inEl.selectionEnd];
   const { token, start, end } = currentToken();
   if (token !== dismissed) dismissed = "";   // Esc only mutes the current token
@@ -485,6 +535,8 @@ document.addEventListener("selectionchange", ()=>{
 });
 $("#conv").addEventListener("click", run);
 $("#clear").addEventListener("click", ()=>{
+  voiceYield();
+  heardLatin.clear(); demoText = "";
   inEl.value=""; outEl.textContent=""; inEl.focus();
   lastCommit = null; dismissed = "";
   sugState = { token:"", start:0, end:0, items:[] };
@@ -601,6 +653,8 @@ function popKey(el, label){
 function unpopKey(){ if (keypop) keypop.classList.remove("up"); }
 
 function keyPress(it){
+  // typing takes over from dictation, as it does on a phone keyboard
+  if (it.a !== "SHIFT" && it.a !== "SYM") voiceYield();
   if (typeof it === "string"){
     insertText(kbShift ? it.toUpperCase() : it);
     if (kbShift){ kbShift = false; drawKB(); }
@@ -708,6 +762,151 @@ function doAddWord(){
 $("#addbtn").addEventListener("click", doAddWord);
 $("#addsp").addEventListener("keydown", e => { if (e.key === "Enter") doAddWord(); });
 
+/* -------- Voice typing ------------------------------------------------------
+   The microphone turns spoken Khmer into text in the box above. voice.js does
+   the listening, online through the browser's recogniser or with a model on
+   this device. This part owns the two microphone buttons, the choice between
+   the engines (asked the first time, and never made for anyone), and where
+   the words go. */
+const micBtns = [$("#mic"), $("#mic2")], vstat = $("#vstat"), vset = $("#vset");
+const vbar = $("#vbar"), vdlg = $("#vdlg"), vgo = $("#vgo");
+const VOICE_KEY = "khkb_voice";
+let vEngine = null;               // "online" | "local"; null until someone chooses
+try {
+  const v = localStorage.getItem(VOICE_KEY);
+  if (v === "online" || v === "local") vEngine = v;
+} catch(e){}
+let vState = "", vWhy = "";       // what the engine is doing; why it last stopped
+let vRange = null;                // where this dictation's words sit in the box
+let vLoad = null;                 // download progress of the on-device model
+let vSupport = null;              // what this browser can run, once asked
+
+function voiceMsg(){
+  const s = STRINGS[LANG];
+  if (!vSession) return vWhy ? (s["verr_" + vWhy] || s.verr_failed) : "";
+  if (vState === "listening") return s.vlistening;
+  if (vState === "working") return s.vworking;
+  if (vState === "loading") return vLoad && vLoad.total
+    ? s.vdownload.replace("{a}", Math.round(vLoad.done / 1e6)).replace("{b}", Math.round(vLoad.total / 1e6))
+    : s.vloading;
+  return s.vstarting;
+}
+function drawVoice(){
+  const s = STRINGS[LANG], on = !!vSession, msg = voiceMsg();
+  for (const b of micBtns){
+    b.classList.toggle("on", on);
+    b.classList.toggle("live", on && vState === "listening");
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    b.setAttribute("aria-label", on ? s.vmicstop : s.vmic);
+  }
+  $("#t-mic").textContent = on ? s.vstop : s.vspeak;
+  vstat.textContent = msg;
+  vstat.classList.toggle("err", !on && !!vWhy && vWhy !== "ready");
+  vset.hidden = on || !vEngine;
+  vset.textContent = (vEngine === "local" ? s.vlocal : s.vonline) + " · " + s.vchange;
+  const loading = on && vState === "loading" && vLoad && vLoad.total;
+  vbar.hidden = !loading;
+  if (loading) vbar.firstElementChild.style.width = (100 * vLoad.done / vLoad.total).toFixed(1) + "%";
+  if (on) stripEl.setAttribute("data-voice", msg); else stripEl.removeAttribute("data-voice");
+}
+
+// each update replaces everything this dictation has written so far
+function voiceText(t){
+  if (!vRange) return;
+  // the first words go where the caret is by then (it may have moved while a model loaded)
+  if (vRange.end === vRange.start) vRange.start = vRange.end = inEl.selectionStart;
+  inEl.setRangeText(t, vRange.start, vRange.end, "end");
+  vRange.end = vRange.start + t.length;
+  for (const w of t.match(LATIN_WORD) || []) if (w.length > 1) heardLatin.add(w);
+  lastCommit = null;
+  if (live.checked) run();
+}
+function voiceStart(){
+  if (demoText && inEl.value === demoText){ inEl.value = ""; run(); }   // the sample word is not theirs
+  demoText = "";
+  const s = inEl.selectionStart, e = inEl.selectionEnd;
+  if (s !== e) inEl.setRangeText("", s, e, "end");
+  vRange = { start: s, end: s };
+  vWhy = ""; vState = "starting"; vLoad = null;
+  sugState = { token:"", start:s, end:s, items:[] };
+  hideSug();
+  vSession = KHVOICE.start(vEngine, {
+    state: st => { vState = st; drawVoice(); },
+    progress: p => { vLoad = p; drawVoice(); },
+    text: voiceText,
+    end: why => {
+      vSession = null; vRange = null; vWhy = why || ""; vState = "";
+      drawVoice(); updateSug();
+    },
+  });
+  drawVoice();
+}
+function voiceToggle(){
+  if (vSession){ vSession.stop(); return; }
+  if (!vEngine){ voiceChoose(); return; }
+  voiceStart();
+}
+for (const b of micBtns){
+  b.addEventListener("pointerdown", e => e.preventDefault());   // the caret stays where it is
+  b.addEventListener("click", voiceToggle);
+}
+/* Typing or pasting takes over from dictation, and a late result must not
+   land on it. Leaving the page turns the microphone off. Neither interrupts
+   the on-device model while it is still downloading or loading: that takes a
+   while, and people will do other things meanwhile. */
+function voiceYield(){ if (vSession && vState !== "loading") vSession.abort(); }
+inEl.addEventListener("beforeinput", voiceYield);
+document.addEventListener("visibilitychange", ()=>{
+  if (document.hidden && vSession && vState !== "loading") vSession.stop();
+});
+
+/* the choice: asked on the first tap of the microphone, and again from "Change" */
+function drawChoice(pick){
+  const s = STRINGS[LANG];
+  for (const name of ["local", "online"]){
+    const sup = vSupport && vSupport[name], ok = !!(sup && sup.ok);
+    const row = $("#vopt-" + name), radio = row.querySelector("input");
+    radio.disabled = !ok;
+    if (!ok) radio.checked = false;
+    row.classList.toggle("off", !!sup && !ok);
+    $("#vwhy-" + name).textContent = !sup ? "" : !ok ? (s["vwhy_" + sup.why] || "")
+      : name === "local" && sup.ready ? s.vready : "";
+  }
+  if (pick && vSupport){
+    // what they chose before, or else the private engine: online is never picked for anyone
+    const want = vEngine && vSupport[vEngine].ok ? vEngine : vSupport.local.ok ? "local" : "";
+    if (want) $("#vopt-" + want).querySelector("input").checked = true;
+  }
+  vgo.disabled = !vdlg.querySelector("input:checked");
+}
+function voiceChoose(){
+  if (vdlg.open) return;
+  drawChoice();
+  if (vdlg.showModal) vdlg.showModal(); else vdlg.setAttribute("open", "");
+  KHVOICE.support().then(sup => {
+    vSupport = sup; drawChoice(true);
+    const first = vdlg.querySelector("input:checked") || vdlg.querySelector("input:not(:disabled)");
+    if (first && vdlg.open) first.focus();
+  });
+}
+function closeChoice(){ if (vdlg.close) vdlg.close(); else vdlg.removeAttribute("open"); }
+vdlg.addEventListener("change", ()=> drawChoice());
+$("#vcancel").addEventListener("click", closeChoice);
+vdlg.addEventListener("click", e => {          // a click on the dimmed page around it
+  const r = vdlg.getBoundingClientRect();
+  if (e.target === vdlg && (e.clientX < r.left || e.clientX > r.right ||
+      e.clientY < r.top || e.clientY > r.bottom)) closeChoice();
+});
+vgo.addEventListener("click", ()=>{
+  const picked = vdlg.querySelector("input:checked");
+  if (!picked) return;
+  vEngine = picked.value;
+  try { localStorage.setItem(VOICE_KEY, vEngine); } catch(e){}
+  closeChoice();
+  voiceStart();
+});
+vset.addEventListener("click", voiceChoose);
+
 /* -------- Khmer/English interface -------- */
 const STRINGS = {
   en: {
@@ -732,6 +931,35 @@ const STRINGS = {
     gotit: "Got it — let me type!",
     install: "Install as a real keyboard: Android, iPhone, Windows, macOS, Linux",
     installsub: "Type Khmer by sound in every app, not just this page",
+    vspeak: "Speak", vstop: "Stop", vmic: "Voice typing", vmicstop: "Stop voice typing",
+    vstarting: "Turning the microphone on…", vlistening: "Listening… speak in Khmer",
+    vworking: "Writing…", vloading: "Getting ready, one moment…",
+    vdownload: "Downloading: {a} of {b} MB",
+    vonline: "Online (Google)", vlocal: "On this device", vchange: "Change",
+    vtitle: "Voice typing",
+    vlead: "You speak Khmer, the keyboard writes it. Choose where your voice is turned into text.",
+    vlocaltitle: "On this device",
+    vlocaldesc: "Private: your voice never leaves this device, and it works with no connection. The first time, it downloads a 1.1 GB file from Hugging Face.",
+    vonlinetitle: "Online, through Google",
+    vonlinedesc: "Nothing to download. While the microphone is on, your voice is sent to Google, which turns it into text.",
+    vwhy_noapi: "This browser cannot listen to speech. Use Chrome.",
+    vwhy_nokhmer: "This browser cannot listen to Khmer. Use Chrome on Android or on a computer.",
+    vwhy_nogpu: "Only on a computer with a recent Chrome or Edge.",
+    vwhy_phone: "Only on a computer: the file is too large for a phone.",
+    vwhy_lowmem: "This device does not have enough memory.",
+    vready: "Already downloaded.",
+    vgo: "Start", vcancel: "Cancel",
+    verr_denied: "The microphone cannot be used. Allow it for this site in the browser's settings, then try again.",
+    verr_nomic: "No microphone was found.",
+    verr_network: "Could not reach Google. Check your connection.",
+    verr_offline: "You are offline. Voice typing through Google needs a connection.",
+    verr_nospeech: "Nothing was heard.",
+    verr_nokhmer: "This browser cannot listen to Khmer. Use Chrome on Android or on a computer.",
+    verr_nogpu: "This browser cannot run voice typing on the device. Use a recent Chrome or Edge on a computer.",
+    verr_download: "The download did not finish. Press Speak to carry on with it.",
+    verr_nospace: "There is not enough free space on this device for the 1.1 GB file.",
+    verr_ready: "Downloaded and ready. Press Speak to begin.",
+    verr_failed: "Voice typing stopped. Please try again.",
   },
   km: {
     sub: "វាយសូរជាអក្សរអង់គ្លេស រួចរើសពាក្យខ្មែរ។",
@@ -755,6 +983,35 @@ const STRINGS = {
     gotit: "យល់ហើយ!",
     install: "ដំឡើងជាក្ដារចុចលើទូរស័ព្ទ ឬកុំព្យូទ័រ៖ Android iPhone Windows macOS Linux",
     installsub: "វាយខ្មែរតាមសូរក្នុងគ្រប់កម្មវិធី មិនមែនតែក្នុងទំព័រនេះទេ",
+    vspeak: "និយាយ", vstop: "ឈប់", vmic: "វាយដោយសំឡេង", vmicstop: "ឈប់ស្ដាប់",
+    vstarting: "កំពុងបើកមីក្រូហ្វូន…", vlistening: "កំពុងស្ដាប់… សូមនិយាយជាភាសាខ្មែរ",
+    vworking: "កំពុងសរសេរ…", vloading: "កំពុងរៀបចំ សូមរង់ចាំបន្តិច…",
+    vdownload: "កំពុងទាញយក៖ {a} / {b} MB",
+    vonline: "តាមអ៊ីនធឺណិត (Google)", vlocal: "លើឧបករណ៍នេះ", vchange: "ប្ដូរ",
+    vtitle: "វាយដោយសំឡេង",
+    vlead: "អ្នកនិយាយជាភាសាខ្មែរ ក្ដារចុចសរសេរឱ្យ។ សូមរើសកន្លែងបម្លែងសំឡេងទៅជាអក្សរ។",
+    vlocaltitle: "លើឧបករណ៍នេះ",
+    vlocaldesc: "រក្សាឯកជនភាព៖ សំឡេងរបស់អ្នកមិនចេញពីឧបករណ៍នេះឡើយ ហើយប្រើបានទោះគ្មានអ៊ីនធឺណិត។ លើកដំបូង ត្រូវទាញយកឯកសារទំហំ 1.1 GB ពី Hugging Face សិន។",
+    vonlinetitle: "តាមអ៊ីនធឺណិត ដោយប្រើ Google",
+    vonlinedesc: "មិនបាច់ទាញយកអ្វីទេ។ ពេលមីក្រូហ្វូនបើក សំឡេងរបស់អ្នកត្រូវបញ្ជូនទៅ Google ដើម្បីបម្លែងជាអក្សរ។",
+    vwhy_noapi: "កម្មវិធីរុករកនេះស្ដាប់សំឡេងមិនបានទេ។ សូមប្រើ Chrome។",
+    vwhy_nokhmer: "កម្មវិធីរុករកនេះស្ដាប់ភាសាខ្មែរមិនបានទេ។ សូមប្រើ Chrome លើ Android ឬលើកុំព្យូទ័រ។",
+    vwhy_nogpu: "ប្រើបានតែលើកុំព្យូទ័រដែលមាន Chrome ឬ Edge ជំនាន់ថ្មី។",
+    vwhy_phone: "ប្រើបានតែលើកុំព្យូទ័រ ព្រោះឯកសារធំពេកសម្រាប់ទូរស័ព្ទ។",
+    vwhy_lowmem: "ឧបករណ៍នេះមានអង្គចងចាំមិនគ្រប់គ្រាន់ទេ។",
+    vready: "បានទាញយករួចហើយ។",
+    vgo: "ចាប់ផ្ដើម", vcancel: "បោះបង់",
+    verr_denied: "ប្រើមីក្រូហ្វូនមិនបានទេ។ សូមអនុញ្ញាតឱ្យគេហទំព័រនេះប្រើមីក្រូហ្វូន នៅក្នុងការកំណត់របស់កម្មវិធីរុករក រួចសាកម្ដងទៀត។",
+    verr_nomic: "រកមីក្រូហ្វូនមិនឃើញទេ។",
+    verr_network: "ភ្ជាប់ទៅ Google មិនបានទេ។ សូមពិនិត្យអ៊ីនធឺណិតរបស់អ្នក។",
+    verr_offline: "អ្នកគ្មានអ៊ីនធឺណិតទេ។ ការវាយដោយសំឡេងតាម Google ត្រូវការអ៊ីនធឺណិត។",
+    verr_nospeech: "មិនឮសំឡេងអ្វីសោះ។",
+    verr_nokhmer: "កម្មវិធីរុករកនេះស្ដាប់ភាសាខ្មែរមិនបានទេ។ សូមប្រើ Chrome លើ Android ឬលើកុំព្យូទ័រ។",
+    verr_nogpu: "កម្មវិធីរុករកនេះមិនអាចស្ដាប់សំឡេងលើឧបករណ៍ផ្ទាល់បានទេ។ សូមប្រើ Chrome ឬ Edge ជំនាន់ថ្មីលើកុំព្យូទ័រ។",
+    verr_download: "ទាញយកមិនទាន់ចប់ទេ។ ចុច «និយាយ» ដើម្បីទាញយកបន្ត។",
+    verr_nospace: "ឧបករណ៍នេះមិនមានកន្លែងទំនេរគ្រប់គ្រាន់សម្រាប់ឯកសារទំហំ 1.1 GB ទេ។",
+    verr_ready: "ទាញយករួចហើយ។ ចុច «និយាយ» ដើម្បីចាប់ផ្ដើម។",
+    verr_failed: "ការស្ដាប់បានឈប់។ សូមសាកម្ដងទៀត។",
   },
 };
 let LANG = "km";
@@ -781,6 +1038,16 @@ function setLang(l){
   $("#t-install").textContent = s.install;
   $("#t-installsub").textContent = s.installsub;
   inEl.placeholder = s.placeholder;
+  $("#t-vtitle").textContent = s.vtitle;
+  $("#t-vlead").textContent = s.vlead;
+  $("#t-vlocal").textContent = s.vlocaltitle;
+  $("#t-vlocaldesc").textContent = s.vlocaldesc;
+  $("#t-vonline").textContent = s.vonlinetitle;
+  $("#t-vonlinedesc").textContent = s.vonlinedesc;
+  vgo.textContent = s.vgo;
+  $("#vcancel").textContent = s.vcancel;
+  drawVoice();
+  drawChoice();
 }
 // the language switch in the site header announces changes; follow them
 document.addEventListener("site:lang", e => setLang(e.detail));
@@ -833,7 +1100,7 @@ fillSheet("#cs-sign", Object.entries(SIGN).filter(([r,g])=>g && r!==" "), {
 });
 
 /* initial demo */
-inEl.value = "suastei";
+demoText = inEl.value = "suastei";
 run();
 
 /* offline: register a tiny service worker if available */

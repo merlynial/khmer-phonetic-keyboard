@@ -1,6 +1,6 @@
 {
   "name": "khmer-phonetic-keyboard",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "description": "Type Khmer by sound. A phonetic Khmer keyboard as a web app, and as a Keyman package for Android, iOS and Windows.",
   "type": "commonjs",
   "scripts": {
@@ -15,7 +15,7 @@
     "android:test": "cd android && ./gradlew :app:testDebugUnitTest",
     "android:apk": "cd android && ./gradlew :app:assembleDebug && cp app/build/outputs/apk/debug/app-debug.apk ../dist/khmer-phonetic.apk && echo 'dist/khmer-phonetic.apk'",
     "build": "npm run build:keyman && npm run build:wordlist && npm run build:docs && npm run build:packages && node tools/collect_dist.mjs",
-    "test": "node tests/golden.mjs && node tests/keyman.mjs",
+    "test": "node tests/golden.mjs && node tests/keyman.mjs && node tests/voice.mjs && node tests/voice-core.mjs",
     "test:packages": "node tests/compiled.mjs"
   },
   "repository": {

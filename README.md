@@ -32,9 +32,19 @@ khnhom  ⎵   srolanh  ⎵   kampuchea  ⎵     →     ខ្ញុំស្រ
 - **Full phonetic engine** — anything not in the dictionary still converts
   letter-by-letter with automatic subscript stacking (coeng ្), so you can
   type any Khmer word, not just common ones.
+- **Voice typing** — press the microphone and speak Khmer. You choose who
+  listens, the first time you press it, and it is never chosen for you:
+  - *On this device.* A Khmer speech model runs in the browser, so your voice
+    never leaves the machine and it works offline. It needs a computer with a
+    recent Chrome or Edge (WebGPU) and a one-time 1.1 GB download.
+  - *Online, through Google.* The browser's own speech recognition: nothing to
+    download, and it works in Chrome on Android too. Your voice is sent to
+    Google while the microphone is on.
+
+  It does not work on iPhone or iPad, where speech recognition has no Khmer.
 - **Works offline** — it's a PWA; add it to your Home Screen and it behaves
   like an app. No install, no tracking, no server: everything runs in your
-  browser.
+  browser. Online voice typing is the one exception, and only if you choose it.
 
 ## As a system keyboard
 
@@ -98,6 +108,15 @@ python3 -m http.server 4599
 - `site.css` + `site.js` — the shared design: header, footer, light and dark
   themes, and the Khmer / English switch (remembered as `khkb_lang`, the
   same setting the keyboard uses)
+- `voice.js` — voice typing: the online engine (the browser's speech
+  recognition) and what the two engines share. The buttons, the first-use
+  choice and the text handling are in `app.html`
+- `voice-local.mjs`, `voice-worker.mjs`, `voice-core.mjs`, `voice-worklet.js` —
+  the on-device engine, loaded only when someone chooses it: the microphone
+  and the cutting into phrases, the speech model in a worker (ONNX Runtime on
+  WebGPU), the arithmetic both need, and the audio-thread tap. The model's
+  address and checksums are in `voice-local.mjs`
+- `vendor/onnxruntime-web-1.31.1/` — the script half of ONNX Runtime Web
 - `xray.js` — the "how a spelling is read" widget on the home page and guide
 - `sw.js` — offline cache; bump `CACHE` on every release
 - `fonts/` — Kantumruy (site text) and Siemreap (typed Khmer), both OFL
@@ -111,7 +130,7 @@ The keyboards do have a build step:
 ```sh
 npm install
 npm run build            # regenerate sources, compile both .kmp packages into dist/
-npm test                 # rule table vs. the web engine
+npm test                 # rule table vs. the web engine, and the voice-typing tests
 npm run test:packages    # the compiled Keyman keyboard vs. the web engine
 npm run build:android    # regenerate the Kotlin scheme and app assets
 npm run android:test     # the Kotlin engine vs. the web engine
@@ -135,3 +154,16 @@ Bundled works keep their own licences:
   Apache License 2.0.
 - **Khmer pronunciation lexicon** (`words.txt`) — from the Google Khmer
   pronunciation lexicon, CC-BY-4.0.
+- **ONNX Runtime Web** (`vendor/onnxruntime-web-1.31.1/`) — © Microsoft
+  Corporation, MIT ([LICENSE](vendor/onnxruntime-web-1.31.1/LICENSE)). Its
+  WebAssembly half is fetched from jsDelivr when on-device voice typing is
+  first used.
+
+Not bundled, but downloaded from Hugging Face by anyone who chooses on-device
+voice typing: **Qwen3-ASR 0.6B** by the Qwen team at Alibaba Cloud, fine-tuned
+for Khmer by Seanghay Yath
+([seanghay/Qwen3-ASR-0.6B-Khmer](https://huggingface.co/seanghay/Qwen3-ASR-0.6B-Khmer))
+on the Khmer speech dataset of DDD-Cambodia (CC-BY-SA-4.0), in the 8-bit ONNX
+export made for browsers by KamVox
+([uddompang/qwen3-asr-0.6b-khmer-onnx](https://huggingface.co/uddompang/qwen3-asr-0.6b-khmer-onnx)).
+All three are under the Apache License 2.0.
