@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Background layer of the adaptive launcher icon: the logo's blue tile.
+     The same two gradients as favicon.svg, a blue ramp and a soft white sheen
+     over its top half. They span y 18-90, the 72 dp of this 108 dp layer that
+     the launcher shows, so the masked icon matches the tile on the website. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="54"
+                android:startY="18"
+                android:endX="54"
+                android:endY="90"
+                android:tileMode="clamp">
+                <item android:offset="0" android:color="#FF4C7DF4" />
+                <item android:offset="1" android:color="#FF2146C2" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="54"
+                android:startY="18"
+                android:endX="54"
+                android:endY="54"
+                android:tileMode="clamp">
+                <item android:offset="0" android:color="#29FFFFFF" />
+                <item android:offset="1" android:color="#00FFFFFF" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>
