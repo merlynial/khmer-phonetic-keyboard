@@ -1,19 +1,22 @@
 <!doctype html>
 <html lang="km" data-lang="km"
   data-title-en="Khmer Keyboard · Type Khmer the way it sounds"
-  data-title-km="ក្ដារចុចខ្មែរ · វាយខ្មែរតាមសូរ"
+  data-title-km="ក្ដារចុចខ្មែរ · Khmer Keyboard · វាយខ្មែរតាមសូរ"
   data-desc-en="A free phonetic Khmer keyboard. Spell the sound in Latin letters and pick the Khmer word. Works in the browser, on Android and iPhone, and offline."
-  data-desc-km="ក្ដារចុចខ្មែរ វាយតាមសូរ ឥតគិតថ្លៃ។ វាយសូរពាក្យជាអក្សរអង់គ្លេស រួចរើសពាក្យខ្មែរ។ ប្រើបានលើកម្មវិធីរុករក Android និង iPhone ទោះគ្មានអ៊ីនធឺណិតក៏ដោយ។">
+  data-desc-km="ក្ដារចុចខ្មែរ វាយតាមសូរ ឥតគិតថ្លៃ។ វាយសូរពាក្យជាអក្សរអង់គ្លេស រួចរើសពាក្យខ្មែរ។ ប្រើបានលើកម្មវិធីរុករក Android និង iPhone ទោះគ្មានអ៊ីនធឺណិតក៏ដោយ។ Free phonetic Khmer keyboard: spell the sound in Latin letters and pick the Khmer word.">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#F3EDE4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#15100D" media="(prefers-color-scheme: dark)">
-<title>ក្ដារចុចខ្មែរ · វាយខ្មែរតាមសូរ</title>
-<meta name="description" content="A free phonetic Khmer keyboard. Spell the sound in Latin letters and pick the Khmer word. Works in the browser, on Android and iPhone, and offline.">
+<title>ក្ដារចុចខ្មែរ · Khmer Keyboard · វាយខ្មែរតាមសូរ</title>
+<meta name="description" content="ក្ដារចុចខ្មែរ វាយតាមសូរ ឥតគិតថ្លៃ។ វាយសូរពាក្យជាអក្សរអង់គ្លេស រួចរើសពាក្យខ្មែរ។ ប្រើបានលើកម្មវិធីរុករក Android និង iPhone ទោះគ្មានអ៊ីនធឺណិតក៏ដោយ។ Free phonetic Khmer keyboard: spell the sound in Latin letters and pick the Khmer word.">
 <link rel="canonical" href="https://khmerkeyboard.com/">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Khmer Keyboard">
+<meta property="og:locale" content="km_KH">
+<meta property="og:locale:alternate" content="en_US">
 <meta property="og:url" content="https://khmerkeyboard.com/">
 <meta property="og:title" content="Khmer Keyboard · Type Khmer the way it sounds">
 <meta property="og:description" content="Spell the sound in Latin letters and pick the Khmer word, like a Pinyin keyboard for Khmer. Free, open source, works offline.">
@@ -21,6 +24,9 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Khmer Keyboard","alternateName":"ក្ដារចុចខ្មែរ","url":"https://khmerkeyboard.com/","image":"https://khmerkeyboard.com/og.png","description":"A free phonetic Khmer keyboard: spell the sound in Latin letters and pick the Khmer word.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web, Android, iOS, Windows, macOS, Linux","inLanguage":["km","en"],"isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"license":"https://opensource.org/license/mit","author":{"@type":"Person","name":"Keang Pakrinha"}}
+</script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -62,7 +68,7 @@
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6Z"/></svg>
       </button>
-      <a class="btn btn-primary btn-sm" href="app.html"><span data-l="en">Open keyboard</span><span data-l="km">បើកក្ដារចុច</span></a>
+      <a class="btn btn-primary btn-sm" href="app.html"><span data-l="en">Open<span class="xs-off"> keyboard</span></span><span data-l="km">បើកក្ដារចុច</span></a>
       <button type="button" class="icon-btn menu-btn" aria-controls="menu" aria-expanded="false" data-aria-en="Menu" data-aria-km="ម៉ឺនុយ" aria-label="ម៉ឺនុយ">
         <svg class="bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
         <svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
@@ -278,7 +284,7 @@
         <div class="feature reveal">
           <h3 class="h3"><span data-l="en">Speak instead of typing</span><span data-l="km">និយាយជំនួសការវាយ</span></h3>
           <p><span data-l="en">Press the microphone in the web keyboard and say it in Khmer. You choose who listens: your own device, which is private and works offline after a one-time 1.1 GB download, or Google over the internet, with nothing to download.</span>
-             <span data-l="km">ចុចរូបមីក្រូហ្វូនក្នុងក្ដារចុចលើវេប រួចនិយាយជាភាសាខ្មែរ។ អ្នកជាអ្នករើសថាឱ្យអ្នកណាស្ដាប់៖ ឧបករណ៍របស់អ្នកផ្ទាល់ ដែលរក្សាឯកជនភាព និងប្រើបានទោះគ្មានអ៊ីនធឺណិត ក្រោយទាញយកឯកសារទំហំ 1.1 GB ម្ដង ឬ Google តាមអ៊ីនធឺណិត ដែលមិនបាច់ទាញយកអ្វីទេ។</span></p>
+             <span data-l="km">ចុចរូបមីក្រូហ្វូនក្នុងក្ដារចុចលើវេប រួចនិយាយជាភាសាខ្មែរ។ អ្នកជាអ្នករើសថាឱ្យអ្នកណាស្ដាប់៖ ឧបករណ៍របស់អ្នកផ្ទាល់ ដែលរក្សាឯកជនភាព និងប្រើបានទោះគ្មានអ៊ីនធឺណិត ក្រោយទាញយកឯកសារទំហំ ១,១ GB ម្ដង ឬ Google តាមអ៊ីនធឺណិត ដែលមិនបាច់ទាញយកអ្វីទេ។</span></p>
         </div>
         <div class="feature reveal">
           <h3 class="h3"><span data-l="en">Offline and private</span><span data-l="km">ប្រើក្រៅបណ្ដាញ និងរក្សាឯកជនភាព</span></h3>
@@ -375,7 +381,7 @@
           <summary><span><span data-l="en">Do I need an internet connection?</span><span data-l="km">ត្រូវការអ៊ីនធឺណិតទេ?</span></span><span class="pm" aria-hidden="true"></span></summary>
           <div class="answer"><p>
             <span data-l="en">Only the first time. After your first visit the web version is stored on your device, and the Android and iPhone apps never need a connection. Voice typing is the exception: through Google it always needs a connection, and on your own device it needs one once, to download its 1.1 GB file.</span>
-            <span data-l="km">ត្រូវការតែលើកដំបូងប៉ុណ្ណោះ។ ក្រោយបើកលើកដំបូង កំណែវេបត្រូវរក្សាទុកក្នុងឧបករណ៍របស់អ្នក ហើយកម្មវិធី Android និង iPhone មិនត្រូវការអ៊ីនធឺណិតសោះ។ លើកលែងតែការវាយដោយសំឡេង៖ បើប្រើតាម Google ត្រូវការអ៊ីនធឺណិតជានិច្ច ហើយបើឱ្យឧបករណ៍របស់អ្នកស្ដាប់ដោយខ្លួនឯង ត្រូវការតែម្ដង ដើម្បីទាញយកឯកសារទំហំ 1.1 GB។</span>
+            <span data-l="km">ត្រូវការតែលើកដំបូងប៉ុណ្ណោះ។ ក្រោយបើកលើកដំបូង កំណែវេបត្រូវរក្សាទុកក្នុងឧបករណ៍របស់អ្នក ហើយកម្មវិធី Android និង iPhone មិនត្រូវការអ៊ីនធឺណិតសោះ។ លើកលែងតែការវាយដោយសំឡេង៖ បើប្រើតាម Google ត្រូវការអ៊ីនធឺណិតជានិច្ច ហើយបើឱ្យឧបករណ៍របស់អ្នកស្ដាប់ដោយខ្លួនឯង ត្រូវការតែម្ដង ដើម្បីទាញយកឯកសារទំហំ ១,១ GB។</span>
           </p></div>
         </details>
         <details>
@@ -389,7 +395,7 @@
           <summary><span><span data-l="en">Can I speak instead of typing?</span><span data-l="km">និយាយឱ្យវាវាយបានទេ?</span></span><span class="pm" aria-hidden="true"></span></summary>
           <div class="answer"><p>
             <span data-l="en">Yes, in the web keyboard: press the microphone. Through Google it works in Chrome, on Android and on computers. To have your own device do the listening you need a computer with a recent Chrome or Edge, and a one-time 1.1 GB download. It does not work on iPhone or iPad yet, because Apple's speech recognition has no Khmer.</span>
-            <span data-l="km">បាន នៅក្នុងក្ដារចុចលើវេប៖ គ្រាន់តែចុចរូបមីក្រូហ្វូន។ បើប្រើតាម Google វាដំណើរការក្នុង Chrome ទាំងលើ Android និងលើកុំព្យូទ័រ។ បើចង់ឱ្យឧបករណ៍របស់អ្នកស្ដាប់ដោយខ្លួនឯង ត្រូវប្រើកុំព្យូទ័រដែលមាន Chrome ឬ Edge ជំនាន់ថ្មី ហើយទាញយកឯកសារទំហំ 1.1 GB ម្ដង។ លើ iPhone និង iPad មិនទាន់ប្រើបានទេ ព្រោះប្រព័ន្ធស្ដាប់សំឡេងរបស់ Apple មិនទាន់ចេះភាសាខ្មែរ។</span>
+            <span data-l="km">បាន នៅក្នុងក្ដារចុចលើវេប៖ គ្រាន់តែចុចរូបមីក្រូហ្វូន។ បើប្រើតាម Google វាដំណើរការក្នុង Chrome ទាំងលើ Android និងលើកុំព្យូទ័រ។ បើចង់ឱ្យឧបករណ៍របស់អ្នកស្ដាប់ដោយខ្លួនឯង ត្រូវប្រើកុំព្យូទ័រដែលមាន Chrome ឬ Edge ជំនាន់ថ្មី ហើយទាញយកឯកសារទំហំ ១,១ GB ម្ដង។ លើ iPhone និង iPad មិនទាន់ប្រើបានទេ ព្រោះប្រព័ន្ធស្ដាប់សំឡេងរបស់ Apple មិនទាន់ចេះភាសាខ្មែរ។</span>
           </p></div>
         </details>
         <details>

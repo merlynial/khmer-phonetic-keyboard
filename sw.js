@@ -11,7 +11,7 @@
 // no connection. Its 1.1 GB speech model is not kept here: voice-worker.mjs
 // stores it in the browser's private file system, and requests to other sites
 // pass straight through.
-const CACHE = "khmer-kbd-0.19";
+const CACHE = "khmer-kbd-0.20";
 const ASSETS = ["./", "./index.html", "./app.html", "./install.html", "./guide.html",
                 "./site.css", "./app.css", "./site.js", "./engine.js", "./dict.js",
                 "./home.js", "./xray.js", "./guide.js", "./words.txt", "./bigrams.txt",
@@ -56,7 +56,11 @@ self.addEventListener("fetch", e => {
     e.waitUntil(keep(req, res.clone()).catch(() => {}));
     return res;
   });
-  const offline = () => caches.match(req).then(r => r || caches.match("./app.html"));
+  // Offline with nothing cached: a page falls back to the keyboard itself.
+  // Anything else (a script, an image) fails cleanly rather than receiving
+  // HTML it cannot use.
+  const offline = () => caches.match(req).then(r =>
+    r || (req.mode === "navigate" ? caches.match("./app.html") : Response.error()));
 
   if (!STATIC.test(url.pathname)) {
     e.respondWith(fresh.catch(offline));

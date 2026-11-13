@@ -121,6 +121,10 @@ python3 -m http.server 4599
 - `sw.js` — offline cache; bump `CACHE` on every release
 - `fonts/` — Kantumruy (site text) and Siemreap (typed Khmer), both OFL
 - `CNAME` — the custom domain for GitHub Pages
+- `_config.yml` — keeps the app sources and project notes off the public
+  site; anything new that is not part of the website belongs in its `exclude`
+- `robots.txt` + `sitemap.xml` — for search engines; a new page goes in the
+  sitemap
 
 - `android/` — the Android keyboard app (Kotlin)
 - `keyman/` — the Keyman keyboard and dictionary packages

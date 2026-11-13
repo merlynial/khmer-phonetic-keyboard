@@ -1,0 +1,20 @@
+# GitHub Pages builds this repository with Jekyll before serving it at
+# khmerkeyboard.com. The site itself needs nothing from Jekyll; this file only
+# keeps the app sources and project notes off the public site. Without it,
+# Jekyll turned ROADMAP.md into an unstyled /ROADMAP.html page and published
+# the Android, iOS and Keyman source trees under the domain.
+#
+# What stays published: the pages, their scripts and styles, fonts/, icons/,
+# vendor/ (the speech runtime), dist/ (the downloads), LICENSE and OFL.txt.
+exclude:
+  - README.md
+  - ROADMAP.md
+  - CLAUDE.md
+  - android
+  - ios
+  - keyman
+  - tools
+  - tests
+  - node_modules
+  - package.json
+  - package-lock.json

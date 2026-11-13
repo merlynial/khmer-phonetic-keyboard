@@ -71,8 +71,13 @@
         ? window.Site.t("Switch to light theme", "ប្ដូរទៅពណ៌ភ្លឺ")
         : window.Site.t("Switch to dark theme", "ប្ដូរទៅពណ៌ងងឹត"));
     });
-    var tc = document.querySelector('meta[name="theme-color"]');
-    if (tc) tc.setAttribute("content", dark ? "#12100D" : "#F5F1E8");
+    // The browser bar follows the system through the two media-scoped metas.
+    // When the visitor picks a theme by hand, both take that theme's colour.
+    var forced = root.getAttribute("data-theme");
+    each('meta[name="theme-color"]', function (m) {
+      var own = /dark/.test(m.getAttribute("media") || "") ? "dark" : "light";
+      m.setAttribute("content", (forced || own) === "dark" ? "#15100D" : "#F3EDE4");
+    });
   }
   document.addEventListener("click", function (e) {
     if (!(e.target.closest && e.target.closest(".theme-btn"))) return;
