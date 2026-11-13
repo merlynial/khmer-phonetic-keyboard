@@ -11,7 +11,7 @@
 // no connection. Its 1.1 GB speech model is not kept here: voice-worker.mjs
 // stores it in the browser's private file system, and requests to other sites
 // pass straight through.
-const CACHE = "khmer-kbd-0.20";
+const CACHE = "khmer-kbd-0.21";
 const ASSETS = ["./", "./index.html", "./app.html", "./install.html", "./guide.html",
                 "./site.css", "./app.css", "./site.js", "./engine.js", "./dict.js",
                 "./home.js", "./xray.js", "./guide.js", "./words.txt", "./bigrams.txt",

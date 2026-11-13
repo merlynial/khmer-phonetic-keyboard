@@ -54,7 +54,7 @@ this page. Three builds, because no single one reaches every platform:
 | | What it is | Sound matching |
 |---|---|---|
 | **[Android app](android/README.md)** — `dist/khmer-phonetic.apk` | A standalone keyboard app. Nothing else to install. | Yes — the same fuzzy matching as the web app |
-| **[iOS app](ios/README.md)** — `KhmerPhonetic.ipa` from CI | A native keyboard extension for iPhone and iPad, sideloaded with [SideStore](https://sidestore.io) and signed by your own Apple ID. | Yes — the same fuzzy matching as the web app |
+| **[iOS app](ios/README.md)** — `KhmerPhonetic.ipa` from the [latest release](https://github.com/merlynial/khmer-phonetic-keyboard/releases/latest) | A native keyboard extension for iPhone and iPad, sideloaded with [SideStore](https://sidestore.io) and signed by your own Apple ID. | Yes — the same fuzzy matching as the web app |
 | **[Keyman package](keyman/README.md)** — `dist/*.kmp` | Runs inside [Keyman](https://keyman.com). Covers the desktops: **Windows, macOS, Linux**. | No — spellings convert exactly as typed |
 
 See [install.html](install.html) for per-platform steps.

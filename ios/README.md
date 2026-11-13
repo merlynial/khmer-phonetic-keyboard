@@ -6,12 +6,16 @@ finds សួស្តី.
 
 ## Installing it — no Mac, no Xcode
 
-CI builds an **unsigned `.ipa`** on every push, on GitHub's macOS runners.
-Signing happens on your device with your own Apple ID, so nothing here needs an
-Apple account, a paid membership, or a secret in this repo.
+CI builds an **unsigned `.ipa`** on every push, on GitHub's macOS runners, and a
+version tag (`v0.20`, ...) publishes it as a GitHub Release. Signing happens on
+your device with your own Apple ID, so nothing here needs an Apple account, a
+paid membership, or a secret in this repo.
 
-1. Grab `KhmerPhonetic.ipa` from the latest green run of the
-   [ios app workflow](../../../actions/workflows/ios.yml), or from a release.
+1. Download
+   [`KhmerPhonetic.ipa`](https://github.com/merlynial/khmer-phonetic-keyboard/releases/latest/download/KhmerPhonetic.ipa)
+   from the latest release. (A build newer than the last release is in the
+   latest green run of the [ios app workflow](../../../actions/workflows/ios.yml),
+   which needs a GitHub login.)
 2. Install [SideStore](https://sidestore.io) on the iPhone.
 3. Open the `.ipa` in SideStore. It signs with your Apple ID and installs.
 4. Settings → General → Keyboard → Keyboards → Add New Keyboard → Khmer
