@@ -13,6 +13,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Read-only by default; the release job below asks for more.
+permissions:
+  contents: read
+
 jobs:
   build:
     # GitHub's macOS runners ship Xcode, which this project's own Mac does not.
@@ -84,8 +88,31 @@ jobs:
           name: KhmerPhonetic-ipa
           path: KhmerPhonetic.ipa
 
+  # A version tag (v0.20, ...) publishes the .ipa built above as a GitHub
+  # Release, which is what the install page's download button points at:
+  #   https://github.com/<owner>/<repo>/releases/latest/download/KhmerPhonetic.ipa
+  # It is a job of its own so that only this step, and only on a tag, holds a
+  # token that may write to the repository. The build itself stays read-only.
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: KhmerPhonetic-ipa
+
       - name: Attach the .ipa to the release
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
+          name: Khmer Keyboard ${{ github.ref_name }}
+          body: |
+            The iPhone and iPad keyboard, as an unsigned `.ipa` to install with SideStore.
+            Steps: https://khmerkeyboard.com/install.html#ios
+
+            The Android app and the package for Windows, macOS and Linux are on
+            https://khmerkeyboard.com/install.html.
           files: KhmerPhonetic.ipa
+          fail_on_unmatched_files: true
