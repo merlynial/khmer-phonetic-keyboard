@@ -52,7 +52,9 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.pakrinha.khmerphonetic
         INFOPLIST_FILE: App/Info.plist
-        ASSETCATALOG_COMPILER_APPICON_NAME: ""
+        # App/Assets.xcassets/AppIcon.appiconset, picked up with the App folder:
+        # one 1024 px full-bleed image; iOS draws the rounded corners itself.
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     dependencies:
       - target: KhmerPhoneticKeyboard
         embed: true
