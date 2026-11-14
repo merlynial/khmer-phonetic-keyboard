@@ -88,15 +88,15 @@
 
 <main id="main" class="wrap app">
   <div class="app-head">
-    <h1><span data-l="en">Keyboard</span><span data-l="km">ក្ដារចុច</span> <span class="ver" id="ver">v0.21</span></h1>
+    <h1><span data-l="en">Keyboard</span><span data-l="km">ក្ដារចុច</span> <span class="ver" id="ver">v0.22</span></h1>
     <p class="sub" id="t-sub">Type the sound in Latin letters, then pick the Khmer word.</p>
   </div>
 
   <section class="pane" aria-labelledby="t-instr">
-    <label class="fld" for="in" id="t-instr">Type a word's sound. Candidates pop up at the cursor (<code>Space</code>/<code>Enter</code> picks, <code>←→</code> moves, <code>1-9</code> or tap; <code>Esc</code> hides)</label>
+    <label class="fld" for="in" id="t-instr">Type a word's sound here and it turns into Khmer in place (<code>Space</code>/<code>Enter</code> picks · <code>←→</code> moves · <code>1-9</code> or tap · <code>Esc</code> keeps the Latin letters)</label>
     <div class="sugwrap">
       <textarea id="in" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="none"
-        placeholder="khnhom → ខ្ញុំ ...  suggestions pop up at your cursor, like Pinyin"></textarea>
+        placeholder="Type a sound here, for example soksabay, then press Space"></textarea>
       <div class="sugbar" id="sug" role="listbox" aria-label="Khmer word candidates"></div>
     </div>
 
@@ -110,21 +110,18 @@
     </div>
     <div class="vbar" id="vbar" hidden><i></i></div>
 
+    <div class="row">
+      <button type="button" class="btn btn-primary btn-sm" id="copy">Copy</button>
+      <button type="button" class="btn btn-line btn-sm" id="clear">Clear</button>
+      <!-- shown only while the box holds Latin letters that were never turned into Khmer -->
+      <button type="button" class="btn btn-line btn-sm" id="conv" hidden>Convert the Latin letters</button>
+    </div>
+
     <div class="toggles">
       <label class="tg"><input type="checkbox" id="autostack" checked> <span id="t-autostack">Auto-stack clusters (coeng)</span></label>
       <label class="tg"><input type="checkbox" id="khnum"> <span id="t-khnum">Khmer digits ០-៩</span></label>
-      <label class="tg"><input type="checkbox" id="live" checked> <span id="t-live">Live convert</span></label>
       <label class="tg"><input type="checkbox" id="spacesel" checked> <span id="t-spacesel">Space picks 1st suggestion</span></label>
       <label class="tg"><input type="checkbox" id="devkb"> <span id="t-devkb">Use device keyboard</span></label>
-    </div>
-
-    <label class="fld out-label" id="t-outlabel">Khmer output</label>
-    <div class="out" id="out" dir="auto" aria-labelledby="t-outlabel"></div>
-
-    <div class="row">
-      <button type="button" class="btn btn-primary btn-sm" id="copy">Copy Khmer</button>
-      <button type="button" class="btn btn-line btn-sm" id="conv">Convert</button>
-      <button type="button" class="btn btn-line btn-sm" id="clear">Clear</button>
     </div>
   </section>
 
@@ -266,66 +263,143 @@ const $ = s => document.querySelector(s);
 // escape any learned/imported value before it touches innerHTML (XSS guard)
 const esc = s => String(s).replace(/[&<>"']/g, c =>
   ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
-const inEl = $("#in"), outEl = $("#out");
-const autostack = $("#autostack"), khnum = $("#khnum"), live = $("#live");
+const inEl = $("#in"), convBtn = $("#conv");
+const autostack = $("#autostack"), khnum = $("#khnum");
 const spacesel = $("#spacesel"), sugEl = $("#sug");
 
-/* Voice typing puts Khmer straight into the box, and convert() leaves Khmer
-   alone. But a name or a brand can come back in Latin letters, and those are
-   not spelled sounds: they stay as they were heard. */
-const heardLatin = new Set();
+/* ONE BOX. Latin is the word being typed; Khmer is everything already
+   written. A word turns into Khmer where it stands when it is finished: with
+   Space or Enter, a tap on a suggestion, or the punctuation that follows it.
+   There used to be a second box that showed the whole text converted; people
+   took it for a second place to type.
+
+   Two kinds of Latin are left alone on purpose: a word that voice typing
+   heard in Latin letters (a name, a brand), and a word kept with Esc. */
+const keptLatin = new Set();
 const LATIN_WORD = /[A-Za-z][A-Za-z0-9]*/g;
 let vSession = null;              // the dictation in progress, if any
-let demoText = "";                // the sample word shown on arrival
 
-function run(){
-  const opts = { autostack: autostack.checked, khnum: khnum.checked };
-  const text = inEl.value;
-  if (!heardLatin.size){ setText(outEl, convert(text, opts)); return; }
+/* Any other Latin still in the box (pasted text, a word that was never
+   finished) is read letter by letter by the Convert button. A stretch is
+   converted only if it has a letter in it, so a full stop or an apostrophe
+   standing by itself stays what it is; the scheme's doubled keys are the
+   exception. A stretch that reads as nothing (a lone "a") is left alone
+   too: the button turns letters into Khmer, it does not delete them. */
+const LATIN_STRETCH = /[A-Za-z'*`^~.\/:<>]+/g;
+const DOUBLED = { "//":"។", "///":"៕", "::":"៖", "<<":"«", ">>":"»", "**":"ៗ" };
+function readLatin(text){
+  const opts = { autostack: autostack.checked };
+  return text.replace(LATIN_STRETCH, s =>
+    /[A-Za-z]/.test(s) ? (convert(s, opts) || s) : (DOUBLED[s] || s));
+}
+function convertLeftovers(text){
+  if (!keptLatin.size) return readLatin(text);
   let out = "", from = 0;
   for (const m of text.matchAll(LATIN_WORD)){
-    if (!heardLatin.has(m[0])) continue;
-    out += convert(text.slice(from, m.index), opts) + m[0];
+    if (!keptLatin.has(m[0])) continue;
+    out += readLatin(text.slice(from, m.index)) + m[0];
     from = m.index + m[0].length;
   }
-  setText(outEl, out + convert(text.slice(from), opts));
+  return out + readLatin(text.slice(from));
 }
-// Edit the existing text node in place, touching only the span that changed:
-// replacing the node would make the browser re-shape all of the Khmer on
-// every keystroke, which gets slow as the text grows.
-function setText(el, s){
-  const node = el.firstChild;
-  if (!node || node.nodeType !== Node.TEXT_NODE || node.nextSibling){ el.textContent = s; return; }
-  const old = node.data;
-  if (old === s) return;
-  const max = Math.min(old.length, s.length);
+/* Is there Latin in the box that nobody is typing and nobody asked to keep?
+   The Convert button is shown only while pressing it would change something. */
+function hasLeftovers(){
+  const v = inEl.value;
+  if (!/[A-Za-z\/:<>*]/.test(v)) return false;     // all Khmer: the usual case
+  let rest = v;
+  if (sugState.token){
+    let e = sugState.end;                           // the caret may be inside the word
+    while (e < v.length && TOKEN_CH.test(v[e])) e++;
+    rest = v.slice(0, sugState.start) + " " + v.slice(e);
+  }
+  return convertLeftovers(rest) !== rest;
+}
+function syncConv(){ convBtn.hidden = !!vSession || !hasLeftovers(); }
+
+/* Put new text in the box by touching only the span that changed, so the
+   caret, the scroll position and the rest of the Khmer stay where they are. */
+function swapText(nv){
+  const v = inEl.value;
+  if (nv === v) return;
+  const s = inEl.selectionStart, e = inEl.selectionEnd;
+  const max = Math.min(v.length, nv.length);
   let head = 0, tail = 0;
-  while (head < max && old.charCodeAt(head) === s.charCodeAt(head)) head++;
+  while (head < max && v.charCodeAt(head) === nv.charCodeAt(head)) head++;
   while (tail < max - head &&
-         old.charCodeAt(old.length - 1 - tail) === s.charCodeAt(s.length - 1 - tail)) tail++;
-  node.replaceData(head, old.length - head - tail, s.slice(head, s.length - tail));
+         v.charCodeAt(v.length - 1 - tail) === nv.charCodeAt(nv.length - 1 - tail)) tail++;
+  inEl.setRangeText(nv.slice(head, nv.length - tail), head, v.length - tail, "preserve");
+  if (nv.length === v.length) inEl.setSelectionRange(s, e);
 }
-inEl.addEventListener("input", ()=>{ demoText = ""; if (live.checked) run(); updateSug(); });
-[autostack, khnum].forEach(el=>el.addEventListener("change", run));
+
+/* "Khmer digits" is about the numbers in the box: ticking it turns them into
+   Khmer digits as they are typed, and unticking turns them back. A digit that
+   is part of a Latin word (4G, iPhone15) is not a number to rewrite. */
+const KH_DIGITS = "០១២៣៤៥៦៧៨៩";
+function setDigits(khmer){
+  const v = inEl.value;
+  swapText(khmer
+    ? v.replace(/[A-Za-z0-9]+/g, w => /^[0-9]+$/.test(w) ? w.replace(/[0-9]/g, d => KH_DIGITS[d]) : w)
+    : v.replace(/[០-៩]/g, d => KH_DIGITS.indexOf(d)));
+}
+
+/* The scheme's doubled keys turn into their Khmer mark as soon as the second
+   one is typed:  // ។   /// ៕   :: ៖   << «   >> »   ** ៗ  */
+function doubledKey(){
+  const p = inEl.selectionStart;
+  if (p !== inEl.selectionEnd || p < 2) return;
+  const v = inEl.value, pair = v.slice(p - 2, p), before = v[p - 3] || "";
+  const kh = pair === "។/" ? "៕" : DOUBLED[pair];
+  if (!kh) return;
+  if (pair === "//" && before === ":") return;                 // the middle of a web address
+  if (pair === "**" && /[A-Za-z'`^~.]/.test(before)) return;    // inside a word: the word reads it
+  inEl.setRangeText(kh, p - 2, p, "end");
+}
+
+inEl.addEventListener("input", e => {
+  finishTyped(e);
+  if (e.inputType === "insertText") doubledKey();
+  if (khnum.checked) setDigits(true);
+  updateSug();
+});
+autostack.addEventListener("change", ()=> updateSug());
+khnum.addEventListener("change", ()=>{ setDigits(khnum.checked); updateSug(); });
 
 /* -------- pinyin-style word suggestions --------------------------------
    Modeled on the macOS Pinyin IME: the token = the run of letters just
    before the caret; a candidate bar FLOATS right under it, the selected
    candidate sits in a blue pill, arrows move it, Space/Enter/1-9/tap
-   commit. The chosen Khmer replaces the Latin token inline (Khmer chars
-   pass through convert() untouched, so output stays correct). */
-const TOKEN_CH = /[a-zA-Z'*`^~]/;
+   commit. The chosen Khmer replaces the Latin token inline.
+   A full stop is part of the token: inside a word it is the scheme's
+   syllable break (ka.mpujaa), and by itself it reads as nothing, so a
+   sentence's own full stop is left standing. */
+const TOKEN_CH = /[a-zA-Z'*`^~.]/;
+const dotless = t => t.replace(/\./g, "");      // what the dictionary is asked, and taught
 let sugState = { token:"", start:0, end:0, items:[] };
 let sugSel = 0, sugNav = false;
 let dismissed = "";
+
+/* Latin that is in the box to stay (a name voice typing heard, a letter the
+   Convert button could not read) is not the start of the next word typed
+   right after it: "OK" and then s-o-k is "OK" and a new word, not "OKsok".
+   The fence marks where such text ends. The few characters before it are
+   remembered too, to tell whether the text has moved since. */
+let fence = null;
+const fenceText = pos => inEl.value.slice(Math.max(0, pos - 12), pos);
+function setFence(pos){ fence = { pos, before: fenceText(pos) }; }
+function fenceBefore(p){
+  if (!fence || fence.pos > p) return 0;
+  if (fenceText(fence.pos) !== fence.before){ fence = null; return 0; }
+  return fence.pos;
+}
 
 const MAX_TOKEN_UI = 64;   // bound token scan so huge inputs can't stall the UI
 function currentToken(){
   const p = inEl.selectionStart;
   if (p == null || p !== inEl.selectionEnd) return { token:"", start:p||0, end:p||0 };
-  const v = inEl.value;
+  const v = inEl.value, floor = Math.max(fenceBefore(p), p - MAX_TOKEN_UI);
   let s = p;
-  while (s > 0 && s > p - MAX_TOKEN_UI && TOKEN_CH.test(v[s-1])) s--;
+  while (s > floor && TOKEN_CH.test(v[s-1])) s--;
   return { token: v.slice(s, p), start: s, end: p };
 }
 
@@ -425,7 +499,7 @@ function commitPred(kh){
   inEl.setRangeText(kh, pos, inEl.selectionEnd, "end");
   lastCommit = { kh, end: inEl.selectionStart };
   inEl.focus();
-  run(); updateSug();
+  updateSug();
 }
 
 /* idle: offer YOUR most frequent words, ready to tap (Apple QuickType style) */
@@ -433,12 +507,17 @@ function showIdleWords(){ showWordStrip(KHDICT.topUsed(8)); }
 
 let sugFor = null;             // [value, selectionStart, selectionEnd] last shown for
 function updateSug(){
-  if (vSession){ hideSug(); return; }      // dictating: the strip shows that instead
+  if (vSession){ hideSug(); syncConv(); return; }   // dictating: the strip shows that instead
   sugFor = [inEl.value, inEl.selectionStart, inEl.selectionEnd];
   const { token, start, end } = currentToken();
-  if (token !== dismissed) dismissed = "";   // Esc only mutes the current token
+  if (token !== dismissed){                  // Esc only mutes the current token
+    // ...and a word that was dismissed and then left behind is one to keep in Latin
+    if (dismissed && !token) for (const w of dismissed.match(LATIN_WORD) || []) keptLatin.add(w);
+    dismissed = "";
+  }
   sugState = { token, start, end, items: [] };
   sugSel = 0; sugNav = false;
+  syncConv();
   if (!token || token === dismissed){
     if (!token && lastCommit && end === lastCommit.end){
       showWordStrip(KHDICT.predictNext(lastCommit.kh)); return;
@@ -447,7 +526,8 @@ function updateSug(){
     hideSug(); return;
   }
 
-  const dict = KHDICT.suggest(token).map(it => ({ ...it, raw:false }));
+  const asked = dotless(token);
+  const dict = (asked ? KHDICT.suggest(asked) : []).map(it => ({ ...it, raw:false }));
   const rawKh = convert(token, { autostack: autostack.checked });
   if (rawKh && rawKh !== token && !(dict[0] && dict[0].kh === rawKh)){
     dict.push({ kh: rawKh, gloss: "as typed", raw:true });
@@ -489,7 +569,7 @@ function commitSug(i){
       if (k > 0) KHDICT.learnNext(it.segs[k-1], w);
     });
   } else {
-    KHDICT.learn(it.kh, sugState.token, !!it.raw); // remember what you really use
+    KHDICT.learn(it.kh, dotless(sugState.token), !!it.raw); // remember what you really use
   }
   if (lastCommit && lastCommit.end === sugState.start){
     KHDICT.learnNext(lastCommit.kh, it.segs ? it.segs[0] : it.kh);
@@ -497,7 +577,22 @@ function commitSug(i){
   inEl.setRangeText(it.kh, sugState.start, sugState.end, "end");
   lastCommit = { kh: it.segs ? it.segs[it.segs.length-1] : it.kh, end: inEl.selectionStart };
   inEl.focus();
-  run(); updateSug();
+  updateSug();
+}
+/* The word exactly as its letters read, with no dictionary: what Space gives
+   a single letter, or a word the dictionary has no match for. Nothing is
+   learned from it, since a slip of the finger lands here too, and no next
+   word is guessed from it: what follows a bare letter is not a word. A word
+   that reads as nothing (a lone "a", a lone full stop) is left as typed. */
+function commitAsTyped(){
+  const { token, start, end } = sugState;
+  const kh = token ? convert(token, { autostack: autostack.checked }) : "";
+  if (!kh || kh === token) return false;
+  inEl.setRangeText(kh, start, end, "end");
+  lastCommit = null;
+  inEl.focus();
+  updateSug();
+  return true;
 }
 
 inEl.addEventListener("keydown", e => {
@@ -506,6 +601,7 @@ inEl.addEventListener("keydown", e => {
   if (e.key >= "1" && e.key <= "9"){
     const i = +e.key - 1;
     if (i < n){ e.preventDefault(); commitSug(i); }
+    else trySpaceCommit();           // not a pick: a number, and it ends the word
   } else if (e.key === "ArrowRight" || e.key === "ArrowDown"){
     e.preventDefault(); sugSel = (sugSel + 1) % n; sugNav = true; renderSel();
   } else if (e.key === "ArrowLeft" || e.key === "ArrowUp"){
@@ -517,8 +613,34 @@ inEl.addEventListener("keydown", e => {
   } else if (e.key === "Escape"){
     dismissed = sugState.token;
     hideSug(); sugState.items = [];
+  } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && !TOKEN_CH.test(e.key)){
+    trySpaceCommit();                // punctuation ends the word, then types itself
   }
 });
+/* A phone's own keyboard does not say which key was pressed, so the handler
+   above never sees its Space, its Enter or its punctuation. They turn up in
+   the box instead, right after the word. Take the character back out, finish
+   the word the way the key would have, and put the character back unless it
+   was the Space or the Enter that did the finishing.
+   This runs on the input event, when the browser has finished its own part:
+   changing the box any earlier (on beforeinput) leaves the caret in the
+   middle of the new Khmer word. On a computer the handler above has finished
+   the word before the character arrives, and there is nothing left to do. */
+function finishTyped(e){
+  const br = e.inputType === "insertLineBreak" || e.inputType === "insertParagraph";
+  const ch = br ? "\n" : e.inputType === "insertText" ? e.data : null;
+  if (!ch || ch.length !== 1 || TOKEN_CH.test(ch)) return;
+  if (!sugState.items.length || !(br || spacesel.checked)) return;
+  const p = inEl.selectionStart;
+  if (p !== inEl.selectionEnd || p !== sugState.end + 1 || inEl.value[p - 1] !== ch) return;
+  if (inEl.value.slice(sugState.start, sugState.end) !== sugState.token) return;
+  inEl.setRangeText("", p - 1, p, "end");
+  let done = true;
+  if (br) commitSug(sugSel); else done = trySpaceCommit();
+  if (!done || (ch !== " " && !br)){
+    inEl.setRangeText(ch, inEl.selectionStart, inEl.selectionEnd, "end");
+  }
+}
 /* Moving the caret changes which word is being composed, so suggestions have
    to follow it. */
 document.addEventListener("selectionchange", ()=>{
@@ -534,28 +656,41 @@ document.addEventListener("selectionchange", ()=>{
   }
   updateSug();
 });
-$("#conv").addEventListener("click", run);
+/* Convert: any Latin left in the box is read letter by letter, where it is.
+   The word still being typed is finished first, the way Space would. */
+convBtn.addEventListener("click", ()=>{
+  voiceYield();
+  trySpaceCommit();
+  swapText(convertLeftovers(inEl.value));
+  lastCommit = null;
+  inEl.focus();
+  setFence(inEl.selectionStart);
+  updateSug();
+});
 $("#clear").addEventListener("click", ()=>{
   voiceYield();
-  heardLatin.clear(); demoText = "";
-  inEl.value=""; outEl.textContent=""; inEl.focus();
-  lastCommit = null; dismissed = "";
+  keptLatin.clear();
+  inEl.value=""; inEl.focus();
+  lastCommit = null; dismissed = ""; fence = null;
   sugState = { token:"", start:0, end:0, items:[] };
   hideSug();                       // else the old candidates stay up, and
-});                                // picking one types into the cleared box
+                                   // picking one types into the cleared box
+  syncConv();
+});
 
 function toast(msg){
   const t=$("#toast"); t.textContent=msg; t.classList.add("show");
   clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1300);
 }
+/* Copy takes what the box shows, after finishing the word still being typed. */
 $("#copy").addEventListener("click", async ()=>{
-  const txt = outEl.textContent;
-  if(!txt){ toast("Nothing to copy"); return; }
-  try{ await navigator.clipboard.writeText(txt); toast("Copied ✓"); }
+  trySpaceCommit();
+  const s = STRINGS[LANG], txt = inEl.value;
+  if(!txt.trim()){ toast(s.nocopy); return; }
+  try{ await navigator.clipboard.writeText(txt); toast(s.copied); }
   catch(e){
-    const r=document.createRange(); r.selectNodeContents(outEl);
-    const s=getSelection(); s.removeAllRanges(); s.addRange(r);
-    try{ document.execCommand("copy"); toast("Copied ✓"); }catch(_){ toast("Select & copy manually"); }
+    inEl.focus(); inEl.select();
+    try{ document.execCommand("copy"); toast(s.copied); }catch(_){ toast(s.copyfail); }
   }
 });
 
@@ -568,7 +703,7 @@ devkb.addEventListener("change", ()=> inEl.setAttribute("inputmode", devkb.check
 
 /* Remember the switches. Someone who types on their phone's own keyboard, or
    wants Khmer digits, should not have to say so again on every visit. */
-for (const el of [autostack, khnum, live, spacesel, devkb]){
+for (const el of [autostack, khnum, spacesel, devkb]){
   const key = "khkb_opt_" + el.id;
   let saved = null;
   try { saved = localStorage.getItem(key); } catch(e){}
@@ -613,24 +748,40 @@ function ensureCaret(){
     inEl.setSelectionRange(L, L);
   }
 }
+// The on-screen keys report themselves the way real typing does, so the rules
+// for typed text (doubled keys, Khmer digits) hold for them too.
 function insertText(t){
   ensureCaret();
   inEl.setRangeText(t, inEl.selectionStart, inEl.selectionEnd, "end");
-  inEl.dispatchEvent(new Event("input"));
+  inEl.dispatchEvent(new InputEvent("input", { inputType:"insertText", data:t }));
 }
 function backspace(){
   ensureCaret();
   const s = inEl.selectionStart, e = inEl.selectionEnd;
   if (s !== e) inEl.setRangeText("", s, e, "end");
   else if (s > 0) inEl.setRangeText("", s-1, s, "end");
-  inEl.dispatchEvent(new Event("input"));
+  inEl.dispatchEvent(new InputEvent("input", { inputType:"deleteContentBackward" }));
 }
+/* Space finishes the word being typed, and adds no space: Khmer joins its
+   words. It takes the highlighted suggestion. A single letter, or a word the
+   dictionary has no match for, is read letter by letter instead, unless that
+   reading was chosen by hand with the arrows. Punctuation and the Copy and
+   Convert buttons finish a word the same way. */
 function trySpaceCommit(){
   if (!sugState.items.length || !spacesel.checked) return false;
-  if (sugState.items[sugSel].raw) return false;
-  if (!sugNav && sugState.token.length < 2) return false;
-  commitSug(sugSel);              // commit, no space — Khmer joins words
-  return true;
+  const it = sugState.items[sugSel];
+  if (sugNav || (!it.raw && sugState.token.length >= 2)){ commitSug(sugSel); return true; }
+  return commitAsTyped();
+}
+/* A key that types a character of its own. Punctuation and digits finish the
+   word first. A sign key (់ ៉ ៊ ័ ៍) adds its Latin letter to a word in
+   progress, where the scheme reads it (kaat' gives កាត់); after Khmer there
+   is no word to read it, so the key adds the sign itself. */
+function typeKey(t){
+  ensureCaret();
+  if (!TOKEN_CH.test(t)){ trySpaceCommit(); insertText(t); return; }
+  const direct = t !== "." && MAP[t] && !currentToken().token;
+  insertText(direct ? MAP[t] : t);
 }
 const COARSE = matchMedia("(pointer: coarse)").matches;
 function haptic(){ if (COARSE && navigator.vibrate) try{ navigator.vibrate(8); }catch(e){} }
@@ -657,11 +808,12 @@ function keyPress(it){
   // typing takes over from dictation, as it does on a phone keyboard
   if (it.a !== "SHIFT" && it.a !== "SYM") voiceYield();
   if (typeof it === "string"){
+    if (/[0-9]/.test(it)){ typeKey(it); return; }
     insertText(kbShift ? it.toUpperCase() : it);
     if (kbShift){ kbShift = false; drawKB(); }
     return;
   }
-  if (it.t !== undefined){ insertText(it.t); return; }
+  if (it.t !== undefined){ typeKey(it.t); return; }
   switch (it.a){
     case "SHIFT": kbShift = !kbShift; drawKB(true); break;
     case "SYM":   kbLayer = kbLayer === "sym" ? "abc" : "sym"; kbShift = false; drawKB(true); break;
@@ -818,13 +970,14 @@ function voiceText(t){
   if (vRange.end === vRange.start) vRange.start = vRange.end = inEl.selectionStart;
   inEl.setRangeText(t, vRange.start, vRange.end, "end");
   vRange.end = vRange.start + t.length;
-  for (const w of t.match(LATIN_WORD) || []) if (w.length > 1) heardLatin.add(w);
+  // a name or a brand can come back in Latin letters: not spelled sounds, so
+  // they stay as they were heard
+  for (const w of t.match(LATIN_WORD) || []) if (w.length > 1) keptLatin.add(w);
   lastCommit = null;
-  if (live.checked) run();
+  if (khnum.checked) setDigits(true);          // same length, so vRange still holds
+  setFence(vRange.end);                        // the next word typed starts after this
 }
 function voiceStart(){
-  if (demoText && inEl.value === demoText){ inEl.value = ""; run(); }   // the sample word is not theirs
-  demoText = "";
   const s = inEl.selectionStart, e = inEl.selectionEnd;
   if (s !== e) inEl.setRangeText("", s, e, "end");
   vRange = { start: s, end: s };
@@ -912,10 +1065,11 @@ vset.addEventListener("click", voiceChoose);
 const STRINGS = {
   en: {
     sub: "Type the sound in Latin letters, then pick the Khmer word.",
-    instr: 'Type a word\'s sound. Candidates pop up at the cursor (<code>Space</code>/<code>Enter</code> picks, <code>←→</code> moves, <code>1-9</code> or tap; <code>Esc</code> hides)',
+    instr: 'Type a word\'s sound here and it turns into Khmer in place (<code>Space</code>/<code>Enter</code> picks · <code>←→</code> moves · <code>1-9</code> or tap · <code>Esc</code> keeps the Latin letters)',
     autostack: "Auto-stack clusters (coeng)", khnum: "Khmer digits ០-៩",
-    live: "Live convert", spacesel: "Space picks 1st suggestion", devkb: "Use device keyboard",
-    conv: "Convert", copy: "Copy Khmer", clear: "Clear", outlabel: "Khmer output",
+    spacesel: "Space picks 1st suggestion", devkb: "Use device keyboard",
+    conv: "Convert the Latin letters", copy: "Copy", clear: "Clear",
+    copied: "Copied ✓", nocopy: "Nothing to copy", copyfail: "Select the text and copy it by hand",
     kbhint: 'Tap the sound; word suggestions appear above, like Pinyin. <b>⇧</b> gives the scheme\'s capitals (<code>D</code>=ឌ <code>N</code>=ណ <code>L</code>=ឡ <code>M</code>=ំ <code>H</code>=ះ) · <b>?123</b> has digits, Khmer punctuation &amp; sign keys.',
     mysummary: "My words · what the keyboard has learned from you",
     myhint: "Words you pick are remembered and float to the top; spellings you invent become yours. Everything stays on this device only.",
@@ -925,7 +1079,7 @@ const STRINGS = {
     imported: "Words restored ✓", importbad: "Could not read that file",
     addtitle: "Add a word", addhint: "Khmer word, then how you type its sound (one or more, separated by spaces).",
     added: "Added “%” ✓", addbad: "Enter a Khmer word and its spelling",
-    placeholder: "khnhom → ខ្ញុំ ...  suggestions pop up at your cursor, like Pinyin",
+    placeholder: "Type a sound here, for example soksabay, then press Space",
     tut1: "Type the <b>sound</b> of a Khmer word with English letters — try <code>khnhom</code>",
     tut2: "Pick the Khmer word from the bar: tap it, or press <b>Space</b> for the first one",
     tut3: "After each word, the strip on the keyboard <b>predicts your next word</b> — and it learns the words you use",
@@ -964,10 +1118,11 @@ const STRINGS = {
   },
   km: {
     sub: "វាយសូរជាអក្សរអង់គ្លេស រួចរើសពាក្យខ្មែរ។",
-    instr: 'វាយសូរពាក្យ ពាក្យខ្មែរនឹងលោតមកត្រង់កន្លែងអ្នកវាយ (<code>Space</code>/<code>Enter</code> រើស · <code>←→</code> ប្ដូរ · <code>1-9</code> ឬប៉ះ · <code>Esc</code> បិទ)',
+    instr: 'វាយសូរពាក្យក្នុងប្រអប់នេះ វានឹងប្ដូរជាអក្សរខ្មែរភ្លាម (<code>Space</code>/<code>Enter</code> រើស · <code>←→</code> ប្ដូរ · <code>1-9</code> ឬប៉ះ · <code>Esc</code> ទុកជាអក្សរអង់គ្លេស)',
     autostack: "ដាក់ជើងដោយស្វ័យប្រវត្តិ", khnum: "លេខខ្មែរ ០-៩",
-    live: "បម្លែងភ្លាមៗ", spacesel: "Space រើសពាក្យទី១", devkb: "ប្រើក្ដារចុចរបស់ឧបករណ៍",
-    conv: "បម្លែង", copy: "ចម្លងអក្សរខ្មែរ", clear: "សម្អាត", outlabel: "អត្ថបទខ្មែរ",
+    spacesel: "Space រើសពាក្យទី១", devkb: "ប្រើក្ដារចុចរបស់ឧបករណ៍",
+    conv: "បម្លែងអក្សរអង់គ្លេសដែលនៅសល់", copy: "ចម្លង", clear: "សម្អាត",
+    copied: "បានចម្លង ✓", nocopy: "មិនមានអ្វីត្រូវចម្លងទេ", copyfail: "សូមជ្រើសអត្ថបទ រួចចម្លងដោយខ្លួនឯង",
     kbhint: 'ចុចតាមសូរ ពាក្យណែនាំនឹងលោតមកខាងលើ។ <b>⇧</b> សម្រាប់អក្សរធំ (<code>D</code>=ឌ <code>N</code>=ណ <code>L</code>=ឡ <code>M</code>=ំ <code>H</code>=ះ) · <b>?123</b> មានលេខ វណ្ណយុត្តិ និងសញ្ញាខ្មែរ',
     mysummary: "ពាក្យរបស់ខ្ញុំ · ពាក្យដែលក្ដារចុចចាំពីអ្នក",
     myhint: "ពាក្យដែលអ្នករើស ក្ដារចុចនឹងចាំ ហើយដាក់ឱ្យឡើងមកមុនគេ។ ទាំងអស់នេះនៅលើឧបករណ៍នេះប៉ុណ្ណោះ។",
@@ -977,7 +1132,7 @@ const STRINGS = {
     imported: "បាននាំចូលពាក្យ ✓", importbad: "អានឯកសារមិនបាន",
     addtitle: "បន្ថែមពាក្យ", addhint: "វាយពាក្យខ្មែរ រួចវាយរបៀបប្រកបរបស់វា (ច្រើនក៏បាន ដោយដកឃ្លាពីគ្នា)។",
     added: "បានបន្ថែម «%» ✓", addbad: "សូមបញ្ចូលពាក្យខ្មែរ និងរបៀបប្រកប",
-    placeholder: "khnhom → ខ្ញុំ ... វាយសូរ ពាក្យណែនាំនឹងលោតមកត្រង់ទស្សន៍ទ្រនិច",
+    placeholder: "វាយសូរនៅទីនេះ ឧទាហរណ៍ soksabay រួចចុច Space",
     tut1: "វាយ<b>សូរ</b>ពាក្យខ្មែរជាអក្សរអង់គ្លេស៖ សាកវាយ <code>khnhom</code>",
     tut2: "រើសពាក្យខ្មែរពីរបារ៖ ប៉ះលើពាក្យ ឬចុច <b>Space</b> ដើម្បីយកពាក្យទី១",
     tut3: "ក្រោយពាក្យនីមួយៗ របារខាងលើ<b>ទាយពាក្យបន្ទាប់</b> ហើយវាចេះចាំពាក្យដែលអ្នកប្រើ",
@@ -1024,10 +1179,9 @@ function setLang(l){
   const s = STRINGS[l];
   $("#t-sub").textContent = s.sub;
   $("#t-instr").innerHTML = s.instr;
-  for (const k of ["autostack","khnum","live","spacesel","devkb"])
+  for (const k of ["autostack","khnum","spacesel","devkb"])
     $("#t-"+k).textContent = s[k];
   $("#conv").textContent = s.conv; $("#copy").textContent = s.copy; $("#clear").textContent = s.clear;
-  $("#t-outlabel").textContent = s.outlabel;
   $("#t-kbhint").innerHTML = s.kbhint;
   $("#t-mysummary").textContent = s.mysummary;
   $("#t-myhint").textContent = s.myhint;
@@ -1100,9 +1254,9 @@ fillSheet("#cs-sign", Object.entries(SIGN).filter(([r,g])=>g && r!==" "), {
   "//":BI("khan", "ខណ្ឌ"), "**":BI("repeat", "លេខទោ"), "::":BI("colon", "ចំណុចពីរគូស")
 });
 
-/* initial demo */
-demoText = inEl.value = "suastei";
-run();
+/* The box starts empty: a sample word in it read as something the visitor had
+   typed. The strip above the keys offers the first words to tap. */
+updateSug();
 
 /* offline: register a tiny service worker if available */
 if("serviceWorker" in navigator){

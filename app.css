@@ -20,14 +20,20 @@ html[data-lang="km"] .fld{ font-size:14.5px; }
 .fld code{ font-size:12px; }
 
 .sugwrap{ position:relative; }
+/* The one text box. It holds both scripts: the Latin letters of the word being
+   typed, in the mono face, and the Khmer they turn into, in the Siemreap face
+   people paste into Word. The mono faces come first because they have no
+   Khmer, so each script falls to its own font. */
 #in{
-  display:block; width:100%; min-height:112px; resize:vertical;
-  padding:14px 16px; border:1px solid var(--rule-2); border-radius:14px;
-  background:var(--paper); color:var(--ink); font:400 18px/1.55 var(--font-mono);
+  display:block; width:100%; min-height:200px; resize:vertical;
+  padding:14px 18px; border:1px solid var(--rule-2); border-radius:14px;
+  background:var(--paper); color:var(--ink);
+  font:400 24px/1.85 ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas,
+       "Khmer OS Siemreap", "Siemreap Web", "Kantumruy", "Noto Sans Khmer", monospace;
   outline:none; transition:border-color .18s, box-shadow .18s;
 }
 #in:focus{ border-color:var(--ink); box-shadow:0 0 0 4px var(--accent-soft); }
-#in::placeholder{ color:var(--ink-3); }
+#in::placeholder{ color:var(--ink-3); font-size:18px; }
 
 /* floating candidate bar at the caret, modelled on the macOS Pinyin IME */
 .sugbar{
@@ -58,17 +64,12 @@ html[data-lang="km"] .fld{ font-size:14.5px; }
   @keyframes candin{ from{ opacity:0; transform:translateX(8px); } to{ opacity:1; transform:none; } }
 }
 
-.toggles{ display:flex; flex-wrap:wrap; gap:10px 20px; margin-top:14px; }
+.toggles{ display:flex; flex-wrap:wrap; gap:10px 20px; margin-top:20px; padding-top:16px; border-top:1px solid var(--rule); }
 .tg{ display:flex; align-items:center; gap:8px; font-size:14px; color:var(--ink-2); cursor:pointer; line-height:1.5; }
 .tg input{ width:17px; height:17px; margin:0; accent-color:var(--ink); }
 
-.out-label{ margin-top:22px; }
-.out{
-  min-height:84px; padding:14px 18px; border-radius:14px; border:1px solid var(--rule);
-  background:var(--paper); color:var(--ink); font-family:var(--font-khtext); font-size:30px; line-height:1.9;
-  white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word;
-}
 .row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+.row .btn[hidden]{ display:none; }       /* .btn sets a display of its own */
 
 /* suggestion strip docked above the keys (Gboard-style), microphone at its end */
 .striprow{
@@ -245,5 +246,5 @@ html[data-lang="km"] h3.sec{ font-size:14.5px; letter-spacing:0; text-transform:
   .pane{ border-radius:18px; }
   .kbrow{ gap:5px; }
   .kq{ padding:10px 0 7px; font-size:16px; }
-  .out{ font-size:26px; }
+  #in{ min-height:156px; padding:12px 14px; font-size:22px; }
 }
